@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flashcards — Grammatica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.app{max-width:660px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;align-items:center}
+header{text-align:center;padding:40px 0 16px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+header p{color:var(--text-dim);font-size:.9rem}
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 0 14px;width:100%}
+.filters button{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:5px 12px;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+.filters button:hover{color:var(--text);border-color:var(--accent1)}
+.filters button.active{background:var(--accent1);color:#fff;border-color:var(--accent1)}
+.controls{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;padding:0 0 14px;width:100%}
+.controls button{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:24px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:6px}
+.controls button:hover{border-color:var(--accent1);transform:translateY(-1px);box-shadow:0 4px 15px var(--glow)}
+.controls button.active{background:linear-gradient(135deg,var(--accent1),var(--accent2));border-color:transparent}
+.counter{color:var(--text-dim);font-size:.85rem;font-weight:500;min-width:80px;text-align:center}
+.counter span{color:var(--accent2);font-weight:700;font-size:1.1rem}
+.progress-wrap{width:100%;height:4px;background:var(--surface2);border-radius:2px;margin-bottom:18px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:2px;transition:width .4s}
+
+.card-container{width:100%;height:370px;position:relative;margin-bottom:18px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.card-face{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:18px;transition:opacity .25s ease,transform .3s ease;will-change:opacity,transform}
+.card-face.hidden{opacity:0;transform:scale(.96);pointer-events:none}
+.card-face.visible{opacity:1;transform:scale(1);pointer-events:auto}
+
+.card-front{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px}
+.card-front::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:18px 18px 0 0}
+.card-front .category-badge{position:absolute;top:16px;right:16px;background:var(--surface2);color:var(--accent4);font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+.card-front .term-it{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;color:#fff;text-align:center;line-height:1.3;margin-bottom:10px}
+.card-front .term-es{color:var(--text-es);font-style:italic;font-size:clamp(.95rem,2vw,1.15rem);text-align:center;line-height:1.3}
+.card-front .flip-hint{position:absolute;bottom:14px;color:var(--text-dim);font-size:.7rem;display:flex;align-items:center;gap:5px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+
+.card-back{background:linear-gradient(145deg,var(--surface) 0%,var(--surface2) 100%);border:1px solid var(--border);overflow:hidden}
+.card-back::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent2),var(--accent5));border-radius:18px 18px 0 0;z-index:2}
+.back-scroll{position:absolute;top:5px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 28px 20px}
+.card-back .back-label{color:var(--accent2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.card-back .def-it{color:var(--text);font-size:.95rem;line-height:1.6;margin-bottom:14px}
+.card-back .separator{width:60px;height:2px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:1px;margin-bottom:14px}
+.card-back .def-es{color:var(--text-es);font-style:italic;font-size:.85rem;line-height:1.5;opacity:.85;padding-bottom:10px}
+.card-back .flip-hint-back{margin-top:10px;text-align:right;color:var(--text-dim);font-size:.65rem;opacity:.5}
+
+.nav-arrows{display:flex;justify-content:center;align-items:center;gap:30px;padding:0 0 24px}
+.nav-arrow{width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.nav-arrow:hover{background:var(--surface2);border-color:var(--accent1);transform:scale(1.08);box-shadow:0 6px 20px var(--glow)}
+.nav-arrow:active{transform:scale(.95)}
+.nav-arrow.disabled{opacity:.25;pointer-events:none}
+.keyboard-hint{color:var(--text-dim);font-size:.7rem;text-align:center;padding-bottom:30px;opacity:.5}
+.keyboard-hint kbd{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:'DM Sans',sans-serif;font-size:.65rem}
+
+.card-container.slide-left .card-face.visible{animation:slideIn .3s ease}
+.card-container.slide-right .card-face.visible{animation:slideInR .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+
+@media(max-width:500px){.card-container{height:380px}.back-scroll{padding:16px 22px 16px}.card-back .def-it{font-size:.88rem}.card-back .def-es{font-size:.8rem}.nav-arrow{width:46px;height:46px}.keyboard-hint{display:none}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="app">
+<header><h1>Flashcards Interattive</h1><p>Grammatica — 28 tarjetas de estudio</p></header>
+<div class="filters" id="filters"></div>
+<div class="controls">
+  <button onclick="shuffleCards()" id="shuffleBtn">🔀 Mescolare</button>
+  <button onclick="resetCards()">↺ Reset</button>
+  <div class="counter"><span id="currentNum">1</span> / <span id="totalNum">28</span></div>
+  <button onclick="toggleAutoplay()" id="autoBtn">▶ Auto</button>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:3.6%"></div></div>
+<div class="card-container" id="cardContainer" onclick="flipCard()">
+  <div class="card-face card-front visible" id="cardFront">
+    <div class="category-badge" id="categoryBadge"></div>
+    <div class="term-it" id="termIt"></div>
+    <div class="term-es" id="termEs"></div>
+    <div class="flip-hint">↻ Click per girare</div>
+  </div>
+  <div class="card-face card-back hidden" id="cardBack">
+    <div class="back-scroll" id="backScroll">
+      <div class="back-label" id="backLabel"></div>
+      <div class="def-it" id="defIt"></div>
+      <div class="separator"></div>
+      <div class="def-es" id="defEs"></div>
+      <div class="flip-hint-back">↻ click</div>
+    </div>
+  </div>
+</div>
+<div class="nav-arrows">
+  <button class="nav-arrow" id="prevBtn" onclick="prevCard()">←</button>
+  <button class="nav-arrow" id="nextBtn" onclick="nextCard()">→</button>
+</div>
+<div class="keyboard-hint"><kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Spazio</kbd> girare · <kbd>R</kbd> mescolare</div>
+</div>
+<script>
+const allCards=[
+// AGGETTIVO 1ª PARTE
+{termIt:"Aggettivo",termEs:"Adjetivo",defIt:"Parola che si aggiunge al nome, a cui dà una qualità o una caratteristica. I più diffusi sono i qualificativi (es: bello, grande).",defEs:"Palabra que se agrega al nombre, al cual le da una cualidad o una característica. Los más comunes son los calificativos (ej: bello, grande).",cat:"AGGETTIVO 1"},
+{termIt:"Aggettivo sostantivato",termEs:"Adjetivo sustantivado",defIt:"Aggettivo qualificativo privo di nome e preceduto da articolo. Es: I ricchi devono essere tassati.\n\n⚠ Nazionalità → MAIUSCOLA. Es: I Romani.",defEs:"Adjetivo calificativo sin nombre y precedido por artículo. Ej: Los ricos deben ser gravados.\n\n⚠ Nacionalidad → MAYÚSCULA. Ej: Los Romanos.",cat:"AGGETTIVO 1"},
+{termIt:"Concordanza",termEs:"Concordancia",defIt:"L'aggettivo deve concordare in genere (M/F) e numero (S/P) col nome. È un elemento variabile.\n\nSe si riferisce a nomi M+F insieme → concorda al maschile.\nEs: Ho visto Luna e Leonardo stanchi.",defEs:"El adjetivo debe concordar en género (M/F) y número (S/P) con el nombre. Es un elemento variable.\n\nSi se refiere a nombres M+F juntos → concuerda en masculino.\nEj: Vi a Luna y Leonardo cansados.",cat:"AGGETTIVO 1"},
+{termIt:"Aggettivi invariabili",termEs:"Adjetivos invariables",defIt:"NON concordano:\na) Origine straniera: cool\nb) Accentati sull'ultima sillaba: blu\nc) Colori derivanti da nomi: marrone, viola, oro, rosa\nd) pari, dispari, impari",defEs:"NO concuerdan:\na) Origen extranjero: cool\nb) Acentuados en la última sílaba: blu\nc) Colores derivados de nombres: marrón, violeta, oro, rosa\nd) par, impar",cat:"AGGETTIVO 1"},
+{termIt:"Alterazione\ndell'aggettivo",termEs:"Alteración\ndel adjetivo",defIt:"L'aggettivo può essere alterato con suffissi:\n\n• Peggiorativo: biancastro\n• Accrescitivo: intelligentone\n• Diminutivo: bellino",defEs:"El adjetivo puede ser alterado con sufijos:\n\n• Peyorativo: blanquecino\n• Aumentativo: inteligentón\n• Diminutivo: bonito/lindo",cat:"AGGETTIVO 1"},
+// GRADI
+{termIt:"Grado positivo",termEs:"Grado positivo",defIt:"L'aggettivo nella sua forma base, pura.\n\nEs: prudente, astuto.",defEs:"El adjetivo en su forma base, pura.\n\nEj: prudente, astuto.",cat:"GRADI"},
+{termIt:"Comparativo\ndi maggioranza",termEs:"Comparativo\nde mayoría",defIt:"più + aggettivo + di\n\nEs: Greta è più alta di Tharushi.",defEs:"más + adjetivo + que\n\nEj: Greta es más alta que Tharushi.",cat:"GRADI"},
+{termIt:"Comparativo\ndi minoranza",termEs:"Comparativo\nde minoría",defIt:"meno + aggettivo + di\n\nEs: La Rossi è meno scherzosa del Florà.",defEs:"menos + adjetivo + que\n\nEj: La Rossi es menos bromista que Florà.",cat:"GRADI"},
+{termIt:"Comparativo\ndi uguaglianza",termEs:"Comparativo\nde igualdad",defIt:"aggettivo + come / quanto\n\nEs: La 1AL è numerosa come la 1BL.",defEs:"tan + adjetivo + como\n\nEj: La 1AL es tan numerosa como la 1BL.",cat:"GRADI"},
+{termIt:"Superlativo relativo",termEs:"Superlativo relativo",defIt:"il/la più + aggettivo + tra/di\n\nEs: Cecilia è la più alta tra le sue amiche.",defEs:"el/la más + adjetivo + entre/de\n\nEj: Cecilia es la más alta entre sus amigas.",cat:"GRADI"},
+{termIt:"Superlativo assoluto",termEs:"Superlativo absoluto",defIt:"Esprime la qualità al massimo grado:\n• -issimo (intelligentissimo)\n• molto + agg (molto intelligente)\n• ultra + agg (ultraintelligente)",defEs:"Expresa la cualidad en grado máximo:\n• -ísimo (inteligentísimo)\n• muy + adj (muy inteligente)\n• ultra + adj (ultrainteligente)",cat:"GRADI"},
+// IRREGOLARI
+{termIt:"buono\n→ migliore → ottimo",termEs:"bueno\n→ mejor → óptimo",defIt:"Forma irregolare di comparativo e superlativo.\n\n⚠ NON si dice \"più migliore\"!\nCorretto: Il Napoli è migliore della Roma.",defEs:"Forma irregular de comparativo y superlativo.\n\n⚠ NO se dice \"più migliore\" (más mejor)!\nCorrecto: El Napoli es mejor que la Roma.",cat:"IRREGOLARI ⭐"},
+{termIt:"cattivo\n→ peggiore → pessimo",termEs:"malo\n→ peor → pésimo",defIt:"Forma irregolare.\nComparativo: peggiore\nSuperlativo: pessimo\n\n⚠ NON: più peggiore",defEs:"Forma irregular.\nComparativo: peggiore\nSuperlativo: pessimo\n\n⚠ NO: più peggiore (más peor)",cat:"IRREGOLARI ⭐"},
+{termIt:"grande\n→ maggiore → massimo",termEs:"grande\n→ mayor → máximo",defIt:"Forma irregolare.\nComparativo: maggiore\nSuperlativo: massimo\n\n⚠ NON: più maggiore",defEs:"Forma irregular.\nComparativo: maggiore\nSuperlativo: massimo\n\n⚠ NO: più maggiore",cat:"IRREGOLARI ⭐"},
+{termIt:"piccolo\n→ minore → minimo",termEs:"pequeño\n→ menor → mínimo",defIt:"Forma irregolare.\nComparativo: minore\nSuperlativo: minimo\n\n⚠ NON: più minore",defEs:"Forma irregular.\nComparativo: minore\nSuperlativo: minimo\n\n⚠ NO: più minore",cat:"IRREGOLARI ⭐"},
+{termIt:"alto → superiore\n→ supremo/sommo",termEs:"alto → superior\n→ supremo/sumo",defIt:"Forma irregolare.\nComparativo: superiore\nSuperlativo: supremo / sommo",defEs:"Forma irregular.\nComparativo: superiore\nSuperlativo: supremo / sommo (sumo)",cat:"IRREGOLARI ⭐"},
+{termIt:"basso → inferiore\n→ infimo",termEs:"bajo → inferior\n→ ínfimo",defIt:"Forma irregolare.\nComparativo: inferiore\nSuperlativo: infimo",defEs:"Forma irregular.\nComparativo: inferiore\nSuperlativo: infimo (ínfimo)",cat:"IRREGOLARI ⭐"},
+// AGGETTIVO 2ª PARTE
+{termIt:"Aggettivi possessivi",termEs:"Adjetivos posesivos",defIt:"Esprimono il possessore: mio, tuo, suo, nostro, vostro, loro.\n\n⚠ SUO = 1 possessore\n⚠ LORO = 2+ possessori\n\nAnche PROPRIO (obbligatorio con verbi impersonali) e ALTRUI (invariabile, = degli altri).",defEs:"Expresan el poseedor: mío, tuyo, suyo, nuestro, vuestro, de ellos.\n\n⚠ SUO = 1 poseedor\n⚠ LORO = 2+ poseedores\n\nTambién PROPRIO (obligatorio con verbos impersonales) y ALTRUI (invariable, = de los otros).",cat:"AGGETTIVO 2"},
+{termIt:"Aggettivi dimostrativi",termEs:"Adjetivos demostrativos",defIt:"Esprimono vicinanza/lontananza nel tempo o nello spazio.\n\nQUESTO = maggiore vicinanza\nQUELLO = maggiore lontananza\n\n⚠ QUELLO contiene l'articolo LO → si applicano le regole dell'articolo.\nEs: Quell'albero (elisione).",defEs:"Expresan cercanía/lejanía en tiempo o espacio.\n\nQUESTO = mayor cercanía\nQUELLO = mayor lejanía\n\n⚠ QUELLO contiene el artículo LO → se aplican las reglas del artículo.\nEj: Quell'albero (elisión).",cat:"AGGETTIVO 2"},
+{termIt:"Aggettivi identificativi",termEs:"Adjetivos identificativos",defIt:"Esprimono uguaglianza tra persone o cose.\nSignificano uguale/identico a…\n\nstesso, medesimo\n\nEs: Nelle verifiche commettete sempre gli stessi errori.",defEs:"Expresan igualdad entre personas o cosas.\nSignifican igual/idéntico a…\n\nmismo, idéntico\n\nEj: En las pruebas cometen siempre los mismos errores.",cat:"AGGETTIVO 2"},
+{termIt:"Aggettivi indefiniti",termEs:"Adjetivos indefinidos",defIt:"Info generiche sui nomi: alcuni, pochi, tanti, altri, più, troppi, nessuno.\n\n⚠ NESSUNO contiene l'articolo UNO → regole note.\nEs: nessun aereo (non apostrofo, maschile)\n\n⚠ ALCUNO:\n• singolare = nessuno\n• plurale = qualche/alcuni",defEs:"Info genérica sobre los nombres: algunos, pocos, tantos, otros, más, demasiados, ninguno.\n\n⚠ NESSUNO contiene el artículo UNO → reglas conocidas.\n\n⚠ ALCUNO:\n• singular = ninguno\n• plural = algunos",cat:"AGGETTIVO 2"},
+{termIt:"Aggettivi numerali",termEs:"Adjetivos numerales",defIt:"Esprimono quantità numeriche:\n\n• Cardinali: quantità precisa (quattro)\n• Ordinali: posizione (primo)\n• Moltiplicativi: moltiplicazione (doppio, triplo)\n\n⚠ tre → senza accento\n⚠ ventitré → con accento",defEs:"Expresan cantidades numéricas:\n\n• Cardinales: cantidad precisa (cuatro)\n• Ordinales: posición (primero)\n• Multiplicativos: multiplicación (doble, triple)\n\n⚠ tre → sin acento\n⚠ ventitré → con acento",cat:"AGGETTIVO 2"},
+{termIt:"Aggettivi interrogativi\ned esclamativi",termEs:"Adjetivos interrogativos\ny exclamativos",defIt:"Accompagnano nomi in domande o esclamazioni: quanto, quale, che.\n\nInterr: In quale spiaggia si trova la tua mente?\nEscl: Quale onore averti al compito!\n\n⚠ CHE può sostituire QUALE nella lingua parlata. È invariabile.",defEs:"Acompañan nombres en preguntas o exclamaciones: cuánto, cuál, qué.\n\nInterr: ¿En qué playa se encuentra tu mente?\nExcl: ¡Qué honor tenerte en la prueba!\n\n⚠ CHE puede sustituir a QUALE en la lengua hablada. Es invariable.",cat:"AGGETTIVO 2"},
+// LA PREPOSIZIONE
+{termIt:"Preposizione",termEs:"Preposición",defIt:"Elemento invariabile della frase (non cambia, è fissa).\n\nPrecede un nome, un pronome, un avverbio o un verbo all'infinito.\n\nSvolge una funzione di collegamento tra le parti della frase.",defEs:"Elemento invariable de la oración (no cambia, es fija).\n\nPrecede a un nombre, un pronombre, un adverbio o un verbo en infinitivo.\n\nCumple una función de conexión entre las partes de la oración.",cat:"PREPOSIZIONE"},
+{termIt:"Preposizioni semplici",termEs:"Preposiciones simples",defIt:"Le 9 preposizioni base dell'italiano:\n\nDI — A — DA — IN — CON\nSU — PER — TRA — FRA\n\nEs:\n• La porta della classe (di+la)\n• Una sorpresa per voi\n• Per sempre\n• Spero di studiare",defEs:"Las 9 preposiciones base del italiano:\n\nDI — A — DA — IN — CON\nSU — PER — TRA — FRA\n\nEj:\n• La puerta de la clase\n• Una sorpresa para ustedes\n• Para siempre\n• Espero estudiar",cat:"PREPOSIZIONE"},
+{termIt:"Preposizione articolata",termEs:"Preposición articulada",defIt:"Preposizione semplice + articolo:\n\nSU + IL = SUL\nDI + LA = DELLA\nIN + IL = NEL\nA + I = AI\nDA + I = DAI",defEs:"Preposición simple + artículo:\n\nSU + IL = SUL (sobre el)\nDI + LA = DELLA (de la)\nIN + IL = NEL (en el)\nA + I = AI (a los)\nDA + I = DAI (de los)",cat:"PREPOSIZIONE"},
+{termIt:"Articolo partitivo\nvs Preposizione",termEs:"Artículo partitivo\nvs Preposición",defIt:"⭐ REGOLA: l'articolo partitivo si può sostituire con:\n• singolare → \"un po' di\"\n• plurale → \"alcuni/alcune\"\n\n✓ Ho del caffè (= un po' di caffè) → PARTITIVO\n✓ Dei miei amici ti conoscono (= alcuni) → PARTITIVO\n✗ Le pagine del quaderno (sostituzione impossibile) → PREPOSIZIONE",defEs:"⭐ REGLA: el artículo partitivo se puede sustituir por:\n• singular → \"un poco de\"\n• plural → \"algunos/algunas\"\n\n✓ Tengo algo de café (= un poco de) → PARTITIVO\n✓ Algunos amigos te conocen (= algunos) → PARTITIVO\n✗ Las páginas del cuaderno (sustitución imposible) → PREPOSICIÓN",cat:"PREPOSIZIONE ⭐"}
+];
+
+let cards=[...allCards],currentIndex=0,isFlipped=false,autoplayInterval=null,activeFilter='TUTTE';
+const frontEl=document.getElementById('cardFront'),backEl=document.getElementById('cardBack'),container=document.getElementById('cardContainer');
+
+const categories=['TUTTE',...new Set(allCards.map(c=>c.cat))];
+const filtersEl=document.getElementById('filters');
+categories.forEach(cat=>{const btn=document.createElement('button');btn.textContent=cat;btn.className=cat==='TUTTE'?'active':'';btn.onclick=()=>filterCards(cat,btn);filtersEl.appendChild(btn)});
+
+function nl2br(t){return t.replace(/\n/g,'<br>')}
+function showFront(){isFlipped=false;frontEl.classList.remove('hidden');frontEl.classList.add('visible');backEl.classList.remove('visible');backEl.classList.add('hidden')}
+function showBack(){isFlipped=true;backEl.classList.remove('hidden');backEl.classList.add('visible');frontEl.classList.remove('visible');frontEl.classList.add('hidden');document.getElementById('backScroll').scrollTop=0}
+
+function renderCard(dir){
+  const card=cards[currentIndex];
+  document.getElementById('termIt').innerHTML=nl2br(card.termIt);
+  document.getElementById('termEs').innerHTML=nl2br(card.termEs);
+  document.getElementById('defIt').innerHTML=nl2br(card.defIt);
+  document.getElementById('defEs').innerHTML=nl2br(card.defEs);
+  document.getElementById('categoryBadge').textContent=card.cat;
+  document.getElementById('backLabel').textContent=card.cat;
+  document.getElementById('currentNum').textContent=currentIndex+1;
+  document.getElementById('totalNum').textContent=cards.length;
+  document.getElementById('progressBar').style.width=((currentIndex+1)/cards.length*100)+'%';
+  document.getElementById('prevBtn').className='nav-arrow'+(currentIndex===0?' disabled':'');
+  document.getElementById('nextBtn').className='nav-arrow'+(currentIndex===cards.length-1?' disabled':'');
+  showFront();
+  if(dir){container.classList.remove('slide-left','slide-right');void container.offsetWidth;container.classList.add(dir)}
+}
+
+function flipCard(){if(isFlipped)showFront();else showBack()}
+function nextCard(){if(currentIndex<cards.length-1){currentIndex++;renderCard('slide-left')}}
+function prevCard(){if(currentIndex>0){currentIndex--;renderCard('slide-right')}}
+function shuffleCards(){for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]]}currentIndex=0;renderCard()}
+function resetCards(){filterCards(activeFilter,document.querySelector('.filters button.active'))}
+function filterCards(cat,btn){activeFilter=cat;document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');cards=cat==='TUTTE'?[...allCards]:allCards.filter(c=>c.cat===cat);currentIndex=0;renderCard()}
+function toggleAutoplay(){const btn=document.getElementById('autoBtn');if(autoplayInterval){clearInterval(autoplayInterval);autoplayInterval=null;btn.classList.remove('active');btn.innerHTML='▶ Auto'}else{btn.classList.add('active');btn.innerHTML='⏸ Stop';autoplayInterval=setInterval(()=>{if(isFlipped){if(currentIndex<cards.length-1)nextCard();else toggleAutoplay()}else showBack()},2500)}}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextCard();else if(e.key==='ArrowLeft')prevCard();else if(e.key===' '){e.preventDefault();flipCard()}else if(e.key==='r'||e.key==='R')shuffleCards()});
+let touchStartX=0;
+container.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].screenX},{passive:true});
+container.addEventListener('touchend',e=>{const diff=e.changedTouches[0].screenX-touchStartX;if(Math.abs(diff)>60){e.preventDefault();if(diff<0)nextCard();else prevCard()}});
+
+renderCard();
+</script>
+</body>
+</html>
