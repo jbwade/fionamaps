@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mappe Concettuali</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118;
+  --surface: #1a1d2e;
+  --surface2: #242840;
+  --accent1: #6c63ff;
+  --accent2: #00d4aa;
+  --text: #e8e6f0;
+  --text-dim: #8b8aa0;
+  --border: rgba(108, 99, 255, 0.2);
+  --glow: rgba(108, 99, 255, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.grain {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+}
+
+header {
+  text-align: center;
+  padding: 80px 20px 50px;
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  border-radius: 2px;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+header p {
+  color: var(--text-dim);
+  font-size: 1.1rem;
+}
+
+.map-list {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 0 20px;
+  list-style: none;
+}
+
+.map-list li {
+  margin-bottom: 16px;
+}
+
+.map-list a {
+  display: block;
+  padding: 22px 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.map-list a:hover {
+  background: var(--surface2);
+  border-color: var(--accent1);
+  box-shadow: 0 0 20px var(--glow);
+  transform: translateY(-2px);
+}
+
+.map-list a .arrow {
+  float: right;
+  color: var(--accent1);
+  transition: transform 0.25s ease;
+}
+
+.map-list a:hover .arrow {
+  transform: translateX(4px);
+}
+
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header>
+  <h1>Mappe Concettuali</h1>
+  <p>Indice delle mappe concettuali disponibili</p>
+</header>
+
+<ul class="map-list">
+  <li>
+    <a href="Mappe_Concettuali_Fondamenti_Suono.html">
+      Fondamenti di Suono
+      <span class="arrow">&rarr;</span>
+    </a>
+  </li>
+</ul>
+
+</body>
+</html>
