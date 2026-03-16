@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mappe Concettuali — Fondamenti di Suono</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118;
+  --surface: #1a1d2e;
+  --surface2: #242840;
+  --accent1: #6c63ff;
+  --accent2: #00d4aa;
+  --accent3: #ff6b6b;
+  --accent4: #ffd93d;
+  --accent5: #4ecdc4;
+  --accent6: #a78bfa;
+  --text: #e8e6f0;
+  --text-dim: #8b8aa0;
+  --text-es: #6dd4b0;
+  --border: rgba(108, 99, 255, 0.2);
+  --glow: rgba(108, 99, 255, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.grain {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+}
+
+header {
+  text-align: center;
+  padding: 60px 20px 40px;
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  border-radius: 2px;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--accent2) 50%, var(--accent1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+
+header p {
+  color: var(--text-dim);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 30px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+nav button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+nav button::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 30px;
+}
+
+nav button:hover::before,
+nav button.active::before { opacity: 1; }
+
+nav button:hover, nav button.active {
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--glow);
+}
+
+nav button span { position: relative; z-index: 1; }
+
+.maps-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.map-section {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.map-section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.map-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  text-align: center;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.map-subtitle {
+  text-align: center;
+  color: var(--text-es);
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-bottom: 40px;
+}
+
+/* ─── Flow Chart Styles ─── */
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.flow-node {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 28px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.flow-node:hover {
+  transform: scale(1.03);
+  border-color: var(--accent1);
+  box-shadow: 0 0 30px var(--glow);
+}
+
+.flow-node .it { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+.flow-node .es { color: var(--text-es); font-style: italic; font-size: 0.85rem; margin-bottom: 6px; }
+.flow-node .desc { color: var(--text-dim); font-size: 0.8rem; line-height: 1.4; }
+
+.flow-arrow {
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(180deg, var(--accent1), var(--accent2));
+  position: relative;
+}
+
+.flow-arrow::after {
+  content: '▼';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--accent2);
+  font-size: 10px;
+}
+
+/* ─── Grid Cards ─── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 16px 16px 0 0;
+}
+
+.card.c1::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+.card.c2::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+.card.c3::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+.card.c4::before { background: linear-gradient(90deg, var(--accent4), var(--accent2)); }
+.card.c5::before { background: linear-gradient(90deg, var(--accent5), var(--accent1)); }
+.card.c6::before { background: linear-gradient(90deg, var(--accent6), var(--accent3)); }
+
+.card .icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.card .card-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+.card .card-title-es { color: var(--text-es); font-style: italic; font-size: 0.85rem; margin-bottom: 10px; }
+.card .card-desc { color: var(--text-dim); font-size: 0.82rem; line-height: 1.5; }
+.card .card-desc-es { color: var(--text-es); font-style: italic; font-size: 0.78rem; line-height: 1.4; margin-top: 6px; opacity: 0.8; }
+
+/* ─── Tree / Hierarchy ─── */
+.tree {
+  padding-left: 0;
+}
+
+.tree-root {
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 16px 28px;
+  border-radius: 14px;
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto 30px;
+}
+
+.tree-root .es { font-weight: 400; font-style: italic; font-size: 0.9rem; opacity: 0.85; display: block; margin-top: 4px; }
+
+.tree-branches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.tree-branch {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  position: relative;
+}
+
+.tree-branch::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  width: 2px;
+  height: 16px;
+  background: var(--accent1);
+}
+
+.tree-branch .branch-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+.tree-branch .branch-title-es { color: var(--text-es); font-style: italic; font-size: 0.8rem; margin-bottom: 8px; }
+.tree-branch .branch-items { list-style: none; padding: 0; }
+.tree-branch .branch-items li {
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.4;
+}
+.tree-branch .branch-items li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent2);
+}
+
+/* ─── Comparison Table ─── */
+.comp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.comp-table th {
+  background: var(--surface2);
+  padding: 14px 18px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-bottom: 2px solid var(--accent1);
+}
+
+.comp-table td {
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: top;
+}
+
+.comp-table tr:last-child td { border-bottom: none; }
+
+.comp-table tr:hover td { background: rgba(108, 99, 255, 0.05); }
+
+.comp-table .es-cell { color: var(--text-es); font-style: italic; font-size: 0.8rem; }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge.best { background: rgba(0, 212, 170, 0.15); color: var(--accent2); }
+.badge.good { background: rgba(255, 217, 61, 0.15); color: var(--accent4); }
+.badge.ok { background: rgba(167, 139, 250, 0.15); color: var(--accent6); }
+
+/* ─── Connector Lines ─── */
+.connector-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.connector-label {
+  background: var(--surface2);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ─── Checklist style ─── */
+.checklist {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.checklist li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.checklist li:hover {
+  border-color: var(--accent2);
+  transform: translateX(4px);
+}
+
+.checklist .check-icon {
+  color: var(--accent2);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checklist .check-text .it { font-size: 0.88rem; font-weight: 500; }
+.checklist .check-text .es { color: var(--text-es); font-style: italic; font-size: 0.78rem; margin-top: 2px; }
+
+/* ─── Print styles ─── */
+@media print {
+  body { background: #fff; color: #000; }
+  .grain { display: none; }
+  nav { display: none; }
+  .map-section { display: block !important; page-break-inside: avoid; margin-bottom: 40px; }
+  .card, .flow-node, .tree-branch { border-color: #ccc; background: #f9f9f9; }
+  .flow-arrow { background: #333; }
+  header { padding: 20px; }
+  h1 { -webkit-text-fill-color: #1a3c6e; background: none; }
+  .map-subtitle, .card-title-es, .card-desc-es, .branch-title-es, .es-cell, .check-text .es, .tree-root .es, .flow-node .es { color: #666; }
+}
+
+@media (max-width: 600px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .tree-branches { grid-template-columns: 1fr; }
+  nav button { padding: 8px 14px; font-size: 0.8rem; }
+  .flow-node { padding: 14px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header>
+  <h1>Mappe Concettuali</h1>
+  <p>Fondamenti di Suono — Mapas Conceptuales Interactivos</p>
+</header>
+
+<nav id="nav">
+  <button class="active" onclick="showMap(0, this)"><span>🎬 Componenti del Sonoro</span></button>
+  <button onclick="showMap(1, this)"><span>🔗 Catena del Suono</span></button>
+  <button onclick="showMap(2, this)"><span>🎧 Fonico di Presa Diretta</span></button>
+  <button onclick="showMap(3, this)"><span>🎤 Tipi di Microfoni</span></button>
+  <button onclick="showMap(4, this)"><span>📐 Coerenza Suono-Inquadratura</span></button>
+  <button onclick="showMap(5, this)"><span>✅ Punti d'Attenzione</span></button>
+</nav>
+
+<div class="maps-container">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAP 0: COMPONENTI DEL SONORO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="map-section active" id="map0">
+  <div class="map-title">Le Componenti del Sonoro di un Film</div>
+  <div class="map-subtitle">Los Componentes del Sonido de una Película</div>
+
+  <div class="card-grid">
+    <div class="card c1">
+      <span class="icon">🗣️</span>
+      <div class="card-title">Voci e Dialoghi</div>
+      <div class="card-title-es">Voces y Diálogos</div>
+      <div class="card-desc">Componente prevalente del sonoro. Hanno uno sviluppo narrativo. Le sale cinematografiche sono costruite come sale da concerto (legno, dal 1936) con pareti assorbenti. Da un solo altoparlante dietro lo schermo fino al Dolby surround.</div>
+      <div class="card-desc-es">Componente predominante del sonido. Tienen un desarrollo narrativo. Las salas están construidas como salas de concierto (madera, desde 1936) con paredes absorbentes. De un solo parlante detrás de la pantalla hasta el Dolby surround.</div>
+    </div>
+    <div class="card c2">
+      <span class="icon">🌧️</span>
+      <div class="card-title">Rumori e Ambienti Sonori</div>
+      <div class="card-title-es">Ruidos y Ambientes Sonoros</div>
+      <div class="card-desc">Riescono ad allargare la percezione dello spazio. Creano l'atmosfera e il contesto della scena.</div>
+      <div class="card-desc-es">Logran ampliar la percepción del espacio. Crean la atmósfera y el contexto de la escena.</div>
+    </div>
+    <div class="card c3">
+      <span class="icon">💥</span>
+      <div class="card-title">Effetti Sonori</div>
+      <div class="card-title-es">Efectos Sonoros</div>
+      <div class="card-desc">Aggiunte che forniscono info in più. Es: vento in un film western, sparo in lontananza, cavalli. Danno maggior realismo alla scena.</div>
+      <div class="card-desc-es">Agregados que proporcionan información adicional. Ej: viento en un western, disparo a lo lejos, caballos. Dan mayor realismo a la escena.</div>
+    </div>
+    <div class="card c4">
+      <span class="icon">🎵</span>
+      <div class="card-title">Musica</div>
+      <div class="card-title-es">Música</div>
+      <div class="card-desc">Racconta principalmente le emozioni. Può essere: <strong>originale</strong> (composta per il film) o <strong>di repertorio</strong> (preesistente, con diritto d'autore).</div>
+      <div class="card-desc-es">Transmite principalmente las emociones. Puede ser: <strong>original</strong> (compuesta para la película) o <strong>de repertorio</strong> (preexistente, con derecho de autor).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAP 1: CATENA DEL SUONO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="map-section" id="map1">
+  <div class="map-title">La Catena del Suono</div>
+  <div class="map-subtitle">La Cadena del Sonido</div>
+
+  <div class="flow">
+    <div class="flow-node" style="border-left: 4px solid var(--accent1);">
+      <div class="it">1. Presa Diretta</div>
+      <div class="es">Toma Directa</div>
+      <div class="desc">Voci, ambienti, suoni/rumori registrati sul set<br><em style="color:var(--text-es)">Voces, ambientes, sonidos/ruidos grabados en el set</em></div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" style="border-left: 4px solid var(--accent2);">
+      <div class="it">2. Montaggio del Suono</div>
+      <div class="es">Montaje del Sonido</div>
+      <div class="desc">Editing della presa diretta — Sistematizzare e valorizzare l'audio<br><em style="color:var(--text-es)">Edición de la toma directa — Sistematizar y valorizar el audio</em></div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" style="border-left: 4px solid var(--accent3);">
+      <div class="it">3. Doppiaggio</div>
+      <div class="es">Doblaje</div>
+      <div class="desc">Voci integrative/sostitutive registrate in studio<br><em style="color:var(--text-es)">Voces integradoras/sustitutivas grabadas en estudio</em></div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" style="border-left: 4px solid var(--accent4);">
+      <div class="it">4. Rumoristi (Foley Artist)</div>
+      <div class="es">Rumoristas (Artistas Foley)</div>
+      <div class="desc">Foley artist, effetti e rumori di scena ricreati in post-produzione<br><em style="color:var(--text-es)">Artistas foley, efectos y ruidos de escena recreados en post-producción</em></div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" style="border-left: 4px solid var(--accent5);">
+      <div class="it">5. Montaggio Effetti</div>
+      <div class="es">Montaje de Efectos</div>
+      <div class="desc">Effetti ed ambienti sonori aggiuntivi — Contributo all'identità sonora<br><em style="color:var(--text-es)">Efectos y ambientes sonoros adicionales — Contribución a la identidad sonora</em></div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" style="border-left: 4px solid var(--accent6);">
+      <div class="it">6. Musica Originale + Musica di Repertorio</div>
+      <div class="es">Música Original + Música de Repertorio</div>
+      <div class="desc">Composizione, esecuzione, registrazione, spazializzazione / Acquisizione, editing<br><em style="color:var(--text-es)">Composición, ejecución, grabación, espacialización / Adquisición, edición</em></div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" style="background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none;">
+      <div class="it" style="font-size: 1.2rem; color: #fff;">⚡ MIX FINALE</div>
+      <div class="es" style="color: rgba(255,255,255,0.8);">Mezcla Final</div>
+      <div class="desc" style="color: rgba(255,255,255,0.7);">Il fonico di mixaggio miscela tutti gli elementi del suono per ogni scena a seconda della loro importanza<br><em>El técnico de mezcla combina todos los elementos para cada escena según su importancia</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAP 2: FONICO DI PRESA DIRETTA -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="map-section" id="map2">
+  <div class="map-title">Il Fonico di Presa Diretta</div>
+  <div class="map-subtitle">El Técnico de Sonido de Toma Directa</div>
+
+  <div class="tree-root">
+    🎧 FONICO DI PRESA DIRETTA
+    <span class="es">Técnico de Sonido de Toma Directa</span>
+  </div>
+
+  <div class="connector-section">
+    <div class="connector-label">Fase 1 — Preparazione / Preparación</div>
+  </div>
+
+  <div class="tree-branches" style="margin-bottom: 30px;">
+    <div class="tree-branch">
+      <div class="branch-title">📖 Sceneggiatura</div>
+      <div class="branch-title-es">Guión</div>
+      <ul class="branch-items">
+        <li>Punto di partenza fondamentale<br><em style="color:var(--text-es);font-size:0.75rem">Punto de partida fundamental</em></li>
+        <li>So chi parla e quando<br><em style="color:var(--text-es);font-size:0.75rem">Sé quién habla y cuándo</em></li>
+        <li>Preparo l'attrezzatura necessaria<br><em style="color:var(--text-es);font-size:0.75rem">Preparo el equipamiento necesario</em></li>
+      </ul>
+    </div>
+    <div class="tree-branch">
+      <div class="branch-title">📍 Location</div>
+      <div class="branch-title-es">Locaciones</div>
+      <ul class="branch-items">
+        <li>Conoscere le caratteristiche acustiche<br><em style="color:var(--text-es);font-size:0.75rem">Conocer las características acústicas</em></li>
+        <li>Chiuso o aperto?<br><em style="color:var(--text-es);font-size:0.75rem">¿Interior o exterior?</em></li>
+        <li>Quanto è rumoroso l'ambiente<br><em style="color:var(--text-es);font-size:0.75rem">Cuán ruidoso es el ambiente</em></li>
+      </ul>
+    </div>
+    <div class="tree-branch">
+      <div class="branch-title">🎬 Inquadrature</div>
+      <div class="branch-title-es">Encuadres</div>
+      <ul class="branch-items">
+        <li>Analizzare ogni inquadratura<br><em style="color:var(--text-es);font-size:0.75rem">Analizar cada encuadre</em></li>
+        <li>Verificare movimenti di macchina<br><em style="color:var(--text-es);font-size:0.75rem">Verificar movimientos de cámara</em></li>
+        <li>Scegliere il suono coerente<br><em style="color:var(--text-es);font-size:0.75rem">Elegir el sonido coherente</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="connector-section">
+    <div class="connector-label">Fase 2 — Sul Set / En el Set</div>
+  </div>
+
+  <div class="tree-branches" style="margin-bottom: 30px;">
+    <div class="tree-branch">
+      <div class="branch-title">🛠️ Attrezzature</div>
+      <div class="branch-title-es">Equipamiento</div>
+      <ul class="branch-items">
+        <li>Boom / Asta microfonica</li>
+        <li>Radiomicrofoni (wireless)</li>
+        <li>Microfoni piazzati (plant)</li>
+        <li>Registratore + Mixer + Schermo</li>
+      </ul>
+    </div>
+    <div class="tree-branch">
+      <div class="branch-title">👥 Coordinamento</div>
+      <div class="branch-title-es">Coordinación</div>
+      <ul class="branch-items">
+        <li>Dà indicazioni al microfonista<br><em style="color:var(--text-es);font-size:0.75rem">Da indicaciones al microfonista</em></li>
+        <li>Segnala criticità ad altri reparti<br><em style="color:var(--text-es);font-size:0.75rem">Señala problemas a otros departamentos</em></li>
+        <li>Presidia le prove di scena<br><em style="color:var(--text-es);font-size:0.75rem">Supervisa los ensayos de escena</em></li>
+      </ul>
+    </div>
+    <div class="tree-branch">
+      <div class="branch-title">📡 Ascolto</div>
+      <div class="branch-title-es">Escucha</div>
+      <ul class="branch-items">
+        <li>Pre-mix dialoghi in tempo reale<br><em style="color:var(--text-es);font-size:0.75rem">Pre-mezcla de diálogos en tiempo real</em></li>
+        <li>Wireless per regista e segretaria<br><em style="color:var(--text-es);font-size:0.75rem">Inalámbrico para director y secretaria</em></li>
+        <li>Registra ambienti "a vuoto"<br><em style="color:var(--text-es);font-size:0.75rem">Graba ambientes "en vacío"</em></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAP 3: TIPI DI MICROFONI -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="map-section" id="map3">
+  <div class="map-title">Tipi di Microfoni e Diagrammi Polari</div>
+  <div class="map-subtitle">Tipos de Micrófonos y Diagramas Polares</div>
+
+  <p style="text-align:center; color:var(--text-dim); margin-bottom: 30px; font-size: 0.9rem;">
+    Il <strong style="color:var(--text)">diagramma polare</strong> è la rappresentazione grafica della capacità di un microfono di captare il suono nello spazio.<br>
+    <em style="color:var(--text-es)">El diagrama polar es la representación gráfica de la capacidad de un micrófono de captar el sonido en el espacio.</em>
+  </p>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Diagramma</th>
+        <th>Caratteristiche / Características</th>
+        <th>Uso principale</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Cardioide</strong><br><span class="es-cell">Cardioide</span></td>
+        <td style="font-size:2rem; text-align:center;">❤️</td>
+        <td>
+          Forma di cuore. Capta soprattutto davanti. Riduce rumori posteriori. <strong>Il più usato in presa diretta.</strong>
+          <br><span class="es-cell">Forma de corazón. Capta sobre todo por delante. Reduce ruidos posteriores. El más usado en toma directa.</span>
+        </td>
+        <td><span class="badge best">★ Presa diretta</span></td>
+      </tr>
+      <tr>
+        <td><strong>Ipercardioide</strong><br><span class="es-cell">Hipercardioide</span></td>
+        <td style="font-size:2rem; text-align:center;">🎯</td>
+        <td>
+          Più direzionale del cardioide. Capta soprattutto davanti con leggera captazione posteriore. Ottimo per ambienti rumorosi.
+          <br><span class="es-cell">Más direccional que el cardioide. Capta sobre todo por delante con leve captación posterior. Excelente para ambientes ruidosos.</span>
+        </td>
+        <td><span class="badge good">Ambienti rumorosi</span></td>
+      </tr>
+      <tr>
+        <td><strong>Omnidirezionale</strong><br><span class="es-cell">Omnidireccional</span></td>
+        <td style="font-size:2rem; text-align:center;">⭕</td>
+        <td>
+          Capta in tutte le direzioni. Utile in documentari naturalistici o ambienti controllati. Montato anche sugli smartphone.
+          <br><span class="es-cell">Capta en todas las direcciones. Útil en documentales naturalísticos o ambientes controlados. Montado también en smartphones.</span>
+        </td>
+        <td><span class="badge ok">Documentari</span></td>
+      </tr>
+      <tr>
+        <td><strong>Unidirezionale</strong><br><span class="es-cell">Unidireccional</span></td>
+        <td style="font-size:2rem; text-align:center;">➡️</td>
+        <td>
+          Capta il suono in una sola direzione. Molto preciso e mirato.
+          <br><span class="es-cell">Capta el sonido en una sola dirección. Muy preciso y dirigido.</span>
+        </td>
+        <td><span class="badge good">Ripresa mirata</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 30px;">
+    <div class="map-title" style="font-size: 1.2rem;">Attrezzature a confronto / Equipamiento comparado</div>
+    <div style="height: 16px;"></div>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Attrezzatura</th>
+          <th>Vantaggi / Ventajas</th>
+          <th>Svantaggi / Desventajas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Boom</strong><br><span class="es-cell">Caña microfónica</span></td>
+          <td>Miglior qualità sonora. Suono naturale. Non visibile in scena.<br><span class="es-cell">Mejor calidad sonora. Sonido natural. No visible en escena.</span></td>
+          <td>Richiede microfonista esperto. Limitato dall'inquadratura.<br><span class="es-cell">Requiere microfonista experto. Limitado por el encuadre.</span></td>
+        </tr>
+        <tr>
+          <td><strong>Radiomicrofono</strong><br><span class="es-cell">Radiomicrófono</span></td>
+          <td>Ottimo per movimenti complessi. Utile in campi lunghi. Continuità sonora.<br><span class="es-cell">Excelente para movimientos complejos. Útil en planos generales. Continuidad sonora.</span></td>
+          <td>Sfregamento sui vestiti. Suono meno naturale. Disturbi radiofrequenze.<br><span class="es-cell">Rozamiento contra ropa. Sonido menos natural. Interferencias de radiofrecuencias.</span></td>
+        </tr>
+        <tr>
+          <td><strong>Plant (piazzato)</strong><br><span class="es-cell">Fijo (colocado)</span></td>
+          <td>Nascosto. Utile quando boom e radio non funzionano.<br><span class="es-cell">Oculto. Útil cuando boom y radio no funcionan.</span></td>
+          <td>Posizionamento fisso. Meno flessibile.<br><span class="es-cell">Posicionamiento fijo. Menos flexible.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAP 4: COERENZA SUONO-INQUADRATURA -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="map-section" id="map4">
+  <div class="map-title">Coerenza tra Suono e Inquadratura</div>
+  <div class="map-subtitle">Coherencia entre Sonido y Encuadre</div>
+
+  <div class="tree-root" style="max-width: 500px;">
+    🎬 IL SUONO DEVE ESSERE COERENTE CON L'INQUADRATURA
+    <span class="es">El sonido debe ser coherente con el encuadre</span>
+  </div>
+
+  <div class="card-grid" style="margin-bottom: 30px;">
+    <div class="card c1">
+      <span class="icon">🔭</span>
+      <div class="card-title">Campo Lungo / Grandangolo</div>
+      <div class="card-title-es">Plano General / Gran Angular</div>
+      <div class="card-desc">Spazio ampio → microfono più lontano → il suono NON può sembrare registrato a 5 cm dalla bocca dell'attore. Più rischio di rumori ambientali.</div>
+      <div class="card-desc-es">Espacio amplio → micrófono más lejos → el sonido NO puede parecer grabado a 5 cm de la boca del actor. Más riesgo de ruidos ambientales.</div>
+    </div>
+    <div class="card c3">
+      <span class="icon">👤</span>
+      <div class="card-title">Primo Piano / Teleobiettivo</div>
+      <div class="card-title-es">Primer Plano / Teleobjetivo</div>
+      <div class="card-desc">Immagine stretta → la voce può essere più presente e dettagliata. L'attore può essere fisicamente lontano. Serve maggiore precisione nel posizionamento del microfono.</div>
+      <div class="card-desc-es">Imagen cerrada → la voz puede ser más presente y detallada. El actor puede estar físicamente lejos. Se necesita mayor precisión en el posicionamiento del micrófono.</div>
+    </div>
+  </div>
+
+  <div class="connector-section">
+    <div class="connector-label">Regola fondamentale / Regla fundamental</div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card c2">
+      <span class="icon">📏</span>
+      <div class="card-title">Riflettere lo spazio</div>
+      <div class="card-title-es">Reflejar el espacio</div>
+      <div class="card-desc">Il suono deve corrispondere allo spazio visibile nell'inquadratura.</div>
+      <div class="card-desc-es">El sonido debe corresponder al espacio visible en el encuadre.</div>
+    </div>
+    <div class="card c5">
+      <span class="icon">📐</span>
+      <div class="card-title">Rispettare la distanza</div>
+      <div class="card-title-es">Respetar la distancia</div>
+      <div class="card-desc">Rispettare la distanza visiva dei personaggi dalla macchina da presa.</div>
+      <div class="card-desc-es">Respetar la distancia visual de los personajes desde la cámara.</div>
+    </div>
+    <div class="card c6">
+      <span class="icon">🎯</span>
+      <div class="card-title">Solo ciò che è coerente</div>
+      <div class="card-title-es">Solo lo que es coherente</div>
+      <div class="card-desc">Includere solo ciò che è coerente con il punto di vista della macchina da presa.</div>
+      <div class="card-desc-es">Incluir solo lo que es coherente con el punto de vista de la cámara.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAP 5: PUNTI D'ATTENZIONE -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="map-section" id="map5">
+  <div class="map-title">I Nostri Punti d'Attenzione (Recap)</div>
+  <div class="map-subtitle">Nuestros Puntos de Atención (Resumen)</div>
+
+  <ul class="checklist">
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Conoscenza delle location</div>
+        <div class="es">Conocimiento de las locaciones</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Analisi della sceneggiatura</div>
+        <div class="es">Análisis del guión</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Verifica del posizionamento e dei movimenti delle m.d.p.</div>
+        <div class="es">Verificación del posicionamiento y movimientos de cámara</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Caratteristiche dell'illuminazione</div>
+        <div class="es">Características de la iluminación</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Azione scenica</div>
+        <div class="es">Acción escénica</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Integrazione di diverse tipologie di microfoni per la registrazione multitraccia (boom, lavalier, plant)</div>
+        <div class="es">Integración de diversos tipos de micrófonos para la grabación multipista (boom, lavalier, plant)</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Ripresa suoni ed effetti «a vuoto»</div>
+        <div class="es">Toma de sonidos y efectos "en vacío"</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Ascolto in tempo reale sul set</div>
+        <div class="es">Escucha en tiempo real en el set</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Lavorare in sinergia con gli altri reparti</div>
+        <div class="es">Trabajar en sinergia con los otros departamentos</div>
+      </div>
+    </li>
+    <li>
+      <span class="check-icon">✅</span>
+      <div class="check-text">
+        <div class="it">Presidio delle prove di scena</div>
+        <div class="es">Supervisión de los ensayos de escena</div>
+      </div>
+    </li>
+  </ul>
+
+  <div style="margin-top: 40px;">
+    <div class="connector-section">
+      <div class="connector-label">Criticità da gestire / Dificultades a gestionar</div>
+    </div>
+    <div class="card-grid">
+      <div class="card c3">
+        <span class="icon">✈️</span>
+        <div class="card-title">Rumori esterni imprevisti</div>
+        <div class="card-title-es">Ruidos externos imprevistos</div>
+        <div class="card-desc">Es: passaggio di un aereo durante riprese di un film ambientato nell'antica Roma.</div>
+        <div class="card-desc-es">Ej: paso de un avión durante tomas de una película ambientada en la antigua Roma.</div>
+      </div>
+      <div class="card c4">
+        <span class="icon">🦗</span>
+        <div class="card-title">Suoni ambientali variabili</div>
+        <div class="card-title-es">Sonidos ambientales variables</div>
+        <div class="card-desc">Es: le cicale cambiano nel corso della giornata. Servono registrazioni "a vuoto" per riempire i buchi.</div>
+        <div class="card-desc-es">Ej: las cigarras cambian a lo largo del día. Se necesitan grabaciones "en vacío" para llenar vacíos.</div>
+      </div>
+      <div class="card c6">
+        <span class="icon">👗</span>
+        <div class="card-title">Interferenze dai costumi</div>
+        <div class="card-title-es">Interferencias del vestuario</div>
+        <div class="card-desc">Es: una sciarpa che crea disturbi al radiomicrofono. Segnalare alla costumista.</div>
+        <div class="card-desc-es">Ej: una bufanda que crea interferencias al radiomicrófono. Señalar a la vestuarista.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+function showMap(index, btn) {
+  document.querySelectorAll('.map-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('map' + index).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.maps-container').offsetTop - 20, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
