@@ -432,10 +432,33 @@ nav button span { position: relative; z-index: 1; }
   nav button { padding: 8px 14px; font-size: 0.8rem; }
   .flow-node { padding: 14px 18px; }
 }
+  .back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  z-index: 999;
+}
+.back-btn:hover {
+  color: var(--text);
+  border-color: var(--accent1);
+  box-shadow: 0 0 12px var(--glow);
+}
 </style>
 </head>
 <body>
-
+<a class="back-btn" href="index.html">← Indice</a>
 <div class="grain"></div>
 
 <header>
