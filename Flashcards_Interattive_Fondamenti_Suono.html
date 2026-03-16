@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flashcards — Fondamenti di Suono</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.app{max-width:660px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;align-items:center}
+header{text-align:center;padding:40px 0 16px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+header p{color:var(--text-dim);font-size:.9rem}
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 0 14px;width:100%}
+.filters button{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:5px 12px;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+.filters button:hover{color:var(--text);border-color:var(--accent1)}
+.filters button.active{background:var(--accent1);color:#fff;border-color:var(--accent1)}
+.controls{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;padding:0 0 14px;width:100%}
+.controls button{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:24px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:6px}
+.controls button:hover{border-color:var(--accent1);transform:translateY(-1px);box-shadow:0 4px 15px var(--glow)}
+.controls button.active{background:linear-gradient(135deg,var(--accent1),var(--accent2));border-color:transparent}
+.counter{color:var(--text-dim);font-size:.85rem;font-weight:500;min-width:80px;text-align:center}
+.counter span{color:var(--accent2);font-weight:700;font-size:1.1rem}
+.progress-wrap{width:100%;height:4px;background:var(--surface2);border-radius:2px;margin-bottom:18px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:2px;transition:width .4s}
+
+.card-container{width:100%;height:370px;position:relative;margin-bottom:18px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.card-face{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:18px;transition:opacity .25s ease,transform .3s ease;will-change:opacity,transform}
+.card-face.hidden{opacity:0;transform:scale(.96);pointer-events:none}
+.card-face.visible{opacity:1;transform:scale(1);pointer-events:auto}
+
+.card-front{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px}
+.card-front::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:18px 18px 0 0}
+.card-front .category-badge{position:absolute;top:16px;right:16px;background:var(--surface2);color:var(--accent4);font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+.card-front .term-it{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;color:#fff;text-align:center;line-height:1.3;margin-bottom:10px}
+.card-front .term-es{color:var(--text-es);font-style:italic;font-size:clamp(.95rem,2vw,1.15rem);text-align:center;line-height:1.3}
+.card-front .flip-hint{position:absolute;bottom:14px;color:var(--text-dim);font-size:.7rem;display:flex;align-items:center;gap:5px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+
+.card-back{background:linear-gradient(145deg,var(--surface) 0%,var(--surface2) 100%);border:1px solid var(--border);overflow:hidden}
+.card-back::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent2),var(--accent5));border-radius:18px 18px 0 0;z-index:2}
+.back-scroll{position:absolute;top:5px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 28px 20px}
+.card-back .back-label{color:var(--accent2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.card-back .def-it{color:var(--text);font-size:.95rem;line-height:1.6;margin-bottom:14px}
+.card-back .separator{width:60px;height:2px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:1px;margin-bottom:14px}
+.card-back .def-es{color:var(--text-es);font-style:italic;font-size:.85rem;line-height:1.5;opacity:.85;padding-bottom:10px}
+.card-back .flip-hint-back{margin-top:10px;text-align:right;color:var(--text-dim);font-size:.65rem;opacity:.5}
+
+.nav-arrows{display:flex;justify-content:center;align-items:center;gap:30px;padding:0 0 24px}
+.nav-arrow{width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.nav-arrow:hover{background:var(--surface2);border-color:var(--accent1);transform:scale(1.08);box-shadow:0 6px 20px var(--glow)}
+.nav-arrow:active{transform:scale(.95)}
+.nav-arrow.disabled{opacity:.25;pointer-events:none}
+.keyboard-hint{color:var(--text-dim);font-size:.7rem;text-align:center;padding-bottom:30px;opacity:.5}
+.keyboard-hint kbd{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:'DM Sans',sans-serif;font-size:.65rem}
+
+.card-container.slide-left .card-face.visible{animation:slideIn .3s ease}
+.card-container.slide-right .card-face.visible{animation:slideInR .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+
+@media(max-width:500px){.card-container{height:380px}.back-scroll{padding:16px 22px 16px}.card-back .def-it{font-size:.88rem}.card-back .def-es{font-size:.8rem}.nav-arrow{width:46px;height:46px}.keyboard-hint{display:none}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="app">
+<header><h1>Flashcards Interattive</h1><p>Fondamenti di Suono — 26 tarjetas de estudio</p></header>
+<div class="filters" id="filters"></div>
+<div class="controls">
+  <button onclick="shuffleCards()" id="shuffleBtn">🔀 Mescolare</button>
+  <button onclick="resetCards()">↺ Reset</button>
+  <div class="counter"><span id="currentNum">1</span> / <span id="totalNum">26</span></div>
+  <button onclick="toggleAutoplay()" id="autoBtn">▶ Auto</button>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:3.8%"></div></div>
+<div class="card-container" id="cardContainer" onclick="flipCard()">
+  <div class="card-face card-front visible" id="cardFront">
+    <div class="category-badge" id="categoryBadge"></div>
+    <div class="term-it" id="termIt"></div>
+    <div class="term-es" id="termEs"></div>
+    <div class="flip-hint">↻ Click per girare</div>
+  </div>
+  <div class="card-face card-back hidden" id="cardBack">
+    <div class="back-scroll" id="backScroll">
+      <div class="back-label" id="backLabel"></div>
+      <div class="def-it" id="defIt"></div>
+      <div class="separator"></div>
+      <div class="def-es" id="defEs"></div>
+      <div class="flip-hint-back">↻ click</div>
+    </div>
+  </div>
+</div>
+<div class="nav-arrows">
+  <button class="nav-arrow" id="prevBtn" onclick="prevCard()">←</button>
+  <button class="nav-arrow" id="nextBtn" onclick="nextCard()">→</button>
+</div>
+<div class="keyboard-hint"><kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Spazio</kbd> girare · <kbd>R</kbd> mescolare</div>
+</div>
+<script>
+const allCards=[{termIt:"Presa diretta",termEs:"Toma directa",defIt:"Registrazione del suono contemporaneamente alle riprese video, direttamente sul set, durante la scena. Si contrappone al doppiaggio.",defEs:"Grabación del sonido de manera simultánea a las tomas de video, directamente en el set, durante la escena. Se contrapone al doblaje.",cat:"DEFINIZIONE"},{termIt:"Doppiaggio",termEs:"Doblaje",defIt:"Registrazione delle voci in studio dopo le riprese. Nel cinema italiano classico quasi tutto veniva doppiato, anche per problemi tecnici.",defEs:"Grabación de las voces en estudio después de las tomas. En el cine italiano clásico casi todo se doblaba, también por problemas técnicos.",cat:"DEFINIZIONE"},{termIt:"Fonico di presa diretta",termEs:"Técnico de sonido de toma directa",defIt:"Responsabile della registrazione audio sul set. Legge la sceneggiatura, sceglie le attrezzature, coordina il microfonista, segnala criticità ad altri reparti.",defEs:"Responsable de la grabación de audio en el set. Lee el guión, elige el equipamiento, coordina al microfonista, señala problemas a otros departamentos.",cat:"FIGURA PROFESSIONALE"},{termIt:"Microfonista",termEs:"Microfonista / Boom operator",defIt:"Operatore che gestisce l'asta microfonica (boom) sul set seguendo le indicazioni del fonico di presa diretta.",defEs:"Operador que maneja la caña microfónica (boom) en el set siguiendo las indicaciones del técnico de sonido.",cat:"FIGURA PROFESSIONALE"},{termIt:"Boom / Asta microfonica",termEs:"Boom / Caña microfónica",defIt:"Microfono (spesso direzionale) montato su un'asta lunga. Permette di avvicinarsi agli attori senza entrare nell'inquadratura. Garantisce la miglior qualità di ripresa sonora.",defEs:"Micrófono (a menudo direccional) montado sobre una asta larga. Permite acercarse a los actores sin entrar en el encuadre. Garantiza la mejor calidad de toma sonora.",cat:"ATTREZZATURA"},{termIt:"Radiomicrofono / Lavalier",termEs:"Radiomicrófono / Lavalier",defIt:"Microfono wireless nascosto sotto i vestiti dell'attore. Composto da: trasmettitore (indossato dall'attore), ricevitore (collegato al mixer) e capsula microfonica. Trasmettitore e ricevitore devono essere sulla stessa frequenza.",defEs:"Micrófono inalámbrico oculto debajo de la ropa del actor. Compuesto por: transmisor (llevado por el actor), receptor (conectado al mixer) y cápsula microfónica. Transmisor y receptor deben estar en la misma frecuencia.",cat:"ATTREZZATURA"},{termIt:"Microfoni piazzati / Plant",termEs:"Micrófonos fijos / Plant",defIt:"Microfoni nascosti sul set per catturare dialoghi, effetti o ambienti. Utilizzati quando l'inquadratura non consente l'uso efficace del boom e/o dei radiomicrofoni.",defEs:"Micrófonos ocultos en el set para capturar diálogos, efectos o ambientes. Utilizados cuando el encuadre no permite el uso eficaz del boom y/o de los radiomicrófonos.",cat:"ATTREZZATURA"},{termIt:"Diagramma polare",termEs:"Diagrama polar",defIt:"Rappresentazione grafica della capacità di un microfono di captare il suono nello spazio. Mostra da quali direzioni registra meglio e dove attenua il suono.",defEs:"Representación gráfica de la capacidad de un micrófono de captar el sonido en el espacio. Muestra desde qué direcciones registra mejor y dónde atenúa el sonido.",cat:"DEFINIZIONE"},{termIt:"Microfono cardioide",termEs:"Micrófono cardioide",defIt:"Diagramma polare a forma di cuore. Capta soprattutto dalla parte frontale, riducendo rumori laterali e posteriori. È il microfono più utilizzato nella presa diretta cinematografica.",defEs:"Diagrama polar en forma de corazón. Capta sobre todo desde la parte frontal, reduciendo ruidos laterales y posteriores. Es el micrófono más utilizado en la toma directa cinematográfica.",cat:"MICROFONO"},{termIt:"Microfono ipercardioide",termEs:"Micrófono hipercardioide",defIt:"Più direzionale del cardioide. Capta soprattutto davanti con leggera captazione posteriore. Ottimo per ambienti rumorosi.",defEs:"Más direccional que el cardioide. Capta sobre todo por delante con leve captación posterior. Excelente para ambientes ruidosos.",cat:"MICROFONO"},{termIt:"Microfono omnidirezionale",termEs:"Micrófono omnidireccional",defIt:"Capta il suono in tutte le direzioni. Utile in documentari naturalistici o ambienti controllati. Spesso montato sugli smartphone.",defEs:"Capta el sonido en todas las direcciones. Útil en documentales naturalísticos o ambientes controlados. A menudo montado en smartphones.",cat:"MICROFONO"},{termIt:"Sceneggiatura",termEs:"Guión",defIt:"Testo scritto del film. Punto di partenza del fonico: conoscendola in anticipo sa chi parla e quando, così può preparare l'attrezzatura che gli occorre.",defEs:"Texto escrito de la película. Punto de partida del técnico: conociéndolo de antemano sabe quién habla y cuándo, así puede preparar el equipamiento que necesita.",cat:"DEFINIZIONE"},{termIt:"Mix finale",termEs:"Mezcla final",defIt:"Fase finale in cui il fonico di mixaggio miscela tutti gli elementi del suono (voci, ambienti, effetti, musica) per ogni scena a seconda della loro importanza.",defEs:"Fase final en la que el técnico de mezcla combina todos los elementos del sonido (voces, ambientes, efectos, música) para cada escena según su importancia.",cat:"DEFINIZIONE"},{termIt:"Foley artist / Rumorista",termEs:"Artista Foley / Rumorista",defIt:"Professionista che ricrea effetti sonori e rumori di scena in post-produzione (passi, porte, oggetti, ecc.).",defEs:"Profesional que recrea efectos sonoros y ruidos de escena en post-producción (pasos, puertas, objetos, etc.).",cat:"FIGURA PROFESSIONALE"},{termIt:"Registrazione \"a vuoto\"",termEs:"Grabación \"en vacío\"",defIt:"Registrazione di ambienti sonori senza azione scenica (mono, stereo, MS, 5.1). Fondamentale per semplificare e migliorare il lavoro in post-produzione audio.",defEs:"Grabación de ambientes sonoros sin acción escénica (mono, estéreo, MS, 5.1). Fundamental para simplificar y mejorar el trabajo en post-producción de audio.",cat:"DEFINIZIONE"},{termIt:"Coerenza suono-inquadratura",termEs:"Coherencia sonido-encuadre",defIt:"Il suono deve essere sempre coerente con l'inquadratura. Deve: riflettere lo spazio mostrato, rispettare la distanza visiva dei personaggi, includere solo ciò che è coerente con il punto di vista della m.d.p.\n\nEs: campo lungo = suono NON vicino; primo piano = voce più dettagliata.",defEs:"El sonido debe ser siempre coherente con el encuadre. Debe: reflejar el espacio mostrado, respetar la distancia visual de los personajes, incluir solo lo coherente con el punto de vista de la cámara.\n\nEj: plano general = sonido NO cercano; primer plano = voz más detallada.",cat:"CONCETTO CHIAVE"},{termIt:"Le 4 componenti del sonoro",termEs:"Los 4 componentes del sonido",defIt:"1. Voci e dialoghi → componente prevalente\n2. Rumori e ambienti sonori → percezione dello spazio\n3. Effetti sonori → info in più, realismo\n4. Musica → emozioni (originale o di repertorio)",defEs:"1. Voces y diálogos → componente predominante\n2. Ruidos y ambientes sonoros → percepción del espacio\n3. Efectos sonoros → info adicional, realismo\n4. Música → emociones (original o de repertorio)",cat:"CONCETTO CHIAVE"},{termIt:"La catena del suono",termEs:"La cadena del sonido",defIt:"1. Presa diretta\n2. Montaggio del suono\n3. Doppiaggio\n4. Rumoristi / Foley\n5. Montaggio effetti\n6. Musica originale\n7. Musica di repertorio\n→ MIX FINALE",defEs:"1. Toma directa\n2. Montaje del sonido\n3. Doblaje\n4. Rumoristas / Foley\n5. Montaje efectos\n6. Música original\n7. Música de repertorio\n→ MEZCLA FINAL",cat:"CONCETTO CHIAVE"},{termIt:"Il giusto setting",termEs:"El setting correcto",defIt:"Il fonico deve valutare ogni inquadratura per:\n• Determinare le priorità della ripresa sonora\n• Scegliere le attrezzature (boom, radio, plant)\n• Dare indicazioni al microfonista\n• Segnalare criticità ad altri reparti\n\nPunto di partenza: la sceneggiatura.",defEs:"El técnico debe evaluar cada encuadre para:\n• Determinar las prioridades de la toma sonora\n• Elegir el equipamiento (boom, radio, plant)\n• Dar indicaciones al microfonista\n• Señalar problemas a otros departamentos\n\nPunto de partida: el guión.",cat:"CONCETTO CHIAVE"},{termIt:"Criticità della presa diretta",termEs:"Dificultades de la toma directa",defIt:"• Rumori esterni (es: aereo in un film dell'antica Roma)\n• Suoni variabili (es: cicale cambiano durante la giornata)\n• Interferenze costumi (es: sciarpa disturba il radiomicrofono)\n\nSoluzione: registrazioni \"a vuoto\" per riempire buchi.",defEs:"• Ruidos externos (ej: avión en película de antigua Roma)\n• Sonidos variables (ej: cigarras cambian durante el día)\n• Interferencias vestuario (ej: bufanda interfiere radiomicrófono)\n\nSolución: grabaciones \"en vacío\" para llenar vacíos.",cat:"CONCETTO CHIAVE"},{termIt:"Prove di scena",termEs:"Ensayos de escena",defIt:"Il fonico e il microfonista devono presidiare le prove per:\n• Comprendere dove collocarsi fisicamente\n• Capire dove saranno i dialoghi e le azioni\n• Capire il taglio di inquadratura e movimenti di macchina\n• Verificare gli abiti di scena (per radiomicrofoni)",defEs:"El técnico y el microfonista deben supervisar los ensayos para:\n• Comprender dónde ubicarse físicamente\n• Entender dónde serán los diálogos y las acciones\n• Entender el corte de encuadre y movimientos de cámara\n• Verificar los trajes de escena (para radiomicrófonos)",cat:"CONCETTO CHIAVE"},{termIt:"Ottica e suono",termEs:"Óptica y sonido",defIt:"GRANDANGOLO: spazio ampio → microfono più lontano → più rischio rumori ambientali.\n\nTELEOBIETTIVO: immagine stretta → attore lontano → serve precisione nel posizionamento del microfono.\n\nLa scelta dell'obiettivo influisce sulla strategia sonora.",defEs:"GRAN ANGULAR: espacio amplio → micrófono más lejos → más riesgo ruidos ambientales.\n\nTELEOBJETIVO: imagen cerrada → actor lejos → se necesita precisión en el posicionamiento.\n\nLa elección del objetivo influye en la estrategia sonora.",cat:"CONCETTO CHIAVE"},{termIt:"Boom vs Radio vs Plant",termEs:"Boom vs Radio vs Plant",defIt:"BOOM: miglior qualità, suono naturale, non visibile, ma limitato dall'inquadratura.\n\nRADIO: ottimo per movimenti complessi e campi lunghi, ma sfregamento vestiti e suono meno naturale.\n\nPLANT: nascosto, utile come backup, ma posizionamento fisso.",defEs:"BOOM: mejor calidad, sonido natural, no visible, pero limitado por el encuadre.\n\nRADIO: excelente para movimientos complejos y planos generales, pero rozamiento ropa y sonido menos natural.\n\nPLANT: oculto, útil como backup, pero posicionamiento fijo.",cat:"CONCETTO CHIAVE"},{termIt:"Presa diretta e storia del cinema",termEs:"Toma directa e historia del cine",defIt:"Cinema classico italiano: quasi tutto doppiato.\nEccezione: Totò improvvisava → serviva la presa diretta.\n\nFine anni '60: nasce il \"New Cinema\" → autenticità, ambienti reali, suono naturale.\nLa presa diretta diventa sempre più necessaria.",defEs:"Cine clásico italiano: casi todo doblado.\nExcepción: Totò improvisaba → se necesitaba la toma directa.\n\nFinales años 60: nace el \"New Cinema\" → autenticidad, ambientes reales, sonido natural.\nLa toma directa se vuelve cada vez más necesaria.",cat:"CONCETTO CHIAVE"},{termIt:"Wireless e ascolto sul set",termEs:"Inalámbricos y escucha en el set",defIt:"I dispositivi wireless servono anche per l'ascolto in tempo reale sul set (regista, segretaria di edizione).\n\nIl fonico prepara un pre-mix dialoghi ad hoc in tempo reale.\n\nIl suo ascolto in cuffia potrebbe non coincidere con il segnale inviato via wireless.",defEs:"Los dispositivos inalámbricos sirven también para la escucha en tiempo real en el set (director, secretaria de edición).\n\nEl técnico prepara un pre-mix de diálogos ad hoc en tiempo real.\n\nSu escucha en auriculares podría no coincidir con la señal enviada vía inalámbrica.",cat:"CONCETTO CHIAVE"},{termIt:"RAM",termEs:"RAM",defIt:"Random Access Memory. Memoria temporanea utilizzata dai dispositivi elettronici per conservare dati durante il funzionamento. È volatile: quando il dispositivo si spegne, i dati vengono cancellati.",defEs:"Random Access Memory. Memoria temporal utilizada por los dispositivos electrónicos para conservar datos durante el funcionamiento. Es volátil: cuando el dispositivo se apaga, los datos se borran.",cat:"DEFINIZIONE"}];
+
+let cards=[...allCards],currentIndex=0,isFlipped=false,autoplayInterval=null,activeFilter='TUTTE';
+const frontEl=document.getElementById('cardFront'),backEl=document.getElementById('cardBack'),container=document.getElementById('cardContainer');
+
+const categories=['TUTTE',...new Set(allCards.map(c=>c.cat))];
+const filtersEl=document.getElementById('filters');
+categories.forEach(cat=>{const btn=document.createElement('button');btn.textContent=cat;btn.className=cat==='TUTTE'?'active':'';btn.onclick=()=>filterCards(cat,btn);filtersEl.appendChild(btn)});
+
+function nl2br(t){return t.replace(/\n/g,'<br>')}
+function showFront(){isFlipped=false;frontEl.classList.remove('hidden');frontEl.classList.add('visible');backEl.classList.remove('visible');backEl.classList.add('hidden')}
+function showBack(){isFlipped=true;backEl.classList.remove('hidden');backEl.classList.add('visible');frontEl.classList.remove('visible');frontEl.classList.add('hidden');document.getElementById('backScroll').scrollTop=0}
+
+function renderCard(dir){
+  const card=cards[currentIndex];
+  document.getElementById('termIt').innerHTML=nl2br(card.termIt);
+  document.getElementById('termEs').innerHTML=nl2br(card.termEs);
+  document.getElementById('defIt').innerHTML=nl2br(card.defIt);
+  document.getElementById('defEs').innerHTML=nl2br(card.defEs);
+  document.getElementById('categoryBadge').textContent=card.cat;
+  document.getElementById('backLabel').textContent=card.cat;
+  document.getElementById('currentNum').textContent=currentIndex+1;
+  document.getElementById('totalNum').textContent=cards.length;
+  document.getElementById('progressBar').style.width=((currentIndex+1)/cards.length*100)+'%';
+  document.getElementById('prevBtn').className='nav-arrow'+(currentIndex===0?' disabled':'');
+  document.getElementById('nextBtn').className='nav-arrow'+(currentIndex===cards.length-1?' disabled':'');
+  showFront();
+  if(dir){container.classList.remove('slide-left','slide-right');void container.offsetWidth;container.classList.add(dir)}
+}
+
+function flipCard(){if(isFlipped)showFront();else showBack()}
+function nextCard(){if(currentIndex<cards.length-1){currentIndex++;renderCard('slide-left')}}
+function prevCard(){if(currentIndex>0){currentIndex--;renderCard('slide-right')}}
+function shuffleCards(){for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]]}currentIndex=0;renderCard()}
+function resetCards(){filterCards(activeFilter,document.querySelector('.filters button.active'))}
+function filterCards(cat,btn){activeFilter=cat;document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');cards=cat==='TUTTE'?[...allCards]:allCards.filter(c=>c.cat===cat);currentIndex=0;renderCard()}
+function toggleAutoplay(){const btn=document.getElementById('autoBtn');if(autoplayInterval){clearInterval(autoplayInterval);autoplayInterval=null;btn.classList.remove('active');btn.innerHTML='▶ Auto'}else{btn.classList.add('active');btn.innerHTML='⏸ Stop';autoplayInterval=setInterval(()=>{if(isFlipped){if(currentIndex<cards.length-1)nextCard();else toggleAutoplay()}else showBack()},2500)}}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextCard();else if(e.key==='ArrowLeft')prevCard();else if(e.key===' '){e.preventDefault();flipCard()}else if(e.key==='r'||e.key==='R')shuffleCards()});
+let touchStartX=0;
+container.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].screenX},{passive:true});
+container.addEventListener('touchend',e=>{const diff=e.changedTouches[0].screenX-touchStartX;if(Math.abs(diff)>60){e.preventDefault();if(diff<0)nextCard();else prevCard()}});
+
+renderCard();
+</script>
+</body>
+</html>
