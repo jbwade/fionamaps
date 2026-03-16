@@ -289,6 +289,11 @@ header .subtitle {
 .dot-laboratorio { background: var(--accent1); }
 .badge-laboratorio { background: rgba(108, 99, 255, 0.15); color: var(--accent1); }
 
+/* Lingua e Letteratura — teal/green */
+.materia-icon.letteratura { background: rgba(255, 107, 107, 0.15); }
+.dot-letteratura { background: var(--accent3); }
+.badge-letteratura { background: rgba(255, 107, 107, 0.15); color: var(--accent3); }
+
 /* Resource type tags */
 .tag-mappa   { background: rgba(0, 212, 170, 0.12); color: var(--accent2); }
 .tag-flash   { background: rgba(255, 107, 107, 0.12); color: var(--accent3); }
@@ -379,6 +384,47 @@ footer {
   </section>
 
   <!-- ══════════════════════════════════════
+       MATERIA: Lingua e Letteratura Italiana
+  ══════════════════════════════════════════ -->
+  <section class="materia">
+
+    <div class="materia-header">
+      <div class="materia-icon letteratura">📖</div>
+      <span class="materia-name">Lingua e Letteratura Italiana</span>
+      <span class="materia-count">1 argomento</span>
+    </div>
+
+    <!-- Topic: Grammatica -->
+    <div class="topic-card" id="topic-grammatica">
+      <button class="topic-toggle" onclick="toggleTopic('topic-grammatica')">
+        <span class="topic-dot dot-letteratura"></span>
+        <span class="topic-name">Grammatica: L'Aggettivo (1ª e 2ª parte) + La Preposizione</span>
+        <span class="topic-badge badge-letteratura">2 risorse</span>
+        <span class="chevron">▼</span>
+      </button>
+
+      <div class="resource-list">
+
+        <a class="resource-link" href="Mappe_Concettuali_Grammatica.html">
+          <span class="res-icon">🗺️</span>
+          <span class="res-label">Mappe Concettuali</span>
+          <span class="res-type tag-mappa">Mappa</span>
+          <span class="res-arrow">→</span>
+        </a>
+
+        <a class="resource-link" href="Flashcards_Interattive_Grammatica.html">
+          <span class="res-icon">🃏</span>
+          <span class="res-label">Flashcards Interattive</span>
+          <span class="res-type tag-flash">Flashcard</span>
+          <span class="res-arrow">→</span>
+        </a>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════
        MATERIA FUTURA — descomenta y edita
   ══════════════════════════════════════════
   <section class="materia">
@@ -406,7 +452,7 @@ footer {
   </section>
   ══════════════════════════════════════════ -->
 
-  <footer>Aggiornato · 2026</footer>
+  <footer>Aggiornato · 2025</footer>
 
 </div>
 
