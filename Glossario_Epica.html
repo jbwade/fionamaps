@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossario Bilingue — Épica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118;
+  --surface: #1a1d2e;
+  --surface2: #242840;
+  --accent1: #6c63ff;
+  --accent2: #00d4aa;
+  --accent3: #ff6b6b;
+  --accent4: #ffd93d;
+  --accent5: #4ecdc4;
+  --accent6: #a78bfa;
+  --text: #e8e6f0;
+  --text-dim: #8b8aa0;
+  --text-es: #6dd4b0;
+  --border: rgba(108,99,255,0.2);
+  --glow: rgba(108,99,255,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+.grain { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; }
+
+/* ─── Back button ─── */
+.back-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; text-decoration: none; transition: all 0.25s; position: absolute; top: 24px; left: 24px; z-index: 10; }
+.back-btn:hover { color: var(--text); border-color: var(--accent1); box-shadow: 0 4px 15px var(--glow); transform: translateX(-2px); }
+
+/* ─── Header ─── */
+header { text-align: center; padding: 50px 20px 35px; position: relative; }
+header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 2px; }
+h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 800; background: linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.header-sub { color: var(--text-dim); font-size: 0.9rem; }
+
+/* ─── Controls ─── */
+.controls { max-width: 980px; margin: 0 auto; padding: 28px 20px 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 360px; }
+.search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 16px 10px 40px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; transition: all 0.25s; }
+.search-wrap input:focus { border-color: var(--accent1); box-shadow: 0 0 0 3px var(--glow); }
+.search-wrap input::placeholder { color: var(--text-dim); }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.9rem; pointer-events: none; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 14px; border-radius: 20px; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.4px; }
+.filters button:hover { color: var(--text); border-color: var(--accent1); }
+.filters button.active { background: var(--accent1); color: #fff; border-color: var(--accent1); }
+.count { color: var(--text-dim); font-size: 0.82rem; white-space: nowrap; }
+.count span { color: var(--accent2); font-weight: 700; }
+
+/* ─── Grid ─── */
+.container { max-width: 980px; margin: 0 auto; padding: 0 20px 60px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+/* ─── Section header ─── */
+.section-header { grid-column: 1 / -1; background: linear-gradient(135deg, rgba(108,99,255,0.12), rgba(0,212,170,0.08)); border: 1px solid rgba(108,99,255,0.3); border-radius: 14px; padding: 16px 24px; display: flex; align-items: center; gap: 14px; }
+.section-header.hidden { display: none; }
+.sh-icon { font-size: 1.4rem; }
+.sh-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+.sh-sub { color: var(--text-es); font-style: italic; font-size: 0.85rem; margin-top: 2px; }
+
+/* ─── Glossary card ─── */
+.gcard { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.25s, box-shadow 0.25s; }
+.gcard:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.gcard.hidden { display: none; }
+
+.gcard-top { padding: 18px 20px 14px; position: relative; }
+.gcard-top::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.gcard.c1 .gcard-top::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+.gcard.c2 .gcard-top::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+.gcard.c3 .gcard-top::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+.gcard.c4 .gcard-top::before { background: linear-gradient(90deg, var(--accent4), var(--accent2)); }
+.gcard.c5 .gcard-top::before { background: linear-gradient(90deg, var(--accent5), var(--accent6)); }
+
+.gcard-category { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.gcard.c1 .gcard-category { color: var(--accent6); }
+.gcard.c2 .gcard-category { color: var(--accent2); }
+.gcard.c3 .gcard-category { color: var(--accent3); }
+.gcard.c4 .gcard-category { color: var(--accent4); }
+.gcard.c5 .gcard-category { color: var(--accent5); }
+
+.gcard-term-it { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 4px; }
+.gcard-term-es { color: var(--text-es); font-style: italic; font-size: 0.88rem; }
+
+.gcard-body { padding: 0 20px 18px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.gcard-sep { width: 36px; height: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 1px; margin-bottom: 2px; }
+.def-it { font-size: 0.84rem; color: var(--text); line-height: 1.55; }
+.def-es { font-size: 0.79rem; color: var(--text-es); font-style: italic; line-height: 1.5; opacity: 0.85; }
+
+/* ─── Alert badge inside card ─── */
+.card-alert { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.25); border-radius: 6px; padding: 5px 10px; margin-top: 6px; font-size: 0.75rem; color: var(--accent3); }
+
+/* ─── Scroll to top ─── */
+.scroll-top { position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none; color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(108,99,255,0.4); opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; z-index: 999; }
+.scroll-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(108,99,255,0.55); }
+
+/* ─── Empty state ─── */
+.empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-dim); }
+.empty .emoji { font-size: 2.5rem; margin-bottom: 12px; }
+
+/* ─── Responsive ─── */
+@media(max-width:600px) {
+  .back-btn { position: static; margin: 16px 0 0 20px; display: inline-flex; }
+  header { padding-top: 20px; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .search-wrap { max-width: 100%; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<a class="back-btn" href="index.html">← Indice</a>
+
+<header>
+  <h1>Glossario Bilingue</h1>
+  <p class="header-sub">Épica — L'Odissea: Info, Proemio, Brani</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Cerca / Buscar..." oninput="filterCards()">
+  </div>
+  <div class="filters">
+    <button class="active" onclick="setFilter('all', this)">Tutti</button>
+    <button onclick="setFilter('c1', this)">🏛️ Termini greci</button>
+    <button onclick="setFilter('c2', this)">📜 Letterari</button>
+    <button onclick="setFilter('c3', this)">🧑 Eroi e umani</button>
+    <button onclick="setFilter('c4', this)">⚡ Divinità</button>
+    <button onclick="setFilter('c5', this)">🗺️ Luoghi</button>
+    <button onclick="setFilter('c6', this)">📌 Altri termini</button>
+  </div>
+  <div class="count"><span id="visibleCount">0</span> termini</div>
+</div>
+
+<div class="container">
+<div class="grid" id="grid">
+
+<!-- ══════════ SEZIONE 1: CONCETTI E TERMINI GRECI ══════════ -->
+<div class="section-header" data-cat="c1">
+  <span class="sh-icon">🏛️</span>
+  <div>
+    <div class="sh-title">Concetti e Termini Greci</div>
+    <div class="sh-sub">Conceptos y Términos Griegos</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="nostos viaggio ritorno tema odissea νόστος regreso">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini greci</div>
+    <div class="gcard-term-it">Nostos</div>
+    <div class="gcard-term-es">Nostos</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Viaggio di ritorno. Tema centrale dell'Odissea. In greco: <strong>νόστος</strong>.</div>
+    <div class="def-es">Viaje de regreso. Tema central de la Odisea.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="menis ira iliade achille μῆνις tema centrale">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini greci</div>
+    <div class="gcard-term-it">Menis</div>
+    <div class="gcard-term-es">Menis</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Ira. Tema centrale dell'Iliade (l'ira di Achille). In greco: <strong>μῆνις</strong>.</div>
+    <div class="def-es">Ira. Tema central de la Ilíada (la ira de Aquiles).</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="metis intelligenza intraprendente astuzia lungimiranza odisseo previsión">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini greci</div>
+    <div class="gcard-term-it">Metis</div>
+    <div class="gcard-term-es">Metis</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Intelligenza intraprendente, astuzia e lungimiranza. Caratteristica principale di Odisseo.</div>
+    <div class="def-es">Inteligencia emprendedora, astucia y previsión. Característica principal de Odiseo.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="xenia ospitalità sacra straniero valore cultura greca hospitalidad">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini greci</div>
+    <div class="gcard-term-it">Xenia</div>
+    <div class="gcard-term-es">Xenia</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Ospitalità sacra dello straniero. Valore fondamentale nella cultura greca.</div>
+    <div class="def-es">Hospitalidad sagrada del extranjero. Valor fundamental en la cultura griega.</div>
+  </div>
+</div>
+
+<!-- ══════════ SEZIONE 2: TERMINI LETTERARI ══════════ -->
+<div class="section-header" data-cat="c2">
+  <span class="sh-icon">📜</span>
+  <div>
+    <div class="sh-title">Termini Letterari</div>
+    <div class="sh-sub">Términos Literarios</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="poema opera versi odissea iliade epici larga obra">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Poema</div>
+    <div class="gcard-term-es">Poema</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Lunga opera in versi. L'Odissea e l'Iliade sono poemi epici.</div>
+    <div class="def-es">Larga obra en versos. La Odisea y la Ilíada son poemas épicos.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="esametro hexámetro verso odissea iliade tipo">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Esametro</div>
+    <div class="gcard-term-es">Hexámetro</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Tipo di verso utilizzato nell'Odissea e nell'Iliade.</div>
+    <div class="def-es">Tipo de verso utilizado en la Odisea y en la Ilíada.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="proemio proemio introduzione poema invocazione musa protasi">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Proemio</div>
+    <div class="gcard-term-es">Proemio</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Introduzione del poema. Contiene invocazione alla Musa e protasi.</div>
+    <div class="def-es">Introducción del poema. Contiene invocación a la Musa y prótasis.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="protasi prótasis argomento centrale opera esposizione proemio">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Protasi</div>
+    <div class="gcard-term-es">Prótasis</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Parte del proemio in cui si espone l'argomento centrale dell'opera.</div>
+    <div class="def-es">Parte del proemio donde se expone el argumento central de la obra.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="epiteto epíteto aggettivo espressione fissa personaggio astuto odisseo">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Epiteto</div>
+    <div class="gcard-term-es">Epíteto</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Aggettivo/espressione fissa associata a un personaggio. Es: <em>"astuto Odisseo"</em>.</div>
+    <div class="def-es">Adjetivo/expresión fija asociada a un personaje. Ej: <em>"astuto Odiseo"</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="patronimico patronímico nome padre laertiade laerte odisseo">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Patronimico</div>
+    <div class="gcard-term-es">Patronímico</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Nome derivato dal padre. <em>Laertìade</em> = figlio di Laerte (= Odisseo).</div>
+    <div class="def-es">Nombre derivado del padre. <em>Laertíade</em> = hijo de Laertes (= Odiseo).</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="flash-back passato narrazione odisseo alcinoo racconta regreso pasado">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Flash-back</div>
+    <div class="gcard-term-es">Flash-back</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Ritorno al passato nella narrazione. Odisseo racconta le avventure ad Alcinoo.</div>
+    <div class="def-es">Regreso al pasado en la narración. Odiseo cuenta aventuras a Alcínoo.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="flash-forward futuro anticipazione calipso difficoltà viaggio profetiza">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Flash-forward</div>
+    <div class="gcard-term-es">Flash-forward</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Anticipazione di un fatto futuro. Es: Calipso profetizza le difficoltà del viaggio.</div>
+    <div class="def-es">Anticipación de un hecho futuro. Ej: Calipso profetiza las dificultades del viaje.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aedo aedo poeta cantore epico grecia demodoco alcinoo">
+  <div class="gcard-top">
+    <div class="gcard-category">Termini letterari</div>
+    <div class="gcard-term-it">Aedo</div>
+    <div class="gcard-term-es">Aedo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Poeta/cantore epico nell'antica Grecia. Es: Demodoco alla corte di Alcinoo.</div>
+    <div class="def-es">Poeta/cantor épico en la antigua Grecia. Ej: Demódoco en la corte de Alcínoo.</div>
+  </div>
+</div>
+
+<!-- ══════════ SEZIONE 3: PERSONAGGI — EROI E UMANI ══════════ -->
+<div class="section-header" data-cat="c3">
+  <span class="sh-icon">🧑</span>
+  <div>
+    <div class="sh-title">Personaggi — Eroi e Umani</div>
+    <div class="sh-sub">Personajes — Héroes y Humanos</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="odisseo ulisse protagonista re itaca laertiade griego latino ulises">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Odisseo / Ulisse</div>
+    <div class="gcard-term-es">Odiseo / Ulises</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Protagonista. Re di Itaca. Nome greco: <strong>Odisseo</strong>. Nome latino: <strong>Ulisse</strong>. Patronimico: Laertìade.</div>
+    <div class="def-es">Protagonista. Rey de Ítaca. Nombre griego: Odiseo. Nombre latino: Ulises. Patronímico: Laertíade.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="penelope penélope moglie fedele odisseo itaca 20 anni esposa">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Penelope</div>
+    <div class="gcard-term-es">Penélope</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Moglie fedele di Odisseo. Lo attende a Itaca per 20 anni.</div>
+    <div class="def-es">Esposa fiel de Odiseo. Lo espera en Ítaca durante 20 años.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="telemaco telémaco figlio odisseo vent anni cerca padre atena">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Telemaco</div>
+    <div class="gcard-term-es">Telémaco</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Figlio di Odisseo. Ha circa vent'anni. Cerca il padre con l'aiuto di Atena.</div>
+    <div class="def-es">Hijo de Odiseo. Tiene unos 20 años. Busca a su padre con la ayuda de Atenea.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="nausicaa nausícaa figlia alcinoo feaci scheria accoglie naufrago">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Nausicaa</div>
+    <div class="gcard-term-es">Nausícaa</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Figlia del re Alcinoo dei Feaci. Accoglie Odisseo naufrago sull'isola di Scheria.</div>
+    <div class="def-es">Hija del rey Alcínoo de los Feacios. Acoge a Odiseo náufrago en la isla de Esqueria.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="alcinoo alcínoo re feaci ospita odisseo generosamente positivo">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Alcinoo</div>
+    <div class="gcard-term-es">Alcínoo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Re dei Feaci. Ospita Odisseo generosamente. Personaggio <strong>POSITIVO</strong>.</div>
+    <div class="def-es">Rey de los Feacios. Hospeda a Odiseo generosamente. Personaje <strong>POSITIVO</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="antinoo antínoo capo proci nemico odisseo negativo non confondere alcinoo">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Antinoo</div>
+    <div class="gcard-term-es">Antínoo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Capo dei Proci. Nemico di Odisseo. Personaggio <strong>NEGATIVO</strong>.</div>
+    <div class="def-es">Líder de los Pretendientes. Enemigo de Odiseo. Personaje <strong>NEGATIVO</strong>.</div>
+    <div class="card-alert">⚠ Non confondere con Alcinoo! / ¡No confundir con Alcínoo!</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="proci pretendientes principi itaca reggia penelope antinoo">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">I Proci</div>
+    <div class="gcard-term-es">Los Pretendientes</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Principi di Itaca che occupano la reggia e vogliono sposare Penelope. Capo: Antinoo.</div>
+    <div class="def-es">Príncipes de Ítaca que ocupan el palacio y quieren casarse con Penélope. Líder: Antínoo.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="demodoco demódoco aedo poeta corte alcinoo troia commuove odisseo">
+  <div class="gcard-top">
+    <div class="gcard-category">Eroi e umani</div>
+    <div class="gcard-term-it">Demodoco</div>
+    <div class="gcard-term-es">Demódoco</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Aedo (poeta) alla corte di Alcinoo. Narra le imprese di Troia, commuovendo Odisseo.</div>
+    <div class="def-es">Aedo (poeta) en la corte de Alcínoo. Narra las hazañas de Troya, emocionando a Odiseo.</div>
+  </div>
+</div>
+
+<!-- ══════════ SEZIONE 4: DIVINITÀ E CREATURE ══════════ -->
+<div class="section-header" data-cat="c4">
+  <span class="sh-icon">⚡</span>
+  <div>
+    <div class="sh-title">Personaggi — Divinità e Creature</div>
+    <div class="sh-sub">Personajes — Divinidades y Criaturas</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="atena atenea dea intelligenza sapienza protettrice odisseo mendicante itaca">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Atena</div>
+    <div class="gcard-term-es">Atenea</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Dea dell'intelligenza/sapienza. Protettrice di Odisseo in ogni circostanza. Lo trasforma in mendicante a Itaca.</div>
+    <div class="def-es">Diosa de la inteligencia/sabiduría. Protectora de Odiseo en toda circunstancia. Lo transforma en mendigo en Ítaca.</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="poseidone poseidón dio mari ostile odisseo polifemo accecamento">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Poseidone</div>
+    <div class="gcard-term-es">Poseidón</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Dio dei mari. Ostile a Odisseo dopo l'accecamento di suo figlio Polifemo.</div>
+    <div class="def-es">Dios de los mares. Hostil a Odiseo después del enceguecimiento de su hijo Polifemo.</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="eolo eolo dio venti sacca compagni aprono rifiuta aiutarlo">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Eolo</div>
+    <div class="gcard-term-es">Eolo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Dio dei venti. Consegna a Odisseo una sacca con i venti. I compagni la aprono. Eolo poi rifiuta di aiutarlo.</div>
+    <div class="def-es">Dios de los vientos. Entrega a Odiseo una bolsa con los vientos. Los compañeros la abren. Eolo luego se niega a ayudarlo.</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="hermes hermes messaggero dei calipso libera odisseo moly circe">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Hermes</div>
+    <div class="gcard-term-es">Hermes</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Messaggero degli dei. Ordina a Calipso di liberare Odisseo. Dà il moly a Odisseo contro Circe.</div>
+    <div class="def-es">Mensajero de los dioses. Ordena a Calipso liberar a Odiseo. Le da el moly contra Circe.</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="calipso calipso ninfa ogigia 8 anni immortalità xenia generosa distacco">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Calipso</div>
+    <div class="gcard-term-es">Calipso</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Ninfa dell'isola di Ogigia. Trattiene Odisseo ~8 anni. Gli offre l'immortalità. Generosa al distacco (xenia).</div>
+    <div class="def-es">Ninfa de la isla de Ogigia. Retiene a Odiseo ~8 años. Le ofrece la inmortalidad. Generosa al despedirse (xenia).</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="circe circe maga eea trasforma maiali moly anno odisseo vince">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Circe</div>
+    <div class="gcard-term-es">Circe</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Maga dell'isola di Eea. Trasforma i compagni in maiali. Odisseo la vince con il moly. Resta ~1 anno.</div>
+    <div class="def-es">Maga de la isla de Eea. Transforma a los compañeros en cerdos. Odiseo la vence con el moly. Se queda ~1 año.</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="polifemo polifemo ciclope gigante occhio poseidone tizzone acceca">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Polifemo</div>
+    <div class="gcard-term-es">Polifemo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Ciclope (gigante con un solo occhio). Figlio di Poseidone. Odisseo lo acceca con un tizzone infuocato.</div>
+    <div class="def-es">Cíclope (gigante con un solo ojo). Hijo de Poseidón. Odiseo lo ciega con un tizón encendido.</div>
+  </div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="callìope calíope musa poesia epica omero invoca proemio odissea">
+  <div class="gcard-top">
+    <div class="gcard-category">Divinità e creature</div>
+    <div class="gcard-term-it">Callìope</div>
+    <div class="gcard-term-es">Calíope</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Musa della poesia epica. Omero la invoca nel proemio dell'Odissea.</div>
+    <div class="def-es">Musa de la poesía épica. Homero la invoca en el proemio de la Odisea.</div>
+  </div>
+</div>
+
+<!-- ══════════ SEZIONE 5: LUOGHI ══════════ -->
+<div class="section-header" data-cat="c5">
+  <span class="sh-icon">🗺️</span>
+  <div>
+    <div class="sh-title">Luoghi</div>
+    <div class="sh-sub">Lugares</div>
+  </div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="itaca ítaca isola greca patria odisseo meta finale viaggio ritorno">
+  <div class="gcard-top">
+    <div class="gcard-category">Luoghi</div>
+    <div class="gcard-term-it">Itaca</div>
+    <div class="gcard-term-es">Ítaca</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Isola greca, patria di Odisseo. Meta finale del viaggio di ritorno.</div>
+    <div class="def-es">Isla griega, patria de Odiseo. Meta final del viaje de regreso.</div>
+  </div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="troia troya città 10 anni assedio cavallo stratagemma odisseo distrutta">
+  <div class="gcard-top">
+    <div class="gcard-category">Luoghi</div>
+    <div class="gcard-term-it">Troia</div>
+    <div class="gcard-term-es">Troya</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Città distrutta dopo 10 anni di assedio, grazie allo stratagemma del cavallo ideato da Odisseo.</div>
+    <div class="def-es">Ciudad destruida después de 10 años de asedio, gracias a la estratagema del caballo ideada por Odiseo.</div>
+  </div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="ogigia ogigia isola ninfa calipso 8 anni odisseo">
+  <div class="gcard-top">
+    <div class="gcard-category">Luoghi</div>
+    <div class="gcard-term-it">Ogigia</div>
+    <div class="gcard-term-es">Ogigia</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Isola della ninfa Calipso, dove Odisseo resta ~8 anni.</div>
+    <div class="def-es">Isla de la ninfa Calipso, donde Odiseo permanece ~8 años.</div>
+  </div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="scheria esqueria isola feaci alcinoo odisseo naufraga">
+  <div class="gcard-top">
+    <div class="gcard-category">Luoghi</div>
+    <div class="gcard-term-it">Scheria</div>
+    <div class="gcard-term-es">Esqueria</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Isola dei Feaci, governata dal re Alcinoo. Odisseo vi naufraga.</div>
+    <div class="def-es">Isla de los Feacios, gobernada por el rey Alcínoo. Odiseo naufraga allí.</div>
+  </div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="eea eea isola maga circe odisseo un anno resta">
+  <div class="gcard-top">
+    <div class="gcard-category">Luoghi</div>
+    <div class="gcard-term-it">Eea</div>
+    <div class="gcard-term-es">Eea</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Isola della maga Circe. Odisseo vi resta circa un anno.</div>
+    <div class="def-es">Isla de la maga Circe. Odiseo permanece allí aproximadamente un año.</div>
+  </div>
+</div>
+
+<!-- ══════════ SEZIONE 6: ALTRI TERMINI ══════════ -->
+<div class="section-header" data-cat="c6">
+  <span class="sh-icon">📌</span>
+  <div>
+    <div class="sh-title">Altri Termini</div>
+    <div class="sh-sub">Otros Términos</div>
+  </div>
+</div>
+
+<div class="gcard c6" data-cat="c6" data-search="sacrilegio sacrilegio offesa dio compagni buoi sole puniti morte">
+  <div class="gcard-top">
+    <div class="gcard-category">Altri termini</div>
+    <div class="gcard-term-it">Sacrilegio</div>
+    <div class="gcard-term-es">Sacrilegio</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Offesa a un dio. I compagni divorano i buoi del Sole e vengono puniti con la morte.</div>
+    <div class="def-es">Ofensa a un dios. Los compañeros devoran los bueyes del Sol y son castigados con la muerte.</div>
+  </div>
+</div>
+
+<div class="gcard c6" data-cat="c6" data-search="misogino misógino atteggiamento disprezza ruolo inferiore donne grecia arcaica">
+  <div class="gcard-top">
+    <div class="gcard-category">Altri termini</div>
+    <div class="gcard-term-it">Misogino</div>
+    <div class="gcard-term-es">Misógino</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Atteggiamento che disprezza o assegna un ruolo inferiore alle donne. Caratteristica della Grecia arcaica.</div>
+    <div class="def-es">Actitud que desprecia o asigna un rol inferior a las mujeres. Característica de la Grecia arcaica.</div>
+  </div>
+</div>
+
+<div class="gcard c6" data-cat="c6" data-search="moly moly antidoto pianta hermes odisseo circe incantesimo non identificato">
+  <div class="gcard-top">
+    <div class="gcard-category">Altri termini</div>
+    <div class="gcard-term-it">Moly</div>
+    <div class="gcard-term-es">Moly</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Antidoto (pianta?) consegnato da Hermes a Odisseo per resistere all'incantesimo di Circe. Non identificato.</div>
+    <div class="def-es">Antídoto (¿planta?) entregado por Hermes a Odiseo para resistir el encantamiento de Circe. No identificado.</div>
+  </div>
+</div>
+
+<div class="gcard c6" data-cat="c6" data-search="stratagemma estratagema inganno trucco cavallo troia odisseo intuizione">
+  <div class="gcard-top">
+    <div class="gcard-category">Altri termini</div>
+    <div class="gcard-term-it">Stratagemma</div>
+    <div class="gcard-term-es">Estratagema</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Inganno, trucco. Lo stratagemma del cavallo di Troia è l'intuizione di Odisseo.</div>
+    <div class="def-es">Engaño, truco. La estratagema del caballo de Troya es la idea de Odiseo.</div>
+  </div>
+</div>
+
+<!-- empty state -->
+<div class="empty" id="emptyState" style="display:none;">
+  <div class="emoji">🔍</div>
+  <p>Nessun termine trovato / Ningún término encontrado</p>
+</div>
+
+</div><!-- /grid -->
+</div><!-- /container -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
+
+<script>
+let activeFilter = 'all';
+
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.gcard');
+  const headers = document.querySelectorAll('.section-header');
+  let visible = 0;
+
+  headers.forEach(h => {
+    const cat = h.dataset.cat;
+    const show = activeFilter === 'all' || activeFilter === cat;
+    h.classList.toggle('hidden', !show);
+  });
+
+  cards.forEach(card => {
+    const catMatch = activeFilter === 'all' || card.dataset.cat === activeFilter;
+    const searchText = card.dataset.search + ' ' + card.innerText.toLowerCase();
+    const qMatch = q === '' || searchText.includes(q);
+    if (catMatch && qMatch) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('visibleCount').textContent = visible;
+  document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+}
+
+// init
+filterCards();
+
+// scroll to top
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
