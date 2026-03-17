@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossario Bilingue — Fondamenti di Suono</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f1118; --surface:#1a1d2e; --surface2:#242840;
+  --accent1:#6c63ff; --accent2:#00d4aa; --accent3:#ff6b6b;
+  --accent4:#ffd93d; --accent5:#4ecdc4; --accent6:#a78bfa;
+  --text:#e8e6f0; --text-dim:#8b8aa0; --text-es:#6dd4b0;
+  --border:rgba(108,99,255,0.2); --glow:rgba(108,99,255,0.15);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+.grain { position:fixed; top:0; left:0; right:0; bottom:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; }
+
+.back-btn { display:inline-flex; align-items:center; gap:7px; background:var(--surface); border:1px solid var(--border); color:var(--text-dim); padding:8px 16px; border-radius:30px; font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; text-decoration:none; transition:all 0.25s; position:absolute; top:24px; left:24px; z-index:10; }
+.back-btn:hover { color:var(--text); border-color:var(--accent1); box-shadow:0 4px 15px var(--glow); transform:translateX(-2px); }
+
+header { text-align:center; padding:50px 20px 35px; position:relative; }
+header::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:120px; height:3px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); border-radius:2px; }
+h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:800; background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+.header-sub { color:var(--text-dim); font-size:0.9rem; }
+
+.controls { max-width:980px; margin:0 auto; padding:28px 20px 16px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+.search-wrap { position:relative; flex:1; min-width:200px; max-width:360px; }
+.search-wrap input { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:10px 16px 10px 40px; border-radius:30px; font-family:'DM Sans',sans-serif; font-size:0.88rem; outline:none; transition:all 0.25s; }
+.search-wrap input:focus { border-color:var(--accent1); box-shadow:0 0 0 3px var(--glow); }
+.search-wrap input::placeholder { color:var(--text-dim); }
+.search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-dim); font-size:0.9rem; pointer-events:none; }
+.filters { display:flex; flex-wrap:wrap; gap:8px; }
+.filters button { background:var(--surface); border:1px solid var(--border); color:var(--text-dim); padding:7px 14px; border-radius:20px; font-family:'DM Sans',sans-serif; font-size:0.75rem; font-weight:500; cursor:pointer; transition:all 0.2s; text-transform:uppercase; letter-spacing:0.4px; }
+.filters button:hover { color:var(--text); border-color:var(--accent1); }
+.filters button.active { background:var(--accent1); color:#fff; border-color:var(--accent1); }
+.count { color:var(--text-dim); font-size:0.82rem; white-space:nowrap; }
+.count span { color:var(--accent2); font-weight:700; }
+
+.container { max-width:980px; margin:0 auto; padding:0 20px 60px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+
+.section-header { grid-column:1/-1; background:linear-gradient(135deg,rgba(108,99,255,0.12),rgba(0,212,170,0.08)); border:1px solid rgba(108,99,255,0.3); border-radius:14px; padding:16px 24px; display:flex; align-items:center; gap:14px; }
+.section-header.hidden { display:none; }
+.sh-icon { font-size:1.4rem; }
+.sh-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:#fff; }
+.sh-sub { color:var(--text-es); font-style:italic; font-size:0.85rem; margin-top:2px; }
+
+.gcard { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.25s,box-shadow 0.25s; }
+.gcard:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
+.gcard.hidden { display:none; }
+.gcard-top { padding:18px 20px 14px; position:relative; }
+.gcard-top::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.gcard.c1 .gcard-top::before{background:linear-gradient(90deg,var(--accent1),var(--accent6))}
+.gcard.c2 .gcard-top::before{background:linear-gradient(90deg,var(--accent2),var(--accent5))}
+.gcard.c3 .gcard-top::before{background:linear-gradient(90deg,var(--accent3),var(--accent4))}
+.gcard.c4 .gcard-top::before{background:linear-gradient(90deg,var(--accent4),var(--accent2))}
+.gcard.c5 .gcard-top::before{background:linear-gradient(90deg,var(--accent5),var(--accent6))}
+.gcard-category { font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+.gcard.c1 .gcard-category{color:var(--accent6)} .gcard.c2 .gcard-category{color:var(--accent2)}
+.gcard.c3 .gcard-category{color:var(--accent3)} .gcard.c4 .gcard-category{color:var(--accent4)}
+.gcard.c5 .gcard-category{color:var(--accent5)}
+.gcard-term-it { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:#fff; line-height:1.25; margin-bottom:4px; }
+.gcard-term-es { color:var(--text-es); font-style:italic; font-size:0.86rem; }
+.gcard-body { padding:0 20px 18px; flex:1; display:flex; flex-direction:column; gap:6px; }
+.gcard-sep { width:36px; height:2px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); border-radius:1px; margin-bottom:2px; }
+.def-it { font-size:0.83rem; color:var(--text); line-height:1.55; }
+.def-es { font-size:0.78rem; color:var(--text-es); font-style:italic; line-height:1.5; opacity:0.85; }
+
+.scroll-top { position:fixed; bottom:28px; right:28px; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--accent1),var(--accent2)); border:none; color:#fff; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(108,99,255,0.4); opacity:0; pointer-events:none; transform:translateY(12px); transition:opacity 0.3s,transform 0.3s; z-index:999; }
+.scroll-top.visible { opacity:1; pointer-events:auto; transform:translateY(0); }
+.scroll-top:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(108,99,255,0.55); }
+
+.empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-dim); }
+.empty .emoji { font-size:2.5rem; margin-bottom:12px; }
+
+@media(max-width:600px){
+  .back-btn{position:static;margin:16px 0 0 20px;display:inline-flex} header{padding-top:20px}
+  .controls{flex-direction:column;align-items:stretch} .search-wrap{max-width:100%} .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<a class="back-btn" href="index.html">← Indice</a>
+
+<header>
+  <h1>Glossario Bilingue</h1>
+  <p class="header-sub">Fondamenti di Suono — Terminologia completa</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Cerca / Buscar..." oninput="filterCards()">
+  </div>
+  <div class="filters">
+    <button class="active" onclick="setFilter('all',this)">Tutti</button>
+    <button onclick="setFilter('c1',this)">🎙️ Presa diretta</button>
+    <button onclick="setFilter('c2',this)">🎤 Microfoni</button>
+    <button onclick="setFilter('c3',this)">📡 Wireless</button>
+    <button onclick="setFilter('c4',this)">🎬 Inquadratura</button>
+    <button onclick="setFilter('c5',this)">🎚️ Post & Mix</button>
+  </div>
+  <div class="count"><span id="visibleCount">0</span> termini</div>
+</div>
+
+<div class="container">
+<div class="grid" id="grid">
+
+<!-- ══════════ C1: PRESA DIRETTA ══════════ -->
+<div class="section-header" data-cat="c1">
+  <span class="sh-icon">🎙️</span>
+  <div><div class="sh-title">Presa Diretta & Figure Professionali</div><div class="sh-sub">Toma Directa & Figuras Profesionales</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="presa diretta toma directa registrazione suono set riprese video simultanea">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Presa diretta</div><div class="gcard-term-es">Toma directa</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Registrazione del suono contemporaneamente alle riprese video, direttamente sul set, durante la scena.</div><div class="def-es">Grabación del sonido de manera simultánea a las tomas de video, directamente en el set, durante la escena.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="doppiaggio doblaje voci studio riprese contrappone presa diretta">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Doppiaggio</div><div class="gcard-term-es">Doblaje</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Registrazione delle voci in studio dopo le riprese. Si contrappone alla presa diretta.</div><div class="def-es">Grabación de las voces en estudio después de las tomas. Se contrapone a la toma directa.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="fonico presa diretta técnico sonido responsabile registrazione audio set sceneggiatura microfonista">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Fonico di presa diretta</div><div class="gcard-term-es">Técnico de sonido de toma directa</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Responsabile della registrazione audio sul set. Legge la sceneggiatura, sceglie le attrezzature, coordina il microfonista.</div><div class="def-es">Responsable de la grabación de audio en el set. Lee el guión, elige el equipamiento, coordina al microfonista.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="microfonista boom operator asta microfonica set indicazioni fonico">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Microfonista</div><div class="gcard-term-es">Microfonista / Boom operator</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Operatore che gestisce l'asta microfonica (boom) sul set seguendo le indicazioni del fonico.</div><div class="def-es">Operador que maneja la caña microfónica (boom) en el set siguiendo las indicaciones del técnico de sonido.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="sceneggiatura guión testo scritto film punto partenza fonico attrezzatura">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Sceneggiatura</div><div class="gcard-term-es">Guión</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Testo scritto del film. Punto di partenza del fonico per preparare l'attrezzatura.</div><div class="def-es">Texto escrito de la película. Punto de partida del técnico de sonido para preparar el equipamiento.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="prove scena ensayos troupe comprendere svolgera fonico microfonista">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Prove di scena</div><div class="gcard-term-es">Ensayos de escena</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Prove che consentono alla troupe di comprendere come si svolgerà la scena.</div><div class="def-es">Ensayos que permiten al equipo comprender cómo se desarrollará la escena.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="pre-mix dialoghi pre-mezcla diálogos fonico tempo reale regista set">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Pre-mix dialoghi</div><div class="gcard-term-es">Pre-mezcla de diálogos</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Mix audio preparato in tempo reale dal fonico per l'ascolto sul set da parte di regista e altri.</div><div class="def-es">Mezcla de audio preparada en tiempo real por el técnico para la escucha en el set por parte del director y otros.</div></div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="registrazione vuoto grabación en vacío ambiente sonoro post produzione mono stereo">
+  <div class="gcard-top"><div class="gcard-category">Presa diretta</div><div class="gcard-term-it">Registrazione "a vuoto"</div><div class="gcard-term-es">Grabación "en vacío"</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Registrazione di ambienti sonori senza azione scenica, per uso in post-produzione.</div><div class="def-es">Grabación de ambientes sonoros sin acción escénica, para uso en post-producción.</div></div>
+</div>
+
+<!-- ══════════ C2: MICROFONI ══════════ -->
+<div class="section-header" data-cat="c2">
+  <span class="sh-icon">🎤</span>
+  <div><div class="sh-title">Microfoni & Diagrammi Polari</div><div class="sh-sub">Micrófonos & Diagramas Polares</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="boom asta microfonica caña microfónica direzionale attori inquadratura">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Boom / Asta microfonica</div><div class="gcard-term-es">Boom / Caña microfónica</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Microfono direzionale montato su un'asta lunga per avvicinarsi agli attori senza entrare nell'inquadratura.</div><div class="def-es">Micrófono direccional montado sobre una caña larga para acercarse a los actores sin entrar en el encuadre.</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="diagramma polare diagrama polar rappresentazione grafica capacità microfono captare suono spazio">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Diagramma polare</div><div class="gcard-term-es">Diagrama polar</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Rappresentazione grafica della capacità di un microfono di captare il suono nello spazio.</div><div class="def-es">Representación gráfica de la capacidad de un micrófono de captar el sonido en el espacio.</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="cardioide cardioide cuore capta frontale riduce posteriori più usato presa diretta">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Cardioide</div><div class="gcard-term-es">Cardioide</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Tipo di microfono con diagramma polare a forma di cuore. Capta principalmente dalla parte frontale. <strong>Il più usato in presa diretta.</strong></div><div class="def-es">Tipo de micrófono con diagrama polar en forma de corazón. Capta principalmente desde la parte frontal. El más usado en toma directa.</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="ipercardioide hipercardioide direzionale cardioide davanti leggermente dietro ambienti rumorosi">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Ipercardioide</div><div class="gcard-term-es">Hipercardioide</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Microfono più direzionale del cardioide. Capta soprattutto davanti con leggera captazione posteriore. Ottimo per ambienti rumorosi.</div><div class="def-es">Micrófono más direccional que el cardioide. Capta sobre todo por delante con leve captación posterior. Excelente para ambientes ruidosos.</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="omnidirezionale omnidireccional tutte direzioni documentari ambienti controllati smartphone">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Omnidirezionale</div><div class="gcard-term-es">Omnidireccional</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Microfono che capta il suono in tutte le direzioni. Usato in documentari o ambienti controllati.</div><div class="def-es">Micrófono que capta el sonido en todas las direcciones. Usado en documentales o ambientes controlados.</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="fucile fusil microfono tubo interferenza lungo angolo stretto dialoghi aperto rumorosi">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Fucile (microfono)</div><div class="gcard-term-es">Fusil (micrófono)</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Microfono con tubo di interferenza lungo, angolo di ripresa stretto. Preferibile per dialoghi all'aperto in contesti rumorosi.</div><div class="def-es">Micrófono con tubo de interferencia largo, ángulo de toma estrecho. Preferible para diálogos al aire libre en contextos ruidosos.</div></div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="microfoni piazzati plant fijos nascosti set dialoghi effetti boom radio">
+  <div class="gcard-top"><div class="gcard-category">Microfoni</div><div class="gcard-term-it">Microfoni piazzati / Plant</div><div class="gcard-term-es">Micrófonos fijos / Plant</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Microfoni nascosti sul set per catturare dialoghi, effetti o ambienti quando boom e radio non sono utilizzabili.</div><div class="def-es">Micrófonos ocultos en el set para capturar diálogos, efectos o ambientes cuando el boom y radio no son utilizables.</div></div>
+</div>
+
+<!-- ══════════ C3: WIRELESS ══════════ -->
+<div class="section-header" data-cat="c3">
+  <span class="sh-icon">📡</span>
+  <div><div class="sh-title">Sistemi Wireless (Radiomicrofoni)</div><div class="sh-sub">Sistemas Inalámbricos (Radiomicrófonos)</div></div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="radiomicrofono lavalier wireless nascosto vestiti attore senza cavo">
+  <div class="gcard-top"><div class="gcard-category">Wireless</div><div class="gcard-term-it">Radiomicrofono / Lavalier</div><div class="gcard-term-es">Radiomicrófono / Lavalier</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Microfono wireless nascosto sotto i vestiti dell'attore. Composto da trasmettitore, ricevitore e capsula microfonica.</div><div class="def-es">Micrófono inalámbrico oculto debajo de la ropa del actor. Compuesto por transmisor, receptor y cápsula microfónica.</div></div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="trasmettitore transmisor segnale audio radio attore cintura indossato">
+  <div class="gcard-top"><div class="gcard-category">Wireless</div><div class="gcard-term-it">Trasmettitore</div><div class="gcard-term-es">Transmisor</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Dispositivo che trasmette il segnale audio via radio, indossato dall'attore (es. alla cintura).</div><div class="def-es">Dispositivo que transmite la señal de audio por radio, llevado por el actor (ej. en el cinturón).</div></div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="ricevitore receptor segnale radio trasmettitore registratore mixer collegato">
+  <div class="gcard-top"><div class="gcard-category">Wireless</div><div class="gcard-term-it">Ricevitore</div><div class="gcard-term-es">Receptor</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Dispositivo che riceve il segnale radio inviato dal trasmettitore, collegato al registratore o mixer.</div><div class="def-es">Dispositivo que recibe la señal de radio enviada por el transmisor, conectado al grabador o mixer.</div></div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="capsula microfonica cápsula microfónica piccolo microfono voce trasmettitore wireless">
+  <div class="gcard-top"><div class="gcard-category">Wireless</div><div class="gcard-term-it">Capsula microfonica</div><div class="gcard-term-es">Cápsula microfónica</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Piccolo microfono che cattura la voce, collegato al trasmettitore nel sistema wireless.</div><div class="def-es">Pequeño micrófono que captura la voz, conectado al transmisor en el sistema inalámbrico.</div></div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="ram random access memory memoria temporanea volatile dispositivi elettronici">
+  <div class="gcard-top"><div class="gcard-category">Wireless</div><div class="gcard-term-it">RAM</div><div class="gcard-term-es">RAM</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Random Access Memory. Memoria temporanea utilizzata dai dispositivi elettronici. È volatile: quando il dispositivo si spegne, i dati vengono cancellati.</div><div class="def-es">Random Access Memory. Memoria temporal utilizada por los dispositivos electrónicos. Es volátil: cuando el dispositivo se apaga, los datos se borran.</div></div>
+</div>
+
+<!-- ══════════ C4: INQUADRATURA ══════════ -->
+<div class="section-header" data-cat="c4">
+  <span class="sh-icon">🎬</span>
+  <div><div class="sh-title">Inquadratura & Coerenza Sonora</div><div class="sh-sub">Encuadre & Coherencia Sonora</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="inquadratura encuadre porzione scena macchina presa suono coerente">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">Inquadratura</div><div class="gcard-term-es">Encuadre</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Porzione di scena ripresa dalla macchina da presa. Il suono deve essere coerente con essa.</div><div class="def-es">Porción de escena captada por la cámara. El sonido debe ser coherente con ella.</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="coerenza suono inquadratura coherencia sonido encuadre riflettere spazio distanza">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">Coerenza suono-inquadratura</div><div class="gcard-term-es">Coherencia sonido-encuadre</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Principio per cui il suono registrato deve riflettere lo spazio mostrato nell'inquadratura.</div><div class="def-es">Principio por el cual el sonido grabado debe reflejar el espacio mostrado en el encuadre.</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="campo lungo plano general inquadratura ampia suono non vicino attore">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">Campo lungo</div><div class="gcard-term-es">Plano general</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Inquadratura ampia. Il suono non può sembrare registrato vicino all'attore.</div><div class="def-es">Encuadre amplio. El sonido no puede parecer grabado cerca del actor.</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="primo piano primer plano inquadratura ravvicinata voce presente dettagliata">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">Primo piano</div><div class="gcard-term-es">Primer plano</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Inquadratura ravvicinata. La voce può essere più presente e dettagliata.</div><div class="def-es">Encuadre cercano. La voz puede ser más presente y detallada.</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="grandangolo gran angular obiettivo ampio spazio microfono lontano rumori">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">Grandangolo</div><div class="gcard-term-es">Gran angular</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Obiettivo che inquadra una porzione ampia di spazio. Il microfono deve stare più lontano.</div><div class="def-es">Objetivo que encuadra una porción amplia de espacio. El micrófono debe estar más lejos.</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="teleobiettivo teleobjetivo stringe immagine attore lontano precisione posizionamento microfono">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">Teleobiettivo</div><div class="gcard-term-es">Teleobjetivo</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Obiettivo che stringe molto sull'immagine. Serve maggiore precisione nel posizionamento del microfono.</div><div class="def-es">Objetivo que cierra mucho sobre la imagen. Se necesita mayor precisión en el posicionamiento del micrófono.</div></div>
+</div>
+
+<div class="gcard c4" data-cat="c4" data-search="mdp macchina presa cámara cine abbreviazione cinepresa">
+  <div class="gcard-top"><div class="gcard-category">Inquadratura</div><div class="gcard-term-it">M.d.p.</div><div class="gcard-term-es">M.d.p. (cámara)</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Abbreviazione di "macchina da presa", cioè la cinepresa.</div><div class="def-es">Abreviación de "macchina da presa", es decir la cámara de cine.</div></div>
+</div>
+
+<!-- ══════════ C5: POST & MIX ══════════ -->
+<div class="section-header" data-cat="c5">
+  <span class="sh-icon">🎚️</span>
+  <div><div class="sh-title">Post-produzione & Mix</div><div class="sh-sub">Post-producción & Mezcla</div></div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="mix finale mezcla final fonico mixaggio miscela elementi sonori scena importanza">
+  <div class="gcard-top"><div class="gcard-category">Post & Mix</div><div class="gcard-term-it">Mix finale</div><div class="gcard-term-es">Mezcla final</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Fase in cui il fonico di mixaggio miscela tutti gli elementi sonori per ogni scena.</div><div class="def-es">Fase en la que el técnico de mezcla combina todos los elementos sonoros para cada escena.</div></div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="montaggio suono montaje sonido editing audio presa diretta">
+  <div class="gcard-top"><div class="gcard-category">Post & Mix</div><div class="gcard-term-it">Montaggio del suono</div><div class="gcard-term-es">Montaje del sonido</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Fase di editing dell'audio registrato in presa diretta.</div><div class="def-es">Fase de edición del audio grabado en toma directa.</div></div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="montaggio effetti montaje efectos aggiunta effetti ambienti sonori aggiuntivi film">
+  <div class="gcard-top"><div class="gcard-category">Post & Mix</div><div class="gcard-term-it">Montaggio effetti</div><div class="gcard-term-es">Montaje de efectos</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Fase di aggiunta di effetti ed ambienti sonori aggiuntivi al film.</div><div class="def-es">Fase de agregado de efectos y ambientes sonoros adicionales a la película.</div></div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="foley artist rumorista effetti sonori rumori scena post-produzione">
+  <div class="gcard-top"><div class="gcard-category">Post & Mix</div><div class="gcard-term-it">Foley artist / Rumorista</div><div class="gcard-term-es">Artista foley / Rumorista</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Professionista che crea effetti sonori e rumori di scena in post-produzione.</div><div class="def-es">Profesional que crea efectos sonoros y ruidos de escena en post-producción.</div></div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="musica originale música original composta appositamente film">
+  <div class="gcard-top"><div class="gcard-category">Post & Mix</div><div class="gcard-term-it">Musica originale</div><div class="gcard-term-es">Música original</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Musica composta appositamente per il film.</div><div class="def-es">Música compuesta específicamente para la película.</div></div>
+</div>
+
+<div class="gcard c5" data-cat="c5" data-search="musica repertorio música repertorio preesistente acquisita diritto autore riconoscibile spettatori">
+  <div class="gcard-top"><div class="gcard-category">Post & Mix</div><div class="gcard-term-it">Musica di repertorio</div><div class="gcard-term-es">Música de repertorio</div></div>
+  <div class="gcard-body"><div class="gcard-sep"></div><div class="def-it">Musica preesistente acquisita per il film. Implica diritto d'autore e riconoscibilità per gli spettatori.</div><div class="def-es">Música preexistente adquirida para la película. Implica derecho de autor y reconocimiento por parte de los espectadores.</div></div>
+</div>
+
+<!-- empty -->
+<div class="empty" id="emptyState" style="display:none;"><div class="emoji">🔍</div><p>Nessun termine trovato / Ningún término encontrado</p></div>
+</div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
+
+<script>
+let activeFilter = 'all';
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.gcard');
+  const headers = document.querySelectorAll('.section-header');
+  let visible = 0;
+  headers.forEach(h => h.classList.toggle('hidden', activeFilter !== 'all' && h.dataset.cat !== activeFilter));
+  cards.forEach(card => {
+    const catMatch = activeFilter === 'all' || card.dataset.cat === activeFilter;
+    const qMatch = q === '' || (card.dataset.search + ' ' + card.innerText.toLowerCase()).includes(q);
+    if (catMatch && qMatch) { card.classList.remove('hidden'); visible++; }
+    else card.classList.add('hidden');
+  });
+  document.getElementById('visibleCount').textContent = visible;
+  document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+}
+filterCards();
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 300));
+</script>
+</body>
+</html>

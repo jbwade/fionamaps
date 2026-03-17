@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appunti Bilingui — Fondamenti di Suono</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118; --surface: #1a1d2e; --surface2: #242840;
+  --accent1: #6c63ff; --accent2: #00d4aa; --accent3: #ff6b6b;
+  --accent4: #ffd93d; --accent5: #4ecdc4; --accent6: #a78bfa;
+  --text: #e8e6f0; --text-dim: #8b8aa0; --text-es: #6dd4b0;
+  --border: rgba(108,99,255,0.2); --glow: rgba(108,99,255,0.15);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+.grain { position:fixed; top:0; left:0; right:0; bottom:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; }
+
+.back-btn { display:inline-flex; align-items:center; gap:7px; background:var(--surface); border:1px solid var(--border); color:var(--text-dim); padding:8px 16px; border-radius:30px; font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; text-decoration:none; transition:all 0.25s; position:absolute; top:24px; left:24px; z-index:10; }
+.back-btn:hover { color:var(--text); border-color:var(--accent1); box-shadow:0 4px 15px var(--glow); transform:translateX(-2px); }
+
+header { text-align:center; padding:50px 20px 35px; position:relative; }
+header::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:140px; height:3px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); border-radius:2px; }
+h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:800; background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+.header-sub { color:var(--text-dim); font-size:0.9rem; }
+
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; padding:28px 20px; max-width:1000px; margin:0 auto; }
+nav button { background:var(--surface); border:1px solid var(--border); color:var(--text); padding:8px 14px; border-radius:30px; font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:500; cursor:pointer; transition:all 0.3s ease; position:relative; overflow:hidden; }
+nav button::before { content:''; position:absolute; top:0; left:0; right:0; bottom:0; opacity:0; transition:opacity 0.3s ease; border-radius:30px; }
+nav button.n1::before { background:linear-gradient(135deg,var(--accent1),var(--accent6)); }
+nav button.n2::before { background:linear-gradient(135deg,var(--accent2),var(--accent5)); }
+nav button.n3::before { background:linear-gradient(135deg,var(--accent3),var(--accent4)); }
+nav button.n4::before { background:linear-gradient(135deg,var(--accent4),var(--accent2)); }
+nav button:hover::before, nav button.active::before { opacity:1; }
+nav button:hover, nav button.active { border-color:transparent; transform:translateY(-2px); box-shadow:0 8px 25px var(--glow); }
+nav button span { position:relative; z-index:1; }
+
+.container { max-width:980px; margin:0 auto; padding:10px 20px 60px; }
+.section-panel { display:none; animation:fadeIn 0.45s ease; }
+.section-panel.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+.part-header { text-align:center; margin-bottom:36px; }
+.part-title { font-family:'Playfair Display',serif; font-size:1.7rem; color:#fff; margin-bottom:6px; }
+.part-subtitle { color:var(--text-es); font-style:italic; font-size:1rem; }
+
+.sb { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:26px 28px; margin-bottom:20px; position:relative; overflow:hidden; }
+.sb::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; border-radius:16px 16px 0 0; }
+.sb.c1::before{background:linear-gradient(90deg,var(--accent1),var(--accent6))}
+.sb.c2::before{background:linear-gradient(90deg,var(--accent2),var(--accent5))}
+.sb.c3::before{background:linear-gradient(90deg,var(--accent3),var(--accent4))}
+.sb.c4::before{background:linear-gradient(90deg,var(--accent4),var(--accent2))}
+.sb.c5::before{background:linear-gradient(90deg,var(--accent5),var(--accent1))}
+.sb.c6::before{background:linear-gradient(90deg,var(--accent6),var(--accent3))}
+
+.snum { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent4); margin-bottom:5px; }
+.sh { font-weight:700; font-size:1.1rem; color:#fff; margin-bottom:2px; }
+.sh-es { color:var(--text-es); font-style:italic; font-size:0.88rem; margin-bottom:14px; }
+.sdiv { width:46px; height:2px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); border-radius:1px; margin-bottom:14px; }
+
+.bi { margin-bottom:11px; }
+.bi-it { color:var(--text); font-size:0.92rem; line-height:1.65; }
+.bi-es { color:var(--text-es); font-style:italic; font-size:0.84rem; line-height:1.5; margin-top:3px; opacity:0.88; }
+
+.ex { background:var(--surface2); border-radius:10px; padding:10px 16px; margin:10px 0; border-left:3px solid var(--accent2); }
+.ex .ei { font-size:0.87rem; line-height:1.5; }
+.ex .ee { color:var(--text-es); font-style:italic; font-size:0.81rem; margin-top:4px; opacity:0.85; }
+
+.alert { background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.25); border-radius:10px; padding:12px 16px; margin:12px 0; }
+.alert .ai { font-size:0.87rem; line-height:1.6; }
+.alert .ae { color:var(--text-es); font-style:italic; font-size:0.81rem; margin-top:5px; opacity:0.85; line-height:1.5; }
+
+.star-note { background:rgba(255,217,61,0.07); border:1px solid rgba(255,217,61,0.3); border-radius:10px; padding:12px 16px; margin:12px 0; }
+.star-note p { font-size:0.87rem; color:var(--accent4); font-weight:600; line-height:1.5; }
+
+.sub { font-weight:700; font-size:0.93rem; color:var(--accent1); margin:16px 0 5px; }
+.sub-es { color:var(--text-es); font-style:italic; font-size:0.81rem; margin-bottom:9px; }
+
+.key-rule { background:linear-gradient(135deg,rgba(108,99,255,0.15),rgba(0,212,170,0.1)); border:1px solid rgba(108,99,255,0.35); border-radius:12px; padding:16px 20px; margin:12px 0; }
+.key-rule .kl { font-size:0.63rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--accent4); margin-bottom:6px; }
+.key-rule .ki { font-size:0.91rem; font-weight:600; line-height:1.6; margin-bottom:5px; }
+.key-rule .ke { color:var(--text-es); font-style:italic; font-size:0.83rem; line-height:1.5; opacity:0.9; }
+
+.check-list { list-style:none; display:flex; flex-direction:column; gap:8px; margin:10px 0; }
+.check-list li { display:flex; gap:10px; align-items:flex-start; font-size:0.88rem; line-height:1.55; }
+.check-list li .icon { font-size:0.95rem; flex-shrink:0; margin-top:1px; }
+.check-list li .les { color:var(--text-es); font-style:italic; font-size:0.81rem; margin-top:2px; opacity:0.85; }
+
+.pros-cons { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:12px 0; }
+.pro-box { background:rgba(0,212,170,0.07); border:1px solid rgba(0,212,170,0.25); border-radius:10px; padding:14px 16px; }
+.con-box { background:rgba(255,107,107,0.07); border:1px solid rgba(255,107,107,0.2); border-radius:10px; padding:14px 16px; }
+.box-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; }
+.pro-box .box-label { color:var(--accent2); }
+.con-box .box-label { color:var(--accent3); }
+.box-item { font-size:0.83rem; line-height:1.5; margin-bottom:5px; }
+.box-item-es { font-size:0.78rem; color:var(--text-es); font-style:italic; opacity:0.85; margin-bottom:8px; }
+
+/* Catena del suono */
+.chain { display:flex; flex-direction:column; gap:0; margin:14px 0; }
+.chain-item { display:flex; align-items:stretch; gap:0; }
+.chain-dot { display:flex; flex-direction:column; align-items:center; width:32px; flex-shrink:0; }
+.chain-dot .dot { width:12px; height:12px; border-radius:50%; background:var(--accent1); border:2px solid var(--accent2); flex-shrink:0; margin-top:14px; }
+.chain-dot .line { width:2px; flex:1; background:linear-gradient(180deg,var(--accent1),rgba(108,99,255,0.15)); }
+.chain-item:last-child .chain-dot .line { display:none; }
+.chain-content { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 16px; margin-bottom:8px; flex:1; }
+.chain-content.highlight { background:linear-gradient(135deg,rgba(108,99,255,0.18),rgba(0,212,170,0.12)); border-color:rgba(108,99,255,0.4); }
+.chain-title { font-weight:700; font-size:0.88rem; color:#fff; margin-bottom:2px; }
+.chain-title-es { color:var(--text-es); font-style:italic; font-size:0.79rem; margin-bottom:4px; }
+.chain-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.45; }
+.chain-desc-es { font-size:0.76rem; color:var(--text-es); font-style:italic; opacity:0.8; margin-top:3px; }
+
+/* Microfoni grid */
+.mic-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin:14px 0; }
+.mic-card { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:16px 16px; position:relative; overflow:hidden; transition:transform 0.2s; }
+.mic-card:hover { transform:translateY(-3px); }
+.mic-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.mic-card.m1::before{background:linear-gradient(90deg,var(--accent1),var(--accent6))}
+.mic-card.m2::before{background:linear-gradient(90deg,var(--accent2),var(--accent5))}
+.mic-card.m3::before{background:linear-gradient(90deg,var(--accent4),var(--accent2))}
+.mic-card.m4::before{background:linear-gradient(90deg,var(--accent6),var(--accent3))}
+.mic-name { font-weight:700; font-size:0.95rem; color:#fff; margin-bottom:2px; }
+.mic-name-es { color:var(--text-es); font-style:italic; font-size:0.79rem; margin-bottom:8px; }
+.mic-tag { display:inline-block; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:2px 8px; border-radius:10px; margin-bottom:8px; }
+.m1 .mic-tag { background:rgba(108,99,255,0.2); color:var(--accent6); }
+.m2 .mic-tag { background:rgba(0,212,170,0.15); color:var(--accent2); }
+.m3 .mic-tag { background:rgba(255,217,61,0.15); color:var(--accent4); }
+.m4 .mic-tag { background:rgba(167,139,250,0.15); color:var(--accent6); }
+.mic-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.5; }
+.mic-desc-es { font-size:0.75rem; color:var(--text-es); font-style:italic; opacity:0.82; margin-top:4px; line-height:1.4; }
+
+/* Radio mic elements */
+.radio-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin:12px 0; }
+.radio-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.radio-num { font-size:1.5rem; font-weight:800; font-family:'Playfair Display',serif; color:var(--accent4); margin-bottom:6px; }
+.radio-title { font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:2px; }
+.radio-title-es { color:var(--text-es); font-style:italic; font-size:0.78rem; margin-bottom:6px; }
+.radio-desc { font-size:0.8rem; color:var(--text-dim); line-height:1.45; }
+.radio-desc-es { font-size:0.75rem; color:var(--text-es); font-style:italic; opacity:0.82; margin-top:3px; }
+
+.scroll-top { position:fixed; bottom:28px; right:28px; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--accent1),var(--accent2)); border:none; color:#fff; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(108,99,255,0.4); opacity:0; pointer-events:none; transform:translateY(12px); transition:opacity 0.3s,transform 0.3s; z-index:999; }
+.scroll-top.visible { opacity:1; pointer-events:auto; transform:translateY(0); }
+.scroll-top:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(108,99,255,0.55); }
+
+@media(max-width:600px){
+  .back-btn{position:static;margin:16px 0 0 20px;display:inline-flex} header{padding-top:20px}
+  .sb{padding:18px 14px} .pros-cons{grid-template-columns:1fr} .mic-grid{grid-template-columns:1fr} .radio-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<a class="back-btn" href="index.html">← Indice</a>
+
+<header>
+  <h1>Appunti Bilingui</h1>
+  <p class="header-sub">Fondamenti di Suono — Lezione 1 + Lezione 2</p>
+</header>
+
+<nav>
+  <button class="n1 active" onclick="showSection('p1',this)"><span>🎬 Il Suono & La Catena</span></button>
+  <button class="n2" onclick="showSection('p2',this)"><span>🎙️ Presa Diretta</span></button>
+  <button class="n3" onclick="showSection('p3',this)"><span>📡 Attrezzature</span></button>
+  <button class="n4" onclick="showSection('p4',this)"><span>🎚️ Set & Mix</span></button>
+</nav>
+
+<div class="container">
+
+<!-- ═══════════ P1: IL SUONO & LA CATENA ═══════════ -->
+<div class="section-panel active" id="p1">
+  <div class="part-header">
+    <div class="part-title">Il Suono & La Catena del Suono</div>
+    <div class="part-subtitle">El Sonido & La Cadena del Sonido</div>
+  </div>
+
+  <div class="sb c1">
+    <div class="snum">1</div>
+    <div class="sh">Il suono di un film: le componenti fondamentali</div>
+    <div class="sh-es">El sonido de una película: los componentes fundamentales</div>
+    <div class="sdiv"></div>
+
+    <div class="sub">Le voci e i dialoghi / Las voces y los diálogos</div>
+    <div class="bi">
+      <div class="bi-it">Hanno uno sviluppo narrativo e sono la componente <strong>prevalente</strong> del sonoro. Le sale cinematografiche sono costruite come sale da concerto, di legno, dal 1936. Le pareti sono assorbenti per non sentire l'eco. C'era una sola cassa inizialmente, posizionata dietro lo schermo. Nel tempo sono aumentati gli altoparlanti e poi è arrivato il <strong>Dolby</strong> (suono surround).</div>
+      <div class="bi-es">Tienen un desarrollo narrativo y son el componente predominante del sonoro. Las salas están construidas de madera desde 1936. Las paredes son absorbentes. Había un solo parlante detrás de la pantalla. Con el tiempo llegó el Dolby (sonido envolvente).</div>
+    </div>
+
+    <div class="sub">Rumori e ambienti sonori / Ruidos y ambientes sonoros</div>
+    <div class="bi">
+      <div class="bi-it">Riescono ad <strong>allargare la percezione dello spazio</strong>.</div>
+      <div class="bi-es">Logran ampliar la percepción del espacio.</div>
+    </div>
+
+    <div class="sub">Effetti sonori / Efectos sonoros</div>
+    <div class="bi">
+      <div class="bi-it">Aggiunte che forniscono info in più: vento in un western, sparo in lontananza, cavalli. Danno <strong>maggiore realismo</strong> alla scena.</div>
+      <div class="bi-es">Agregados que dan información adicional: viento en un western, disparo a lo lejos. Dan mayor realismo a la escena.</div>
+    </div>
+
+    <div class="sub">Musica / Música</div>
+    <div class="bi">
+      <div class="bi-it">Principalmente racconta le <strong>emozioni</strong>. Può essere <strong>originale</strong> (composta per il film) o <strong>di repertorio</strong> (preesistente).</div>
+      <div class="bi-es">Principalmente transmite las emociones. Puede ser original (compuesta para la película) o de repertorio (preexistente).</div>
+    </div>
+  </div>
+
+  <div class="sb c2">
+    <div class="snum">2</div>
+    <div class="sh">La catena del suono</div>
+    <div class="sh-es">La cadena del sonido</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Descrive l'intero <strong>processo produttivo</strong> che consente la costruzione del suono in un film.</div>
+      <div class="bi-es">Describe el proceso productivo completo que permite la construcción del sonido en una película.</div>
+    </div>
+    <div class="chain">
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Presa diretta</div>
+          <div class="chain-title-es">Toma directa</div>
+          <div class="chain-desc">Voci, ambienti, suoni/rumori</div>
+          <div class="chain-desc-es">Voces, ambientes, sonidos/ruidos</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Montaggio del suono</div>
+          <div class="chain-title-es">Montaje del sonido</div>
+          <div class="chain-desc">Editing della presa diretta</div>
+          <div class="chain-desc-es">Edición de la toma directa</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Doppiaggio</div>
+          <div class="chain-title-es">Doblaje</div>
+          <div class="chain-desc">Voci integrative/sostitutive</div>
+          <div class="chain-desc-es">Voces integradoras/sustitutivas</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Rumoristi (Foley artist)</div>
+          <div class="chain-title-es">Artista foley / Rumorista</div>
+          <div class="chain-desc">Effetti e rumori di scena in post-produzione</div>
+          <div class="chain-desc-es">Efectos y ruidos de escena en post-producción</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Montaggio effetti</div>
+          <div class="chain-title-es">Montaje de efectos</div>
+          <div class="chain-desc">Effetti ed ambienti sonori aggiuntivi</div>
+          <div class="chain-desc-es">Efectos y ambientes sonoros adicionales</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Musica originale</div>
+          <div class="chain-title-es">Música original</div>
+          <div class="chain-desc">Composizione, esecuzione, registrazione, spazializzazione</div>
+          <div class="chain-desc-es">Composición, ejecución, grabación, espacialización</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content">
+          <div class="chain-title">Musica di repertorio</div>
+          <div class="chain-title-es">Música de repertorio</div>
+          <div class="chain-desc">Acquisizione, editing, spazializzazione</div>
+          <div class="chain-desc-es">Adquisición, edición, espacialización</div>
+        </div>
+      </div>
+      <div class="chain-item">
+        <div class="chain-dot"><div class="dot"></div><div class="line"></div></div>
+        <div class="chain-content highlight">
+          <div class="chain-title">🎚️ MIX FINALE</div>
+          <div class="chain-title-es">Mezcla final</div>
+          <div class="chain-desc">Il fonico di mixaggio miscela <strong>tutti</strong> gli elementi del suono per ogni scena secondo la loro importanza.</div>
+          <div class="chain-desc-es">El técnico de mezcla combina todos los elementos del sonido para cada escena según su importancia.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /p1 -->
+
+
+<!-- ═══════════ P2: PRESA DIRETTA ═══════════ -->
+<div class="section-panel" id="p2">
+  <div class="part-header">
+    <div class="part-title">La Presa Diretta</div>
+    <div class="part-subtitle">La Toma Directa</div>
+  </div>
+
+  <div class="sb c2">
+    <div class="snum">3</div>
+    <div class="sh">Cos'è la presa diretta?</div>
+    <div class="sh-es">¿Qué es la toma directa?</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">La presa diretta è la <strong>registrazione del suono contemporaneamente alle riprese video</strong>, direttamente sul set, durante la scena. Si contrappone al <strong>doppiaggio</strong>, che avviene in studio dopo le riprese.</div>
+      <div class="bi-es">La toma directa es la grabación del sonido de manera simultánea a las tomas de video, directamente en el set. Se contrapone al <strong>doblaje</strong>, que ocurre en estudio después.</div>
+    </div>
+
+    <div class="sub">Vantaggi / Ventajas</div>
+    <div class="pros-cons">
+      <div class="pro-box">
+        <div class="box-label">✓ Vantaggi IT</div>
+        <div class="box-item">• Maggiore <strong>realismo</strong></div>
+        <div class="box-item">• Coerenza suono-immagine</div>
+        <div class="box-item">• Performance più naturale degli attori</div>
+        <div class="box-item">• Presenza del suono ambientale reale</div>
+      </div>
+      <div class="pro-box">
+        <div class="box-label">✓ Ventajas ES</div>
+        <div class="box-item-es">• Mayor realismo</div>
+        <div class="box-item-es">• Coherencia sonido-imagen</div>
+        <div class="box-item-es">• Actuación más natural de los actores</div>
+        <div class="box-item-es">• Presencia del sonido ambiental real</div>
+      </div>
+    </div>
+
+    <div class="sub">Due obiettivi principali / Dos objetivos principales</div>
+    <div class="bi">
+      <div class="bi-it"><strong>1.</strong> Cogliere tutte le sfumature della recitazione attoriale nella sua unicità e irripetibilità (voce, respiri, movimenti, passi…).</div>
+      <div class="bi-es">1. Captar todos los matices de la actuación actoral en su singularidad e irrepetibilidad (voz, respiraciones, movimientos, pasos…).</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it"><strong>2.</strong> Restituire fedelmente il realismo ambientale con la sua dinamicità.</div>
+      <div class="bi-es">2. Reproducir fielmente el realismo ambiental con su dinamismo.</div>
+    </div>
+  </div>
+
+  <div class="sb c3">
+    <div class="snum">4</div>
+    <div class="sh">Presa diretta e storia del cinema</div>
+    <div class="sh-es">Toma directa e historia del cine</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">In passato (soprattutto nel cinema italiano classico), quasi tutto veniva <strong>doppiato</strong>, anche per problemi tecnici legati alla registrazione sonora.</div>
+      <div class="bi-es">En el pasado (sobre todo en el cine italiano clásico), casi todo se doblaba, también por problemas técnicos.</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it"><strong>Eccezione importante — Totò:</strong> essendo un grande attore teatrale, spesso improvvisava durante le riprese. La presa diretta diventava fondamentale per non perdere la spontaneità della performance.</div>
+      <div class="bi-es">Excepción importante — Totò: al ser un gran actor teatral, improvisaba durante las tomas. La toma directa era fundamental para no perder la espontaneidad.</div>
+    </div>
+    <div class="sub">Fine anni '60 — nascita del "New Cinema"</div>
+    <div class="bi">
+      <div class="bi-it">Nasce un cinema più <strong>realistico</strong> (Europa e USA) che punta su: maggiore autenticità, ambienti reali, recitazione spontanea, suono naturale. Questo rende la presa diretta sempre più necessaria, perché il doppiaggio risulterebbe artificiale.</div>
+      <div class="bi-es">Nace un cine más realista que apunta a: mayor autenticidad, ambientes reales, actuación espontánea. El doblaje resultaría artificial.</div>
+    </div>
+  </div>
+
+  <div class="sb c4">
+    <div class="snum">5</div>
+    <div class="sh">Coerenza tra suono e inquadratura</div>
+    <div class="sh-es">Coherencia entre sonido y encuadre</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Il suono di una scena deve essere sempre <strong>coerente con l'inquadratura</strong>. Significa che:</div>
+      <div class="bi-es">El sonido de una escena debe ser siempre coherente con el encuadre. Esto significa que:</div>
+    </div>
+    <ul class="check-list">
+      <li><span class="icon">→</span><div><div>Deve riflettere lo spazio mostrato.</div><div class="les">Debe reflejar el espacio mostrado.</div></div></li>
+      <li><span class="icon">→</span><div><div>Deve rispettare la distanza visiva dei personaggi.</div><div class="les">Debe respetar la distancia visual de los personajes.</div></div></li>
+      <li><span class="icon">→</span><div><div>Deve includere solo ciò che è coerente con il punto di vista della macchina da presa.</div><div class="les">Debe incluir solo lo que es coherente con el punto de vista de la cámara.</div></div></li>
+    </ul>
+    <div class="ex">
+      <div class="ei">• <strong>Campo lungo</strong>: il suono non può sembrare registrato a 5 cm dalla bocca dell'attore.</div>
+      <div class="ee">• Plano general: el sonido no puede parecer grabado a 5 cm de la boca del actor.</div>
+    </div>
+    <div class="ex">
+      <div class="ei">• <strong>Primo piano</strong>: la voce può essere più presente e dettagliata.</div>
+      <div class="ee">• Primer plano: la voz puede ser más presente y detallada.</div>
+    </div>
+  </div>
+</div><!-- /p2 -->
+
+
+<!-- ═══════════ P3: ATTREZZATURE ═══════════ -->
+<div class="section-panel" id="p3">
+  <div class="part-header">
+    <div class="part-title">Attrezzature per la Presa Diretta</div>
+    <div class="part-subtitle">Equipamiento para la Toma Directa</div>
+  </div>
+
+  <div class="sb c1">
+    <div class="snum">7</div>
+    <div class="sh">Boom e asta microfonica</div>
+    <div class="sh-es">Boom y caña microfónica</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Il <strong>boom</strong> è un microfono (spesso direzionale) montato su un'<strong>asta microfonica</strong>. Permette di avvicinare il microfono agli attori <strong>senza farlo entrare nell'inquadratura</strong>. È uno degli strumenti più usati durante le riprese.</div>
+      <div class="bi-es">El boom es un micrófono (a menudo direccional) montado sobre una caña microfónica. Permite acercar el micrófono a los actores sin que entre en el encuadre. Es uno de los instrumentos más usados.</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it">• <strong>Asta microfonica</strong> → permette di posizionare il microfono sopra gli attori, fuori dall'inquadratura.<br>• <strong>Boom (microfono)</strong> → cattura il suono in modo direzionale e preciso.</div>
+      <div class="bi-es">• Caña microfónica → permite posicionar el micrófono sobre los actores, fuera del encuadre.<br>• Boom (micrófono) → captura el sonido de manera direccional y precisa.</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it">I c.d. <strong>"fucili"</strong> (microfoni con tubi di interferenza lunghi) hanno la capacità di concentrare la ripresa del suono, generando un angolo di ripresa più stretto: preferibili per dialoghi all'aperto in contesti rumorosi.</div>
+      <div class="bi-es">Los llamados <strong>"fusiles"</strong> (micrófonos con tubos de interferencia largos) concentran la toma del sonido con un ángulo más estrecho: preferibles para diálogos al aire libre en contextos ruidosos.</div>
+    </div>
+    <div class="key-rule">
+      <div class="kl">Vantaggi del boom / Ventajas del boom</div>
+      <div class="ki">Suono naturale — non visibile in scena — ottima qualità sonora.</div>
+      <div class="ke">Sonido natural — no visible en escena — excelente calidad sonora.</div>
+    </div>
+  </div>
+
+  <div class="sb c2">
+    <div class="snum">8</div>
+    <div class="sh">Tipi di microfoni e diagrammi polari</div>
+    <div class="sh-es">Tipos de micrófonos y diagramas polares</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Il <strong>diagramma polare</strong> è la rappresentazione grafica della capacità di un microfono di captare il suono nello spazio. La parte nera del diagramma è l'area in cui si registra il suono.</div>
+      <div class="bi-es">El diagrama polar es la representación gráfica de la capacidad de un micrófono de captar el sonido en el espacio. La parte negra es el área donde se registra el sonido.</div>
+    </div>
+    <div class="mic-grid">
+      <div class="mic-card m1">
+        <div class="mic-name">Cardioide</div>
+        <div class="mic-name-es">Cardioide</div>
+        <span class="mic-tag">⭐ Il più usato</span>
+        <div class="mic-desc">Diagramma a forma di cuore. Capta principalmente davanti. Riduce i rumori posteriori.</div>
+        <div class="mic-desc-es">Diagrama en forma de corazón. Capta principalmente por delante. Reduce ruidos posteriores.</div>
+      </div>
+      <div class="mic-card m2">
+        <div class="mic-name">Ipercardioide</div>
+        <div class="mic-name-es">Hipercardioide</div>
+        <span class="mic-tag">Ambienti rumorosi</span>
+        <div class="mic-desc">Più direzionale del cardioide. Capta soprattutto davanti. Registra leggermente anche dietro.</div>
+        <div class="mic-desc-es">Más direccional que el cardioide. Capta sobre todo por delante. Registra levemente también detrás.</div>
+      </div>
+      <div class="mic-card m3">
+        <div class="mic-name">Omnidirezionale</div>
+        <div class="mic-name-es">Omnidireccional</div>
+        <span class="mic-tag">Ogni direzione</span>
+        <div class="mic-desc">Capta il suono in tutte le direzioni. Utile in documentari o ambienti controllati. Spesso montato su smartphone.</div>
+        <div class="mic-desc-es">Capta el sonido en todas las direcciones. Útil en documentales o ambientes controlados.</div>
+      </div>
+      <div class="mic-card m4">
+        <div class="mic-name">Unidirezionale</div>
+        <div class="mic-name-es">Unidireccional</div>
+        <span class="mic-tag">Ripresa mirata</span>
+        <div class="mic-desc">Capta il suono in una sola direzione. Per riprese dirette molto mirate.</div>
+        <div class="mic-desc-es">Capta el sonido en una sola dirección. Para tomas directas muy focalizadas.</div>
+      </div>
+    </div>
+    <div class="key-rule">
+      <div class="kl">Regola importante / Regla importante</div>
+      <div class="ki">Il suono deve essere sempre <strong>in asse con l'inquadratura</strong>: il microfono deve essere orientato verso la fonte sonora che appare nella scena.</div>
+      <div class="ke">El sonido debe estar siempre en eje con el encuadre: el micrófono debe estar orientado hacia la fuente sonora que aparece en la escena.</div>
+    </div>
+
+    <div class="sub">Ottica e suono / Óptica y sonido</div>
+    <div class="bi">
+      <div class="bi-it"><strong>Grandangolo:</strong> inquadra una porzione ampia. Il microfono deve stare più lontano. Più rischio di includere rumori ambientali.</div>
+      <div class="bi-es">Gran angular: encuadra una porción amplia. El micrófono debe estar más lejos. Más riesgo de ruidos ambientales.</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it"><strong>Teleobiettivo:</strong> stringe molto sull'immagine. L'attore può essere fisicamente lontano. Serve maggiore precisione nel posizionamento del microfono.</div>
+      <div class="bi-es">Teleobjetivo: cierra mucho sobre la imagen. El actor puede estar lejos. Se necesita mayor precisión en el posicionamiento.</div>
+    </div>
+  </div>
+
+  <div class="sb c3">
+    <div class="snum">9</div>
+    <div class="sh">Radiomicrofoni (wireless)</div>
+    <div class="sh-es">Radiomicrófonos (inalámbricos)</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Il <strong>radiomicrofono</strong> è un microfono wireless (anche detto <strong>lavalier</strong>) nascosto sotto i vestiti dell'attore. Utilizzato per registrare la voce senza usare l'asta microfonica.</div>
+      <div class="bi-es">El radiomicrófono es un micrófono inalámbrico (también llamado lavalier) oculto debajo de la ropa del actor.</div>
+    </div>
+    <div class="radio-grid">
+      <div class="radio-item">
+        <div class="radio-num">1</div>
+        <div class="radio-title">Trasmettitore</div>
+        <div class="radio-title-es">Transmisor</div>
+        <div class="radio-desc">Trasmette il segnale audio via radio. Indossato dall'attore (es. alla cintura).</div>
+        <div class="radio-desc-es">Transmite la señal de audio por radio. Lo lleva el actor (ej. en el cinturón).</div>
+      </div>
+      <div class="radio-item">
+        <div class="radio-num">2</div>
+        <div class="radio-title">Ricevitore</div>
+        <div class="radio-title-es">Receptor</div>
+        <div class="radio-desc">Riceve il segnale radio. Collegato al registratore o al mixer audio.</div>
+        <div class="radio-desc-es">Recibe la señal de radio. Conectado al grabador o al mixer de audio.</div>
+      </div>
+      <div class="radio-item">
+        <div class="radio-num">3</div>
+        <div class="radio-title">Capsula microfonica</div>
+        <div class="radio-title-es">Cápsula microfónica</div>
+        <div class="radio-desc">Il piccolo microfono che cattura la voce. Collegato al trasmettitore.</div>
+        <div class="radio-desc-es">El pequeño micrófono que captura la voz. Conectado al transmisor.</div>
+      </div>
+    </div>
+    <div class="alert">
+      <div class="ai">⚠ Trasmettitore e ricevitore devono essere sulla <strong>stessa frequenza</strong>. Se la frequenza non coincide, il segnale non viene ricevuto.</div>
+      <div class="ae">Transmisor y receptor deben estar en la misma frecuencia. Si no coinciden, la señal no se recibe.</div>
+    </div>
+    <div class="pros-cons">
+      <div class="pro-box">
+        <div class="box-label">✓ Vantaggi</div>
+        <div class="box-item">Ottimo per movimenti complessi</div>
+        <div class="box-item">Utile in campi lunghi</div>
+        <div class="box-item">Garantisce continuità sonora</div>
+      </div>
+      <div class="con-box">
+        <div class="box-label">✗ Svantaggi</div>
+        <div class="box-item">Può sfregare sui vestiti</div>
+        <div class="box-item">Suono meno naturale rispetto al boom</div>
+        <div class="box-item">Possibili disturbi nelle radiofrequenze</div>
+        <div class="box-item">Qualità capsule inferiore al boom</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb c4">
+    <div class="snum">10</div>
+    <div class="sh">Microfoni piazzati "Plant"</div>
+    <div class="sh-es">Micrófonos fijos "Plant"</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Microfoni <strong>nascosti sul set</strong> per catturare dialoghi, effetti o ambienti. Possono essere utilizzati anche quando l'inquadratura non consente l'utilizzo efficace del boom e/o dei radiomicrofoni.</div>
+      <div class="bi-es">Micrófonos ocultos en el set para capturar diálogos, efectos o ambientes. Se usan cuando el encuadre no permite el uso eficaz del boom y/o radiomicrófonos.</div>
+    </div>
+  </div>
+</div><!-- /p3 -->
+
+
+<!-- ═══════════ P4: SET & MIX ═══════════ -->
+<div class="section-panel" id="p4">
+  <div class="part-header">
+    <div class="part-title">Sul Set & Mix Finale</div>
+    <div class="part-subtitle">En el Set & Mezcla Final</div>
+  </div>
+
+  <div class="sb c5">
+    <div class="snum">6</div>
+    <div class="sh">Il ruolo del fonico di presa diretta</div>
+    <div class="sh-es">El rol del técnico de sonido de toma directa</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Lavora sempre consultando la <strong>sceneggiatura</strong> per verificare la scena che si sta per girare. Sul carrello da fonico c'è sempre uno schermo dove può osservare la scena. Da indicazioni al <strong>microfonista</strong>.</div>
+      <div class="bi-es">Trabaja siempre consultando el guión. En el carro del técnico siempre hay una pantalla. Da indicaciones al microfonista.</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it">Dopo aver letto la sceneggiatura e analizzato le inquadrature, il fonico deve:</div>
+      <div class="bi-es">Después de leer el guión y analizar los encuadres, el técnico debe:</div>
+    </div>
+    <ul class="check-list">
+      <li><span class="icon">✅</span><div><div>Determinare le priorità della ripresa sonora</div><div class="les">Determinar las prioridades de la toma sonora</div></div></li>
+      <li><span class="icon">✅</span><div><div>Scegliere il tipo di attrezzatura (boom, radiomicrofoni, microfoni nascosti)</div><div class="les">Elegir el tipo de equipamiento (boom, radiomicrófonos, micrófonos ocultos)</div></div></li>
+      <li><span class="icon">✅</span><div><div>Coordinarsi con il microfonista</div><div class="les">Coordinarse con el microfonista</div></div></li>
+      <li><span class="icon">✅</span><div><div>Segnalare criticità ad altri reparti (costumi rumorosi, oggetti che interferiscono, rumori ambientali)</div><div class="les">Señalar problemas a otros departamentos (vestuario ruidoso, objetos que interfieren)</div></div></li>
+    </ul>
+    <div class="key-rule">
+      <div class="kl">Punto di partenza / Punto de partida</div>
+      <div class="ki">LA SCENEGGIATURA. Conoscendo in anticipo la sceneggiatura so chi parla e quando, così posso preparare l'attrezzatura che mi occorre.</div>
+      <div class="ke">EL GUIÓN. Conociendo de antemano el guión sé quién habla y cuándo, así puedo preparar el equipamiento que necesito.</div>
+    </div>
+  </div>
+
+  <div class="sb c6">
+    <div class="snum">11–12</div>
+    <div class="sh">Criticità & Registrazione ambienti</div>
+    <div class="sh-es">Dificultades & Grabación de ambientes</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Prevenire le possibili difficoltà e gestire gli imprevisti è fondamentale.</div>
+      <div class="bi-es">Prevenir las posibles dificultades y gestionar los imprevistos es fundamental.</div>
+    </div>
+    <div class="ex">
+      <div class="ei">Es: il passaggio rumoroso di un aereo in un film ambientato nell'antica Roma → non compatibile con la scena.</div>
+      <div class="ee">Ej: el paso ruidoso de un avión en una película de la antigua Roma → no compatible.</div>
+    </div>
+    <div class="ex">
+      <div class="ei">Es: le cicale cambiano suono continuamente → bisogna avere suoni registrati da usare per riempire buchi.</div>
+      <div class="ee">Ej: las cigarras cambian su sonido continuamente → hay que tener sonidos grabados para llenar vacíos.</div>
+    </div>
+    <div class="sub">Registrazione di ambienti "a vuoto"</div>
+    <div class="sub-es">Grabación de ambientes "en vacío"</div>
+    <div class="bi">
+      <div class="bi-it">Fondamentale per semplificare e migliorare il lavoro in <strong>post produzione audio</strong>. Si possono registrare ambienti mono, stereo, con microfoni MS, 5.1 etc.</div>
+      <div class="bi-es">Fundamental para simplificar y mejorar el trabajo en post producción de audio. Se pueden grabar ambientes mono, estéreo, con micrófonos MS, 5.1 etc.</div>
+    </div>
+  </div>
+
+  <div class="sb c1">
+    <div class="snum">13</div>
+    <div class="sh">Il presidio delle prove di scena</div>
+    <div class="sh-es">La supervisión de los ensayos de escena</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Le prove di scena consentono ai membri chiave della troupe di comprendere come si svolgerà la scena. È importante che siano ben presidiate sia dal <strong>fonico di presa diretta</strong> che dal <strong>microfonista</strong>.</div>
+      <div class="bi-es">Los ensayos de escena permiten a los miembros clave del equipo comprender cómo se desarrollará la escena. Deben ser supervisados por el técnico de sonido y el microfonista.</div>
+    </div>
+    <ul class="check-list">
+      <li><span class="icon">→</span><div><div>Comprendere dove collocarsi fisicamente durante tutta la scena.</div><div class="les">Comprender dónde ubicarse físicamente durante toda la escena.</div></div></li>
+      <li><span class="icon">→</span><div><div>Capire il taglio di inquadratura e i movimenti di macchina.</div><div class="les">Entender el corte de encuadre y los movimientos de cámara.</div></div></li>
+      <li><span class="icon">→</span><div><div>Verificare quali saranno gli abiti di scena in vista dell'utilizzo di microfoni e trasmettitori wireless.</div><div class="les">Verificar cuáles serán los trajes de escena para el uso de micrófonos y transmisores inalámbricos.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="sb c2">
+    <div class="snum">14</div>
+    <div class="sh">I dispositivi wireless e l'ascolto sul set</div>
+    <div class="sh-es">Los dispositivos inalámbricos y la escucha en el set</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">I dispositivi wireless garantiscono ad alcune figure-chiave (regista, segretaria di edizione etc.) un <strong>ascolto in tempo reale</strong> del suono in presa diretta.</div>
+      <div class="bi-es">Los dispositivos inalámbricos garantizan a figuras clave (director, secretaria de edición, etc.) una escucha en tiempo real del sonido en toma directa.</div>
+    </div>
+    <div class="bi">
+      <div class="bi-it">Il fonico deve approntare un <strong>pre-mix dialoghi</strong> ad hoc in tempo reale da inviare a coloro che hanno necessità di ascoltare il suono sul set.</div>
+      <div class="bi-es">El técnico debe preparar un pre-mix de diálogos en tiempo real para quienes necesitan escuchar el sonido en el set.</div>
+    </div>
+  </div>
+
+  <div class="sb c3">
+    <div class="snum">15</div>
+    <div class="sh">Lavorare in sinergia con gli altri reparti</div>
+    <div class="sh-es">Trabajar en sinergia con los otros departamentos</div>
+    <div class="sdiv"></div>
+    <div class="bi">
+      <div class="bi-it">Il suono potrebbe non essere sempre in cima alle priorità del reparto regia o produzione. La <strong>comunicazione con tutti i reparti</strong> è una parte importante del lavoro sul set. Ciascun reparto deve poter comunicare adeguatamente le proprie necessità ed i potenziali problemi.</div>
+      <div class="bi-es">El sonido podría no estar siempre entre las prioridades. La comunicación con todos los departamentos es una parte importante del trabajo. Cada departamento debe comunicar sus necesidades y problemas.</div>
+    </div>
+  </div>
+
+  <div class="sb c4">
+    <div class="snum">16</div>
+    <div class="sh">Il mix finale</div>
+    <div class="sh-es">La mezcla final</div>
+    <div class="sdiv"></div>
+    <div class="key-rule">
+      <div class="kl">Definizione / Definición</div>
+      <div class="ki">Il <strong>fonico di mixaggio</strong> miscela tutti gli elementi del suono per ogni scena a seconda della loro importanza. Il suo apporto tecnico e creativo è fondamentale per l'identità sonora del film.</div>
+      <div class="ke">El técnico de mezcla combina todos los elementos del sonido para cada escena según su importancia. Su aporte técnico y creativo es fundamental para la identidad sonora de la película.</div>
+    </div>
+  </div>
+</div><!-- /p4 -->
+
+</div><!-- /.container -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
