@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossario Bilingue — Grammatica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118;
+  --surface: #1a1d2e;
+  --surface2: #242840;
+  --accent1: #6c63ff;
+  --accent2: #00d4aa;
+  --accent3: #ff6b6b;
+  --accent4: #ffd93d;
+  --accent5: #4ecdc4;
+  --accent6: #a78bfa;
+  --text: #e8e6f0;
+  --text-dim: #8b8aa0;
+  --text-es: #6dd4b0;
+  --border: rgba(108,99,255,0.2);
+  --glow: rgba(108,99,255,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+.grain { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; }
+
+/* ─── Back button ─── */
+.back-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; text-decoration: none; transition: all 0.25s; position: absolute; top: 24px; left: 24px; z-index: 10; }
+.back-btn:hover { color: var(--text); border-color: var(--accent1); box-shadow: 0 4px 15px var(--glow); transform: translateX(-2px); }
+
+/* ─── Header ─── */
+header { text-align: center; padding: 50px 20px 35px; position: relative; }
+header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 2px; }
+h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 800; background: linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.header-sub { color: var(--text-dim); font-size: 0.9rem; }
+
+/* ─── Controls ─── */
+.controls { max-width: 960px; margin: 0 auto; padding: 28px 20px 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 360px; }
+.search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 16px 10px 40px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; transition: all 0.25s; }
+.search-wrap input:focus { border-color: var(--accent1); box-shadow: 0 0 0 3px var(--glow); }
+.search-wrap input::placeholder { color: var(--text-dim); }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.9rem; pointer-events: none; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 16px; border-radius: 20px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.4px; }
+.filters button:hover { color: var(--text); border-color: var(--accent1); }
+.filters button.active { background: var(--accent1); color: #fff; border-color: var(--accent1); }
+
+.count { color: var(--text-dim); font-size: 0.82rem; white-space: nowrap; }
+.count span { color: var(--accent2); font-weight: 700; }
+
+/* ─── Grid ─── */
+.container { max-width: 960px; margin: 0 auto; padding: 0 20px 60px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+/* ─── Glossary card ─── */
+.gcard { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 0; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; display: flex; flex-direction: column; }
+.gcard:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.gcard.hidden { display: none; }
+
+.gcard-top { padding: 18px 20px 14px; position: relative; }
+.gcard-top::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.gcard.c1 .gcard-top::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+.gcard.c2 .gcard-top::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+.gcard.c3 .gcard-top::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+
+.gcard-category { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+.gcard.c1 .gcard-category { color: var(--accent6); }
+.gcard.c2 .gcard-category { color: var(--accent2); }
+.gcard.c3 .gcard-category { color: var(--accent4); }
+
+.gcard-term-it { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 4px; }
+.gcard-term-es { color: var(--text-es); font-style: italic; font-size: 0.88rem; }
+
+.gcard-body { padding: 0 20px 18px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.gcard-sep { width: 36px; height: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 1px; margin-bottom: 2px; }
+
+.def-it { font-size: 0.84rem; color: var(--text); line-height: 1.55; }
+.def-es { font-size: 0.79rem; color: var(--text-es); font-style: italic; line-height: 1.5; opacity: 0.85; }
+
+/* ─── Section header card ─── */
+.section-header { grid-column: 1 / -1; background: linear-gradient(135deg, rgba(108,99,255,0.12), rgba(0,212,170,0.08)); border: 1px solid rgba(108,99,255,0.3); border-radius: 14px; padding: 16px 24px; display: flex; align-items: center; gap: 14px; }
+.section-header .sh-icon { font-size: 1.4rem; }
+.section-header .sh-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+.section-header .sh-sub { color: var(--text-es); font-style: italic; font-size: 0.85rem; margin-top: 2px; }
+
+/* ─── Empty state ─── */
+.empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-dim); }
+.empty .emoji { font-size: 2.5rem; margin-bottom: 12px; }
+.empty p { font-size: 0.9rem; }
+
+/* ─── Scroll to top ─── */
+.scroll-top { position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none; color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(108,99,255,0.4); opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; z-index: 999; }
+.scroll-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(108,99,255,0.55); }
+
+/* ─── Responsive ─── */
+@media(max-width:600px) {
+  .back-btn { position: static; margin: 16px 0 0 20px; display: inline-flex; }
+  header { padding-top: 20px; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .search-wrap { max-width: 100%; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<a class="back-btn" href="index.html">← Home</a>
+
+<header>
+  <h1>Glossario Bilingue</h1>
+  <p class="header-sub">Grammatica — L'Aggettivo + La Preposizione</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Cerca / Buscar..." oninput="filterCards()">
+  </div>
+  <div class="filters">
+    <button class="active" onclick="setFilter('all', this)">Tutti</button>
+    <button onclick="setFilter('c1', this)">📘 Aggettivo 1ª</button>
+    <button onclick="setFilter('c2', this)">📗 Aggettivo 2ª</button>
+    <button onclick="setFilter('c3', this)">📙 Preposizione</button>
+  </div>
+  <div class="count"><span id="visibleCount">52</span> termini</div>
+</div>
+
+<div class="container">
+<div class="grid" id="grid">
+
+<!-- ══════════════ SEZIONE 1: AGGETTIVO 1ª PARTE ══════════════ -->
+<div class="section-header" data-cat="c1">
+  <span class="sh-icon">📘</span>
+  <div>
+    <div class="sh-title">L'Aggettivo — 1ª Parte</div>
+    <div class="sh-sub">El Adjetivo — 1ª Parte (Repaso)</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="aggettivo adjetivo parola aggiunge nome qualità característica">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Aggettivo</div>
+    <div class="gcard-term-es">Adjetivo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Parola che si aggiunge al nome, a cui dà una qualità o una caratteristica.</div>
+    <div class="def-es">Palabra que se agrega al nombre, al cual le da una cualidad o una característica.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="aggettivo qualificativo adjetivo calificativo bello grande">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Aggettivo qualificativo</div>
+    <div class="gcard-term-es">Adjetivo calificativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Tipo di aggettivo più diffuso. Precisa la qualità del nome. Es: <em>bello, grande</em>.</div>
+    <div class="def-es">Tipo de adjetivo más común. Precisa la cualidad del nombre. Ej: <em>bello, grande</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="aggettivo sostantivato adjetivo sustantivado ricchi articolo">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Aggettivo sostantivato</div>
+    <div class="gcard-term-es">Adjetivo sustantivado</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Aggettivo usato come nome, preceduto da articolo. Es: <em>I ricchi</em>.</div>
+    <div class="def-es">Adjetivo usado como nombre, precedido por artículo. Ej: <em>Los ricos</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="concordanza concordancia genere numero maschile femminile singolare plurale">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Concordanza</div>
+    <div class="gcard-term-es">Concordancia</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Regola per cui l'aggettivo deve concordare in genere e numero con il nome.</div>
+    <div class="def-es">Regla por la cual el adjetivo debe concordar en género y número con el nombre.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="aggettivo invariabile adjetivo invariable cool blu viola rosa pari dispari">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Aggettivo invariabile</div>
+    <div class="gcard-term-es">Adjetivo invariable</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Aggettivo che non cambia forma: stranieri (<em>cool</em>), accentati (<em>blu</em>), colori da nomi (<em>viola, rosa</em>), <em>pari/dispari</em>.</div>
+    <div class="def-es">Adjetivo que no cambia forma: extranjeros (<em>cool</em>), acentuados (<em>blu</em>), colores de nombres (<em>viola, rosa</em>), par/impar.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="grado positivo positivo forma base prudente astuto">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Grado positivo</div>
+    <div class="gcard-term-es">Grado positivo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">L'aggettivo nella sua forma base, pura. Es: <em>prudente, astuto</em>.</div>
+    <div class="def-es">El adjetivo en su forma base, pura. Ej: <em>prudente, astuto</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="comparativo maggioranza mayoría più di greta alta">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Comparativo di maggioranza</div>
+    <div class="gcard-term-es">Comparativo de mayoría</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it"><strong>più + aggettivo + di</strong>. Es: <em>Greta è più alta di Tharushi</em>.</div>
+    <div class="def-es"><strong>más + adjetivo + que</strong>. Ej: <em>Greta es más alta que Tharushi</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="comparativo minoranza minoría meno di rossi scherzosa">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Comparativo di minoranza</div>
+    <div class="gcard-term-es">Comparativo de minoría</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it"><strong>meno + aggettivo + di</strong>. Es: <em>La Rossi è meno scherzosa del Florà</em>.</div>
+    <div class="def-es"><strong>menos + adjetivo + que</strong>. Ej: <em>La Rossi es menos bromista que Florà</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="comparativo uguaglianza igualdad come quanto tan como">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Comparativo di uguaglianza</div>
+    <div class="gcard-term-es">Comparativo de igualdad</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it"><strong>aggettivo + come/quanto</strong>. Es: <em>La 1AL è numerosa come la 1BL</em>.</div>
+    <div class="def-es"><strong>tan + adjetivo + como</strong>. Ej: <em>La 1AL es tan numerosa como la 1BL</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="superlativo relativo relativo il più tra di cecilia alta">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Superlativo relativo</div>
+    <div class="gcard-term-es">Superlativo relativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it"><strong>il/la più + aggettivo + tra/di</strong>. Es: <em>Cecilia è la più alta tra le sue amiche</em>.</div>
+    <div class="def-es"><strong>el/la más + adjetivo + entre/de</strong>. Ej: <em>Cecilia es la más alta entre sus amigas</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="superlativo assoluto absoluto issimo molto ultra intelligentissimo">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Superlativo assoluto</div>
+    <div class="gcard-term-es">Superlativo absoluto</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Esprime la qualità al massimo grado: <strong>-issimo / molto + agg. / ultra + agg.</strong></div>
+    <div class="def-es">Expresa la cualidad en grado máximo: <strong>-ísimo / muy + adj. / ultra + adj.</strong></div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="migliore mejor comparativo buono ottimo irregolare">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Migliore</div>
+    <div class="gcard-term-es">Mejor</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Comparativo irregolare di <em>buono</em>. Superlativo: <strong>ottimo</strong>. NON si dice "più migliore".</div>
+    <div class="def-es">Comparativo irregular de <em>bueno</em>. Superlativo: <strong>óptimo</strong>. NO se dice "più migliore".</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="peggiore peor comparativo cattivo pessimo irregolare">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Peggiore</div>
+    <div class="gcard-term-es">Peor</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Comparativo irregolare di <em>cattivo</em>. Superlativo: <strong>pessimo</strong>.</div>
+    <div class="def-es">Comparativo irregular de <em>malo</em>. Superlativo: <strong>pésimo</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="maggiore mayor comparativo grande massimo irregolare">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Maggiore</div>
+    <div class="gcard-term-es">Mayor</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Comparativo irregolare di <em>grande</em>. Superlativo: <strong>massimo</strong>.</div>
+    <div class="def-es">Comparativo irregular de <em>grande</em>. Superlativo: <strong>máximo</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="minore menor comparativo piccolo minimo irregolare">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Minore</div>
+    <div class="gcard-term-es">Menor</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Comparativo irregolare di <em>piccolo</em>. Superlativo: <strong>minimo</strong>.</div>
+    <div class="def-es">Comparativo irregular de <em>pequeño</em>. Superlativo: <strong>mínimo</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="superiore superior comparativo alto supremo sommo irregolare">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Superiore</div>
+    <div class="gcard-term-es">Superior</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Comparativo irregolare di <em>alto</em>. Superlativo: <strong>supremo/sommo</strong>.</div>
+    <div class="def-es">Comparativo irregular de <em>alto</em>. Superlativo: <strong>supremo/sumo</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="inferiore inferior comparativo basso infimo irregolare">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Inferiore</div>
+    <div class="gcard-term-es">Inferior</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Comparativo irregolare di <em>basso</em>. Superlativo: <strong>infimo</strong>.</div>
+    <div class="def-es">Comparativo irregular de <em>bajo</em>. Superlativo: <strong>ínfimo</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="superlativo errimo acerrimo celeberrimo integerrimo miserrimo asperrimo">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Superlativo in -errimo</div>
+    <div class="gcard-term-es">Superlativo en -errimo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Forma speciale di superlativo: <em>acerrimo, asperrimo, celeberrimo, integerrimo, miserrimo</em>.</div>
+    <div class="def-es">Forma especial de superlativo: <em>acérrimo, aspérrimo, celebérrimo, integérrimo, misérrimo</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="peggiorativo peyorativo alterazione suffisso biancastro blanquecino">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Peggiorativo</div>
+    <div class="gcard-term-es">Peyorativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Alterazione negativa dell'aggettivo tramite suffisso. Es: <em>biancastro</em>.</div>
+    <div class="def-es">Alteración negativa del adjetivo mediante sufijo. Ej: <em>blanquecino</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="accrescitivo aumentativo alterazione intelligentone inteligentón">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Accrescitivo</div>
+    <div class="gcard-term-es">Aumentativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Alterazione che accresce l'aggettivo. Es: <em>intelligentone</em>.</div>
+    <div class="def-es">Alteración que aumenta el adjetivo. Ej: <em>inteligentón</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c1" data-cat="c1" data-search="diminutivo diminutivo alterazione bellino bonito lindo">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 1ª Parte</div>
+    <div class="gcard-term-it">Diminutivo</div>
+    <div class="gcard-term-es">Diminutivo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Alterazione che diminuisce l'aggettivo. Es: <em>bellino</em>.</div>
+    <div class="def-es">Alteración que disminuye el adjetivo. Ej: <em>bonito/lindo</em>.</div>
+  </div>
+</div>
+
+<!-- ══════════════ SEZIONE 2: AGGETTIVO 2ª PARTE ══════════════ -->
+<div class="section-header" data-cat="c2">
+  <span class="sh-icon">📗</span>
+  <div>
+    <div class="sh-title">L'Aggettivo — 2ª Parte</div>
+    <div class="sh-sub">El Adjetivo — 2ª Parte (Tipologías)</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo possessivo posesivo mio tuo suo nostro vostro loro">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo possessivo</div>
+    <div class="gcard-term-es">Adjetivo posesivo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Esprime il possessore: <em>mio, tuo, suo, nostro, vostro, loro</em>.</div>
+    <div class="def-es">Expresa el poseedor: <em>mío, tuyo, suyo, nuestro, vuestro, de ellos</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="suo su de él ella possessore uno solo sofia zia">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Suo</div>
+    <div class="gcard-term-es">Su (de él/ella)</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Si usa quando il possessore è 1 solo. Es: <em>Sofia è uscita con sua zia</em>.</div>
+    <div class="def-es">Se usa cuando el poseedor es 1 solo. Ej: <em>Sofía salió con su tía</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="loro su de ellos possessori due più flavio samuel amici">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Loro</div>
+    <div class="gcard-term-es">Su (de ellos)</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Si usa quando i possessori sono 2 o più. Es: <em>Flavio e Samuel con i loro amici</em>.</div>
+    <div class="def-es">Se usa cuando los poseedores son 2 o más. Ej: <em>Flavio y Samuel con sus amigos</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="proprio propio sostituire sua impersonale dovere">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Proprio</div>
+    <div class="gcard-term-es">Propio</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Può sostituire <em>suo/a</em>. Obbligatorio con verbi impersonali. Es: <em>Si deve badare al proprio dovere</em>.</div>
+    <div class="def-es">Puede sustituir a <em>suo/a</em>. Obligatorio con verbos impersonales. Ej: <em>Se debe atender al propio deber</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="altrui ajeno de los otros possessivo invariabile compiti">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Altrui</div>
+    <div class="gcard-term-es">De los otros / Ajeno</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Aggettivo possessivo invariabile. Significa "degli altri". Es: <em>i compiti altrui</em>.</div>
+    <div class="def-es">Adjetivo posesivo invariable. Significa "de los otros". Ej: <em>las tareas ajenas</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo dimostrativo demostrativo questo quello vicino lontano spazio tempo">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo dimostrativo</div>
+    <div class="gcard-term-es">Adjetivo demostrativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Esprime vicinanza/lontananza nel tempo o nello spazio: <em>questo</em> (vicino), <em>quello</em> (lontano).</div>
+    <div class="def-es">Expresa cercanía/lejanía en el tiempo o en el espacio: <em>questo</em> (cerca), <em>quello</em> (lejos).</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="questo este esta vicinanza vicino chi parla">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Questo</div>
+    <div class="gcard-term-es">Este / Esta</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica maggiore vicinanza a chi parla (tempo o spazio).</div>
+    <div class="def-es">Indica mayor cercanía a quien habla (tiempo o espacio).</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="quello ese aquel lontananza articolo lo regole">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Quello</div>
+    <div class="gcard-term-es">Ese / Aquel</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica maggiore lontananza. Contiene l'articolo "lo", si applicano le regole dell'articolo.</div>
+    <div class="def-es">Indica mayor lejanía. Contiene el artículo "lo", se aplican las reglas del artículo.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo identificativo identificativo stesso medesimo uguale identico">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo identificativo</div>
+    <div class="gcard-term-es">Adjetivo identificativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Esprime uguaglianza: <em>stesso, medesimo</em>. Significano uguale/identico.</div>
+    <div class="def-es">Expresa igualdad: <em>mismo, idéntico</em>. Significan igual/idéntico.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo indefinito indefinido alcuni pochi tanti troppi nessuno">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo indefinito</div>
+    <div class="gcard-term-es">Adjetivo indefinido</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Esprime info generiche: <em>alcuni, pochi, tanti, troppi, nessuno</em>, ecc.</div>
+    <div class="def-es">Expresa info genérica: <em>algunos, pocos, tantos, demasiados, ninguno</em>, etc.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="nessuno ninguno articolo uno apostrofo aereo maschile">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Nessuno</div>
+    <div class="gcard-term-es">Ninguno</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Contiene l'articolo "uno", si applicano le regole note. Es: <em>nessun aereo</em> (senza apostrofo).</div>
+    <div class="def-es">Contiene el artículo "uno", se aplican las reglas conocidas. Ej: <em>nessun aereo</em> (sin apóstrofo).</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="alcuno singolare nessuno ninguno bisogno singular">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Alcuno (singolare)</div>
+    <div class="gcard-term-es">Ninguno (singular)</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Al singolare equivale a <em>nessuno</em>. Es: <em>Non ho alcun bisogno</em>.</div>
+    <div class="def-es">En singular equivale a <em>ninguno</em>. Ej: <em>No tengo ninguna necesidad</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="alcuni plurale qualche algunos plural studenti">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Alcuni (plurale)</div>
+    <div class="gcard-term-es">Algunos (plural)</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Al plurale equivale a <em>qualche</em>. Es: <em>Alcuni studenti studieranno</em>.</div>
+    <div class="def-es">En plural equivale a <em>algunos</em>. Ej: <em>Algunos estudiantes estudiarán</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo numerale cardinale cardinal quattro cantidad precisa matite">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo numerale cardinale</div>
+    <div class="gcard-term-es">Adjetivo numeral cardinal</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica quantità precisa. Es: <em>Ho quattro matite</em>.</div>
+    <div class="def-es">Indica cantidad precisa. Ej: <em>Tengo cuatro lápices</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo numerale ordinale ordinal primo posizione daniele">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo numerale ordinale</div>
+    <div class="gcard-term-es">Adjetivo numeral ordinal</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica la posizione. Es: <em>Il primo interrogato è Daniele</em>.</div>
+    <div class="def-es">Indica la posición. Ej: <em>El primer interrogado es Daniele</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo numerale moltiplicativo multiplicativo doppio triplo fatica doble">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo numerale moltiplicativo</div>
+    <div class="gcard-term-es">Adjetivo numeral multiplicativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Esprime la moltiplicazione: <em>doppio, triplo</em>. Es: <em>una doppia fatica</em>.</div>
+    <div class="def-es">Expresa la multiplicación: <em>doble, triple</em>. Ej: <em>un doble esfuerzo</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo interrogativo interrogativo quanto quale che spiaggia domanda">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo interrogativo</div>
+    <div class="gcard-term-es">Adjetivo interrogativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Accompagna nomi in domande: <em>quanto, quale, che</em>. Es: <em>In quale spiaggia…?</em></div>
+    <div class="def-es">Acompaña nombres en preguntas: <em>cuánto, cuál, qué</em>. Ej: <em>¿En qué playa…?</em></div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="aggettivo esclamativo exclamativo quanto quale che onore esclamazione">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Aggettivo esclamativo</div>
+    <div class="gcard-term-es">Adjetivo exclamativo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Accompagna nomi in esclamazioni: <em>quanto, quale, che</em>. Es: <em>Quale onore!</em></div>
+    <div class="def-es">Acompaña nombres en exclamaciones: <em>cuánto, cuál, qué</em>. Ej: <em>¡Qué honor!</em></div>
+  </div>
+</div>
+
+<div class="gcard c2" data-cat="c2" data-search="che qué sostituire quale invariabile parlato fisso sorpresa netflix">
+  <div class="gcard-top">
+    <div class="gcard-category">Aggettivo 2ª Parte</div>
+    <div class="gcard-term-it">Che (interr./escl.)</div>
+    <div class="gcard-term-es">Qué</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Può sostituire <em>quale</em> nella lingua parlata. È <strong>invariabile</strong> (fisso).</div>
+    <div class="def-es">Puede sustituir a <em>quale</em> en la lengua hablada. Es <strong>invariable</strong> (fijo).</div>
+  </div>
+</div>
+
+<!-- ══════════════ SEZIONE 3: LA PREPOSIZIONE ══════════════ -->
+<div class="section-header" data-cat="c3">
+  <span class="sh-icon">📙</span>
+  <div>
+    <div class="sh-title">La Preposizione</div>
+    <div class="sh-sub">La Preposición</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="preposizione preposición invariabile collega nome pronome avverbio infinito">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Preposizione</div>
+    <div class="gcard-term-es">Preposición</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Elemento invariabile che precede nome/pronome/avverbio/verbo all'infinito. Collega le parti della frase.</div>
+    <div class="def-es">Elemento invariable que precede nombre/pronombre/adverbio/verbo en infinitivo. Conecta las partes de la oración.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="preposizioni semplici simples di a da in con su per tra fra nove base">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Preposizioni semplici</div>
+    <div class="gcard-term-es">Preposiciones simples</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Le 9 preposizioni base: <strong>di, a, da, in, con, su, per, tra, fra</strong>.</div>
+    <div class="def-es">Las 9 preposiciones base: <strong>di, a, da, in, con, su, per, tra, fra</strong>.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="preposizione articolata articulada semplice articolo sul della nel ai dai">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Preposizione articolata</div>
+    <div class="gcard-term-es">Preposición articulada</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Preposizione semplice + articolo. Es: <em>sul (su+il), della (di+la), nel (in+il), ai (a+i), dai (da+i)</em>.</div>
+    <div class="def-es">Preposición simple + artículo. Ej: <em>sul, della, nel, ai, dai</em>.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="articolo partitivo partitivo del dei un po di alcuni sostituire">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Articolo partitivo</div>
+    <div class="gcard-term-es">Artículo partitivo</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Sembra una preposizione articolata ma si può sostituire con "un po' di" (sing.) o "alcuni" (plur.).</div>
+    <div class="def-es">Parece una preposición articulada pero se puede sustituir por "un poco de" (sing.) o "algunos" (plur.).</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="di de preposizione possesso provenienza argomento materia">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Di</div>
+    <div class="gcard-term-es">De</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica possesso, provenienza, argomento, materia.</div>
+    <div class="def-es">Indica posesión, procedencia, tema, materia.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="a preposizione direzione luogo tempo termine complemento indiretto">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">A</div>
+    <div class="gcard-term-es">A</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica direzione, luogo, tempo, termine.</div>
+    <div class="def-es">Indica dirección, lugar, tiempo, complemento indirecto.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="da de desde preposizione provenienza agente causa tempo">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Da</div>
+    <div class="gcard-term-es">De / Desde</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica provenienza, agente, causa, tempo.</div>
+    <div class="def-es">Indica procedencia, agente, causa, tiempo.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="in en preposizione stato luogo mezzo modo tempo">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">In</div>
+    <div class="gcard-term-es">En</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica stato in luogo, mezzo, modo, tempo.</div>
+    <div class="def-es">Indica estado en lugar, medio, modo, tiempo.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="con con preposizione compagnia mezzo modo">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Con</div>
+    <div class="gcard-term-es">Con</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica compagnia, mezzo, modo.</div>
+    <div class="def-es">Indica compañía, medio, modo.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="su sobre en preposizione posizione sopra argomento tema">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Su</div>
+    <div class="gcard-term-es">Sobre / En</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica posizione sopra, argomento.</div>
+    <div class="def-es">Indica posición encima, tema.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="per para por preposizione scopo causa destinazione durata">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Per</div>
+    <div class="gcard-term-es">Para / Por</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indica scopo, causa, destinazione, durata.</div>
+    <div class="def-es">Indica propósito, causa, destino, duración.</div>
+  </div>
+</div>
+
+<div class="gcard c3" data-cat="c3" data-search="tra fra entre preposizione posizione intermedia tempo futuro intercambiabili">
+  <div class="gcard-top">
+    <div class="gcard-category">Preposizione</div>
+    <div class="gcard-term-it">Tra / Fra</div>
+    <div class="gcard-term-es">Entre</div>
+  </div>
+  <div class="gcard-body">
+    <div class="gcard-sep"></div>
+    <div class="def-it">Indicano posizione intermedia, tempo futuro. Sono <strong>intercambiabili</strong>.</div>
+    <div class="def-es">Indican posición intermedia, tiempo futuro. Son <strong>intercambiables</strong>.</div>
+  </div>
+</div>
+
+<!-- empty state -->
+<div class="empty" id="emptyState" style="display:none;">
+  <div class="emoji">🔍</div>
+  <p>Nessun termine trovato / Ningún término encontrado</p>
+</div>
+
+</div><!-- /grid -->
+</div><!-- /container -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
+
+<script>
+let activeFilter = 'all';
+
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterCards();
+}
+
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.gcard');
+  const headers = document.querySelectorAll('.section-header');
+  let visible = 0;
+
+  headers.forEach(h => {
+    const cat = h.dataset.cat;
+    h.style.display = (activeFilter === 'all' || activeFilter === cat) ? '' : 'none';
+  });
+
+  cards.forEach(card => {
+    const catMatch = activeFilter === 'all' || card.dataset.cat === activeFilter;
+    const searchText = card.dataset.search + ' ' + card.innerText.toLowerCase();
+    const qMatch = q === '' || searchText.includes(q);
+    if (catMatch && qMatch) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('visibleCount').textContent = visible;
+  document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+}
+
+document.getElementById('visibleCount').textContent = document.querySelectorAll('.gcard').length;
+
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
