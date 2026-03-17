@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riassunto per l'Interrogazione — L'Odissea</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.scroll-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent3);color:#fff;border:none;font-size:1.2rem;cursor:pointer;z-index:999;display:none;align-items:center;justify-content:center}
+.scroll-top.show{display:flex}
+.app{max-width:750px;margin:0 auto;padding:30px 20px 40px}
+header{text-align:center;padding:20px 0 30px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;background:linear-gradient(135deg,#fff,var(--accent4),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+header p{color:var(--text-dim);font-size:.9rem}
+header .es-sub{color:var(--text-es);font-style:italic;font-size:.85rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.card.visible{opacity:1;transform:translateY(0)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0}
+.card:nth-child(odd)::before{background:linear-gradient(90deg,var(--accent3),var(--accent4))}
+.card:nth-child(even)::before{background:linear-gradient(90deg,var(--accent4),var(--accent5))}
+.card h2{font-family:'Playfair Display',serif;font-size:1.15rem;color:#fff;margin-bottom:10px}
+.card h2 .num{color:var(--accent3);margin-right:6px}
+.it{font-size:.92rem;color:var(--text);line-height:1.65;margin-bottom:6px}
+.es{font-size:.85rem;color:var(--text-es);font-style:italic;line-height:1.55;padding-left:14px;border-left:2px solid rgba(109,212,176,.2);margin-bottom:4px}
+.tag{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.tag.key{background:rgba(255,107,107,.15);color:var(--accent3)}
+.tag.brano{background:rgba(0,212,170,.15);color:var(--accent2)}
+.tag.star{background:rgba(255,217,61,.15);color:var(--accent4)}
+.tag.pers{background:rgba(167,139,250,.15);color:var(--accent6)}
+@media(max-width:600px){.app{padding:20px 14px 30px}.card{padding:18px 20px}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="app">
+<header>
+<h1>Riassunto per l'Interrogazione</h1>
+<p>L'Odissea — 13 punti chiave</p>
+<div class="es-sub">(La Odisea — Resumen para la interrogación — Repaso rápido)</div>
+</header>
+
+<div class="card"><span class="tag key">Dati base</span><h2><span class="num">1.</span> L'Odissea: dati base</h2>
+<p class="it">Autore: <strong>Omero</strong>, VIII sec. a.C. Poema epico di <strong>24 libri</strong> (canti) in versi <strong>esametri</strong>. <strong>Odisseo</strong> (greco) = <strong>Ulisse</strong> (latino). Re di <strong>Itaca</strong>. Patronimico: <strong>Laertìade</strong>. <strong>10 anni</strong> guerra + <strong>10 anni</strong> viaggio = <strong>20 anni</strong> lontano.</p>
+<p class="es">Autor: Homero, siglo VIII a.C. 24 libros, versos hexámetros. Odiseo (griego) = Ulises (latino). Rey de Ítaca. Patronímico: Laertíade. 10+10 = 20 años lejos.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">2.</span> Argomento: NOSTOS</h2>
+<p class="it">Tema fondamentale: il <strong>NOSTOS</strong> (viaggio di ritorno) di Odisseo a Itaca dopo Troia. Complicato da: ostilità di Poseidone, imprudenze dei compagni, attrazione per Circe/Calipso, sete di conoscenza.</p>
+<p class="es">Tema: NOSTOS (viaje de regreso) de Odiseo a Ítaca. Complicado por: hostilidad de Poseidón, imprudencias de compañeros, atracción por Circe/Calipso, sed de conocimiento.</p></div>
+
+<div class="card"><span class="tag star">⭐ Clave verifica</span><h2><span class="num">3.</span> METIS vs MENIS</h2>
+<p class="it"><strong>MENIS</strong> = ira (tema Iliade, muove Achille). <strong>METIS</strong> = intelligenza intraprendente di Odisseo: a) problem solving, b) prudenza, c) curiosità insaziabile. Lo rende caro ad <strong>Atena</strong>. ⚠ <strong>NON confondere!</strong></p>
+<p class="es">MENIS = ira (Ilíada, Aquiles). METIS = inteligencia emprendedora: problem solving, prudencia, curiosidad. Lo hace querido por Atenea. ⚠ ¡NO confundir!</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">4.</span> Il Proemio</h2>
+<p class="it">1) Invocazione alla Musa <strong>Callìope</strong>. 2) <strong>PROTASI</strong>: esposizione dell'argomento. Versi: <strong>esametri</strong>. "Ritorno" compare <strong>2 volte</strong>. Emerge la <strong>metis</strong>. Conclusione: <strong>sacrilegio</strong> dei compagni (buoi del Sole) → morte → Odisseo rientra <strong>da solo</strong>.</p>
+<p class="es">1) Invocación a Calíope. 2) PRÓTASIS: exposición argumento. Hexámetros. "Regreso" aparece 2 veces. Surge metis. Sacrilegio compañeros (bueyes Sol) → muerte → Odiseo regresa solo.</p></div>
+
+<div class="card"><span class="tag star">⭐ Clave verifica</span><h2><span class="num">5.</span> Struttura: 3 nuclei</h2>
+<p class="it"><strong>I-IV: TELEMACHIA</strong> → Telemaco cerca il padre, ostacolato dai Proci, Atena lo aiuta.<br><strong>V-XII: RACCONTO DEL VIAGGIO</strong> → Calipso ~8 anni, Feaci, flash-back (Polifemo, Circe...).<br><strong>XIII-XXIV: RITORNO E VENDETTA</strong> → mendicante, stermina Proci, rivela identità, pace.</p>
+<p class="es">I-IV: TELEMAQUIA. V-XII: RELATO DEL VIAJE (Calipso, Feacios, flash-back). XIII-XXIV: REGRESO Y VENGANZA (Pretendientes, paz).</p></div>
+
+<div class="card"><span class="tag pers">Personaggi</span><h2><span class="num">6.</span> Divinità</h2>
+<p class="it"><strong>FAVOREVOLI</strong>: <strong>Atena</strong> (dea intelligenza, protegge sempre, trasforma in mendicante). <strong>Eolo</strong> (dio venti, dà sacca ma compagni aprono). <strong>Hermes</strong> (messaggero, dà moly, ordina a Calipso di liberarlo).<br><strong>OSTILE</strong>: <strong>Poseidone</strong> (dio mare, dopo accecamento figlio Polifemo).</p>
+<p class="es">FAVORABLES: Atenea, Eolo, Hermes. HOSTIL: Poseidón (tras cegar a Polifemo).</p></div>
+
+<div class="card"><span class="tag star">⭐ Clave verifica</span><h2><span class="num">7.</span> Alcinoo vs Antinoo</h2>
+<p class="it">⚠ <strong>NON CONFONDERE!</strong><br><strong>ALCINOO</strong> = re dei Feaci, ospita Odisseo → <strong>POSITIVO</strong>.<br><strong>ANTINOO</strong> = capo dei Proci, nemico → <strong>NEGATIVO</strong>.</p>
+<p class="es">⚠ ¡NO CONFUNDIR! ALCÍNOO = rey Feacios → POSITIVO. ANTÍNOO = líder Pretendientes → NEGATIVO.</p></div>
+
+<div class="card"><span class="tag brano">Brano</span><h2><span class="num">8.</span> Odisseo e Calipso</h2>
+<p class="it">Isola di <strong>Ogigia</strong>. Trattenuto <strong>~8 anni</strong>. Calipso offre <strong>immortalità</strong>. Dei ordinano (via Hermes) di liberarlo. Concetti: <strong>epiteto</strong> "astuto Odisseo", <strong>flash-forward</strong> (profezia), mentalità <strong>misogina</strong>, <strong>XENIA</strong> (generosità al distacco).</p>
+<p class="es">Isla Ogigia. ~8 años. Inmortalidad. Dioses ordenan liberarlo. Epíteto, flash-forward, misoginia, XENIA.</p></div>
+
+<div class="card"><span class="tag brano">Brano</span><h2><span class="num">9.</span> Odisseo e Nausicaa / Feaci</h2>
+<p class="it">Naufragio (Poseidone) → <strong>Scheria</strong> (Feaci, re Alcinoo). Nausicaa gioca a palla, Atena le dà coraggio. Odisseo parla con <strong>parole gentili da lontano</strong>. Nausicaa: <strong>dolcezza + intraprendenza</strong>. <strong>XENIA sacra</strong>. Aedo <strong>Demodoco</strong> narra Troia → Odisseo si commuove (riferimento autobiografico Omero).</p>
+<p class="es">Naufragio → Esqueria (Feacios). Nausícaa: dulzura + iniciativa. XENIA sagrada. Aedo Demódoco → Odiseo se conmueve.</p></div>
+
+<div class="card"><span class="tag brano">Brano</span><h2><span class="num">10.</span> Odisseo e Circe</h2>
+<p class="it">Compagni aprono otre Eolo → isola <strong>Eea</strong>. <strong>Circe</strong> trasforma compagni in <strong>maiali</strong>. Hermes dà il <strong>MOLY</strong> (antidoto). Odisseo vince. Resta <strong>~1 anno</strong>. Concetto: <strong>INSAZIABILE CURIOSITÀ</strong> → spingersi oltre i limiti umani.</p>
+<p class="es">Compañeros abren odre Eolo → isla Eea. Circe transforma en cerdos. Hermes da MOLY. Odiseo vence. ~1 año. Concepto: INSACIABLE CURIOSIDAD.</p></div>
+
+<div class="card"><span class="tag pers">Personaggi</span><h2><span class="num">11.</span> Odisseo in Dante</h2>
+<p class="it">Divina Commedia, Inferno, canto <strong>XXVI</strong>. <em>"Fatti non foste a viver come bruti, ma per seguir virtute e conoscenza"</em>. Dante sottolinea la determinazione nel superare i limiti della conoscenza.</p>
+<p class="es">Divina Comedia, Infierno, canto XXVI. Dante subraya la determinación de Odiseo en superar los límites del conocimiento.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">12.</span> XENIA (ospitalità sacra)</h2>
+<p class="it">Valore fondamentale nella cultura greca. Rifiutare uno straniero = <strong>sacrilegio a Zeus</strong>. Naufragi frequenti → obbligo morale. Esempi: Calipso (doni), Nausicaa/Feaci, Alcinoo.</p>
+<p class="es">Valor fundamental en Grecia. Rechazar extranjero = sacrilegio a Zeus. Naufragios frecuentes → obligación moral.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">13.</span> Flash-back e Flash-forward</h2>
+<p class="it"><strong>Flash-back</strong>: ritorno al passato. Es: Odisseo racconta avventure ad Alcinoo.<br><strong>Flash-forward</strong>: anticipazione futuro. Es: Calipso profetizza difficoltà del viaggio.</p>
+<p class="es">Flash-back: regreso al pasado. Ej: Odiseo → Alcínoo. Flash-forward: anticipación futuro. Ej: Calipso profetiza.</p></div>
+
+</div>
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300)});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});
+document.querySelectorAll('.card').forEach(c=>obs.observe(c));
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riassunto per l'Interrogazione — Grammatica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.scroll-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent1);color:#fff;border:none;font-size:1.2rem;cursor:pointer;z-index:999;display:none;align-items:center;justify-content:center}
+.scroll-top.show{display:flex}
+.app{max-width:750px;margin:0 auto;padding:30px 20px 40px}
+header{text-align:center;padding:20px 0 30px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;background:linear-gradient(135deg,#fff,var(--accent5),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+header p{color:var(--text-dim);font-size:.9rem}
+header .es-sub{color:var(--text-es);font-style:italic;font-size:.85rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.card.visible{opacity:1;transform:translateY(0)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0}
+.card:nth-child(odd)::before{background:linear-gradient(90deg,var(--accent1),var(--accent2))}
+.card:nth-child(even)::before{background:linear-gradient(90deg,var(--accent2),var(--accent5))}
+.card h2{font-family:'Playfair Display',serif;font-size:1.15rem;color:#fff;margin-bottom:10px}
+.card h2 .num{color:var(--accent1);margin-right:6px}
+.it{font-size:.92rem;color:var(--text);line-height:1.65;margin-bottom:6px}
+.es{font-size:.85rem;color:var(--text-es);font-style:italic;line-height:1.55;padding-left:14px;border-left:2px solid rgba(109,212,176,.2);margin-bottom:4px}
+.tag{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.tag.key{background:rgba(108,99,255,.15);color:var(--accent1)}
+.tag.rule{background:rgba(0,212,170,.15);color:var(--accent2)}
+.tag.warn{background:rgba(255,107,107,.15);color:var(--accent3)}
+.tag.star{background:rgba(255,217,61,.15);color:var(--accent4)}
+@media(max-width:600px){.app{padding:20px 14px 30px}.card{padding:18px 20px}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="app">
+<header>
+<h1>Riassunto per l'Interrogazione</h1>
+<p>Grammatica — L'Aggettivo e La Preposizione — 14 punti</p>
+<div class="es-sub">(Resumen para la interrogación — Repaso rápido)</div>
+</header>
+
+<div class="card"><span class="tag key">Concetto base</span><h2><span class="num">1.</span> L'aggettivo: definizione</h2>
+<p class="it">Parola che si aggiunge al nome, a cui dà una <strong>qualità o una caratteristica</strong>. I più diffusi sono i <strong>qualificativi</strong> (es: bello, grande). Devono <strong>concordare in genere</strong> (M/F) <strong>e numero</strong> (S/P) col nome.</p>
+<p class="es">Palabra que se agrega al nombre, dándole una cualidad o característica. Los más comunes son los calificativos. Deben concordar en género y número con el nombre.</p></div>
+
+<div class="card"><span class="tag rule">Regola</span><h2><span class="num">2.</span> Aggettivi invariabili</h2>
+<p class="it">NON concordano: a) origine straniera (<strong>cool</strong>), b) accentati ultima sillaba (<strong>blu</strong>), c) colori da nomi (<strong>viola, rosa, oro, marrone</strong>), d) <strong>pari/dispari/impari</strong>. Se M+F insieme → concorda al <strong>maschile</strong>.</p>
+<p class="es">NO concuerdan: a) origen extranjero, b) acentuados última sílaba, c) colores de nombres, d) par/impar. Si M+F juntos → concuerda en masculino.</p></div>
+
+<div class="card"><span class="tag key">Concetto base</span><h2><span class="num">3.</span> Aggettivi sostantivati</h2>
+<p class="it">Aggettivo usato come nome, preceduto da articolo. Es: <strong>I ricchi</strong>. Nazionalità → <strong>MAIUSCOLA</strong>. Es: <strong>I Romani</strong>.</p>
+<p class="es">Adjetivo usado como nombre, precedido por artículo. Ej: Los ricos. Nacionalidad → MAYÚSCULA. Ej: Los Romanos.</p></div>
+
+<div class="card"><span class="tag key">Concetto base</span><h2><span class="num">4.</span> Gradi dell'aggettivo</h2>
+<p class="it"><strong>Positivo</strong>: forma base (astuto). <strong>Comp. maggioranza</strong>: più + agg + di. <strong>Comp. minoranza</strong>: meno + agg + di. <strong>Comp. uguaglianza</strong>: agg + come/quanto. <strong>Superl. relativo</strong>: il più + agg + tra. <strong>Superl. assoluto</strong>: -issimo / molto + agg / ultra + agg.</p>
+<p class="es">Positivo: forma base. Comp. mayoría: più + adj + di. Minoría: meno + adj + di. Igualdad: adj + come. Superl. relativo: il più + adj + tra. Superl. absoluto: -issimo / molto + adj.</p></div>
+
+<div class="card"><span class="tag star">⭐ Clave verifica</span><h2><span class="num">5.</span> Forme irregolari</h2>
+<p class="it"><strong>buono→migliore→ottimo</strong>, cattivo→peggiore→pessimo, grande→maggiore→massimo, piccolo→minore→minimo, alto→superiore→supremo/sommo, basso→inferiore→infimo, interno→interiore→intimo, esterno→esteriore→estremo. ⚠ <strong>NON si dice "più migliore"!</strong></p>
+<p class="es">bueno→mejor→óptimo, malo→peor→pésimo, grande→mayor→máximo, pequeño→menor→mínimo, alto→superior→supremo, bajo→inferior→ínfimo. ⚠ NO se dice "più migliore" (más mejor)!</p></div>
+
+<div class="card"><span class="tag rule">Regola</span><h2><span class="num">6.</span> Superlativi in -errimo</h2>
+<p class="it">Forme speciali: acre→<strong>acerrimo</strong>, aspro→<strong>asperrimo</strong>, celebre→<strong>celeberrimo</strong>, integro→<strong>integerrimo</strong>, misero→<strong>miserrimo</strong>.</p>
+<p class="es">Formas especiales: acre→acérrimo, aspro→aspérrimo, celebre→celebérrimo, integro→integérrimo, misero→misérrimo.</p></div>
+
+<div class="card"><span class="tag key">Concetto base</span><h2><span class="num">7.</span> Aggettivi possessivi</h2>
+<p class="it">mio, tuo, <strong>suo</strong>, nostro, vostro, <strong>loro</strong>. <strong>SUO</strong> = 1 possessore. <strong>LORO</strong> = 2+ possessori. <strong>PROPRIO</strong> = sostituisce suo, obbligatorio con verbi impersonali. <strong>ALTRUI</strong> = degli altri, invariabile.</p>
+<p class="es">SUO = 1 poseedor. LORO = 2+ poseedores. PROPRIO = sustituye a suo, obligatorio con verbos impersonales. ALTRUI = de los otros, invariable.</p></div>
+
+<div class="card"><span class="tag warn">⚠ Attenzione</span><h2><span class="num">8.</span> Aggettivi dimostrativi</h2>
+<p class="it"><strong>QUESTO</strong> = maggiore vicinanza (tempo/spazio). <strong>QUELLO</strong> = maggiore lontananza. ⚠ <strong>QUELLO contiene l'articolo LO</strong> → si applicano le regole dell'articolo. Es: <strong>quell'albero</strong> (elisione).</p>
+<p class="es">QUESTO = mayor cercanía. QUELLO = mayor lejanía. ⚠ QUELLO contiene el artículo LO → se aplican las reglas del artículo.</p></div>
+
+<div class="card"><span class="tag warn">⚠ Attenzione</span><h2><span class="num">9.</span> Aggettivi indefiniti</h2>
+<p class="it">alcuni, pochi, tanti, troppi, nessuno. ⚠ <strong>NESSUNO</strong> contiene art. UNO → regole note (nessun aereo, senza apostrofo). ⚠ <strong>ALCUNO</strong>: singolare = nessuno, plurale = qualche/alcuni.</p>
+<p class="es">⚠ NESSUNO contiene art. UNO. ⚠ ALCUNO: singular = ninguno, plural = algunos.</p></div>
+
+<div class="card"><span class="tag warn">⚠ Attenzione</span><h2><span class="num">10.</span> Aggettivi numerali</h2>
+<p class="it"><strong>Cardinali</strong>: quantità (quattro). <strong>Ordinali</strong>: posizione (primo). <strong>Moltiplicativi</strong>: doppio, triplo. ⚠ <strong>tre</strong> senza accento, ma <strong>ventitré</strong> con accento.</p>
+<p class="es">Cardinales: cantidad. Ordinales: posición. Multiplicativos: doble, triple. ⚠ tre sin acento, ventitré con acento.</p></div>
+
+<div class="card"><span class="tag rule">Regola</span><h2><span class="num">11.</span> Aggettivi interrogativi/esclamativi</h2>
+<p class="it"><strong>quanto, quale, che</strong>. Accompagnano nomi in domande o esclamazioni. ⚠ <strong>CHE</strong> può sostituire QUALE nella lingua parlata ed è <strong>invariabile</strong>.</p>
+<p class="es">cuánto, cuál, qué. Acompañan nombres en preguntas o exclamaciones. ⚠ CHE puede sustituir QUALE y es invariable.</p></div>
+
+<div class="card"><span class="tag key">Concetto base</span><h2><span class="num">12.</span> La preposizione</h2>
+<p class="it">Elemento <strong>INVARIABILE</strong>. Precede nome/pronome/avverbio/infinito. Collega le parti della frase. Le 9 preposizioni semplici: <strong>DI, A, DA, IN, CON, SU, PER, TRA, FRA</strong>.</p>
+<p class="es">Elemento INVARIABLE. Precede nombre/pronombre/adverbio/infinitivo. Conecta partes de la oración. Las 9 simples: DI, A, DA, IN, CON, SU, PER, TRA, FRA.</p></div>
+
+<div class="card"><span class="tag rule">Regola</span><h2><span class="num">13.</span> Preposizioni articolate</h2>
+<p class="it">Prep. semplice + articolo = articolata. Es: <strong>sul</strong> (su+il), <strong>della</strong> (di+la), <strong>nel</strong> (in+il), <strong>ai</strong> (a+i), <strong>dai</strong> (da+i), <strong>alla</strong> (a+la), <strong>nella</strong> (in+la), <strong>dei</strong> (di+i).</p>
+<p class="es">Prep. simple + artículo = articulada. Ej: sul (su+il), della (di+la), nel (in+il), ai (a+i), dai (da+i).</p></div>
+
+<div class="card"><span class="tag star">⭐ Clave verifica</span><h2><span class="num">14.</span> Articolo partitivo vs Preposizione</h2>
+<p class="it"><strong>REGOLA</strong>: l'art. partitivo si può sostituire con <strong>"un po' di"</strong> (sing.) o <strong>"alcuni"</strong> (plur.). Se funziona → PARTITIVO. Se NO → PREPOSIZIONE.<br><br>✓ Ho <strong>del</strong> caffè (= un po' di caffè) → partitivo.<br>✓ <strong>Dei</strong> miei amici ti conoscono (= alcuni) → partitivo.<br>✗ Le pagine <strong>del</strong> quaderno (impossibile) → preposizione.</p>
+<p class="es">REGLA: el art. partitivo se sustituye por "un poco de" (sing.) o "algunos" (plur.). Si funciona → PARTITIVO. Si NO → PREPOSICIÓN.</p></div>
+
+</div>
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300)});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});
+document.querySelectorAll('.card').forEach(c=>obs.observe(c));
+</script>
+</body>
+</html>
