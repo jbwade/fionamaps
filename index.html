@@ -80,7 +80,7 @@ header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; ma
 .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 0.9rem; pointer-events: none; }
 
 /* ─── FILTER BAR ─── */
-.filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 40px; }
+.filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 44px; }
 
 .filter-btn {
   background: var(--surface); border: 1px solid var(--border);
@@ -94,7 +94,6 @@ header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; ma
   box-shadow: 0 3px 12px rgba(108,99,255,0.35);
 }
 
-/* Clear button — only visible when filters active */
 .filter-clear {
   background: none; border: 1px solid rgba(255,107,107,0.3);
   color: var(--accent3); padding: 6px 12px; border-radius: 20px;
@@ -105,53 +104,112 @@ header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; ma
 .filter-clear:hover { background: rgba(255,107,107,0.1); border-color: var(--accent3); }
 .filter-clear.visible { display: inline-flex; }
 
-/* ─── EMPTY SEARCH STATE ─── */
+/* ─── EMPTY STATE ─── */
 .search-empty { display: none; text-align: center; padding: 48px 20px; color: var(--text-faint); }
 .search-empty.visible { display: block; }
 .search-empty .emoji { font-size: 2rem; margin-bottom: 10px; }
 .search-empty p { font-size: 0.9rem; }
 
-/* ─── MATERIA BLOCK ─── */
-.materia { margin-bottom: 40px; }
+/* ═══════════════════════════════════════
+   MATERIA — collapsible section
+═══════════════════════════════════════ */
+.materia { margin-bottom: 16px; }
+.materia.filter-hidden { display: none; }
 
-.materia-header {
+/* The clickable header row */
+.materia-toggle {
+  width: 100%;
   display: flex; align-items: center; gap: 14px;
-  margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+  padding: 14px 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease, border-color 0.2s ease, border-radius 0.25s ease;
+  position: relative;
+  z-index: 1;
+}
+.materia-toggle:hover { background: var(--surface2); border-color: var(--border-hover); }
+
+/* When open, bottom corners flatten to connect with body */
+.materia.open .materia-toggle {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
 }
 
-.materia-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-.materia-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--text); }
-.materia-count { margin-left: auto; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; color: var(--text-faint); text-transform: uppercase; }
+.materia-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
 
-/* ─── TOPIC CARD ─── */
+.materia-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; font-weight: 700; color: var(--text);
+  flex: 1;
+}
+
+.materia-count {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+  color: var(--text-faint); text-transform: uppercase;
+}
+
+.materia-chevron {
+  font-size: 0.72rem; color: var(--text-faint);
+  transition: transform 0.28s ease; flex-shrink: 0; margin-left: 10px;
+}
+.materia.open .materia-chevron { transform: rotate(180deg); }
+
+/* The collapsible body */
+.materia-body {
+  display: none;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  padding: 16px 0 8px;
+  background: var(--surface);
+  /* small indent to nest topics visually */
+  padding-left: 0;
+  padding-right: 0;
+}
+.materia.open .materia-body { display: block; }
+
+/* ─── TOPIC CARD (inside materia-body) ─── */
 .topic-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-  margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 0 14px 10px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.topic-card:hover { border-color: var(--border-hover); box-shadow: 0 4px 28px var(--glow); }
+.topic-card:last-child { margin-bottom: 6px; }
+.topic-card:hover { border-color: var(--border-hover); box-shadow: 0 4px 24px var(--glow); }
 .topic-card.filter-hidden { display: none; }
 
 .topic-toggle {
   width: 100%; display: flex; align-items: center; gap: 14px;
-  padding: 16px 22px; background: none; border: none; color: var(--text);
+  padding: 15px 18px; background: none; border: none; color: var(--text);
   cursor: pointer; text-align: left; transition: background 0.2s ease;
 }
 .topic-toggle:hover { background: rgba(108, 99, 255, 0.05); }
 
-.topic-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; align-self: flex-start; margin-top: 6px; }
+.topic-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; align-self: flex-start; margin-top: 6px; }
 
 .topic-meta { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-.topic-name { font-size: 1.05rem; font-weight: 500; line-height: 1.3; }
-.topic-date { font-size: 0.7rem; color: var(--text-faint); font-weight: 400; letter-spacing: 0.02em; }
+.topic-name { font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.topic-date { font-size: 0.68rem; color: var(--text-faint); font-weight: 400; letter-spacing: 0.02em; }
 
-/* dynamic resource count badge */
 .topic-badge {
-  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
   padding: 3px 9px; border-radius: 20px; opacity: 0.75; white-space: nowrap;
-  transition: opacity 0.2s;
 }
 
-.chevron { margin-left: 8px; font-size: 0.75rem; color: var(--text-faint); transition: transform 0.25s ease; flex-shrink: 0; }
+.chevron { margin-left: 8px; font-size: 0.72rem; color: var(--text-faint); transition: transform 0.25s ease; flex-shrink: 0; }
 .topic-card.open .chevron { transform: rotate(180deg); }
 
 /* ─── RESOURCE LIST ─── */
@@ -159,8 +217,8 @@ header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; ma
 .topic-card.open .resource-list { display: block; }
 
 .res-group-label {
-  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--text-faint); padding: 10px 22px 4px 46px;
+  font-size: 0.63rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-faint); padding: 10px 20px 4px 44px;
 }
 .res-group-label:not(:first-child) {
   border-top: 1px solid rgba(255,255,255,0.04); margin-top: 4px; padding-top: 14px;
@@ -170,8 +228,8 @@ header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; ma
 
 .resource-link {
   display: flex; align-items: center; gap: 14px;
-  padding: 13px 22px 13px 46px; color: var(--text-dim); text-decoration: none;
-  font-size: 0.95rem; font-weight: 400;
+  padding: 12px 20px 12px 44px; color: var(--text-dim); text-decoration: none;
+  font-size: 0.92rem; font-weight: 400;
   transition: background 0.15s ease, color 0.15s ease;
   border-bottom: 1px solid rgba(255,255,255,0.03);
 }
@@ -179,14 +237,14 @@ header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; ma
 .resource-link:hover { background: rgba(108, 99, 255, 0.07); color: var(--text); }
 .resource-link:hover .res-arrow { transform: translateX(4px); }
 
-.res-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.res-icon { font-size: 0.95rem; width: 20px; text-align: center; flex-shrink: 0; }
 .res-label { flex: 1; }
-.res-type { font-size: 0.7rem; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; opacity: 0.75; }
-.res-arrow { font-size: 0.8rem; color: var(--accent1); transition: transform 0.2s ease; margin-left: 6px; }
+.res-type { font-size: 0.68rem; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; opacity: 0.75; }
+.res-arrow { font-size: 0.78rem; color: var(--accent1); transition: transform 0.2s ease; margin-left: 6px; }
 
 /* ─── BADGE NUOVO ─── */
 .badge-nuovo {
-  font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
   padding: 2px 8px; border-radius: 20px; background: rgba(0,212,170,0.15);
   color: var(--accent2); border: 1px solid rgba(0,212,170,0.3); flex-shrink: 0;
   animation: pulse-new 2.5s ease-in-out infinite;
@@ -218,9 +276,9 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
 .materia:nth-child(3){animation-delay:0.19s}
 
 @media(max-width:500px){
-  .topic-name{font-size:0.95rem}
-  .filter-bar{gap:6px}
-  .filter-btn,.filter-clear{font-size:0.7rem;padding:5px 10px}
+  .materia-name { font-size: 1.05rem; }
+  .topic-name   { font-size: 0.92rem; }
+  .filter-btn, .filter-clear { font-size: 0.7rem; padding: 5px 10px; }
 }
 </style>
 </head>
@@ -261,61 +319,65 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
   ══════════════════════════════════════════ -->
   <section class="materia" id="materia-laboratorio">
 
-    <div class="materia-header">
+    <button class="materia-toggle" onclick="toggleMateria('materia-laboratorio')">
       <div class="materia-icon laboratorio">🎛️</div>
       <span class="materia-name">Laboratorio</span>
       <span class="materia-count">1 argomento</span>
-    </div>
+      <span class="materia-chevron">▼</span>
+    </button>
 
-    <div class="topic-card" id="topic-fondamenti"
-         data-search="fondamenti suono laboratorio presa diretta microfoni boom wireless mix catena fonico">
-      <button class="topic-toggle" onclick="toggleTopic('topic-fondamenti')">
-        <span class="topic-dot dot-laboratorio"></span>
-        <div class="topic-meta">
-          <span class="topic-name">Fondamenti di Suono</span>
-          <span class="topic-date">Lezione 1 + Lezione 2 · Marzo 2026</span>
+    <div class="materia-body">
+
+      <div class="topic-card" id="topic-fondamenti"
+           data-search="fondamenti suono laboratorio presa diretta microfoni boom wireless mix catena fonico">
+        <button class="topic-toggle" onclick="toggleTopic('topic-fondamenti')">
+          <span class="topic-dot dot-laboratorio"></span>
+          <div class="topic-meta">
+            <span class="topic-name">Fondamenti di Suono</span>
+            <span class="topic-date">Lezione 1 + Lezione 2 · Marzo 2026</span>
+          </div>
+          <span class="topic-badge badge-laboratorio">4 risorse</span>
+          <span class="chevron">▼</span>
+        </button>
+
+        <div class="resource-list">
+          <div class="res-group-label">Mappe & Flashcards</div>
+
+          <a class="resource-link" href="Mappe_Concettuali_Fondamenti_Suono.html" data-type="mappa">
+            <span class="res-icon">🗺️</span>
+            <span class="res-label">Mappe Concettuali</span>
+            <span class="res-type tag-mappa">Mappa</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Flashcards_Interattive_Fondamenti_Suono.html" data-type="flash">
+            <span class="res-icon">🃏</span>
+            <span class="res-label">Flashcards Interattive</span>
+            <span class="res-type tag-flash">Flashcard</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <div class="res-group-label">Appunti & Glossario</div>
+
+          <a class="resource-link" href="Appunti_Bilingui_Suono.html" data-type="appunti">
+            <span class="res-icon">📘</span>
+            <span class="res-label">Appunti Bilingui</span>
+            <span class="res-type tag-appunti">Appunti</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Glossario_Suono.html" data-type="glosario">
+            <span class="res-icon">📖</span>
+            <span class="res-label">Glossario Bilingue</span>
+            <span class="res-type tag-glosario">Glossario</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
         </div>
-        <span class="topic-badge badge-laboratorio" id="badge-fondamenti">4 risorse</span>
-        <span class="chevron">▼</span>
-      </button>
-
-      <div class="resource-list">
-        <div class="res-group-label">Mappe & Flashcards</div>
-
-        <a class="resource-link" href="Mappe_Concettuali_Fondamenti_Suono.html" data-type="mappa">
-          <span class="res-icon">🗺️</span>
-          <span class="res-label">Mappe Concettuali</span>
-          <span class="res-type tag-mappa">Mappa</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <a class="resource-link" href="Flashcards_Interattive_Fondamenti_Suono.html" data-type="flash">
-          <span class="res-icon">🃏</span>
-          <span class="res-label">Flashcards Interattive</span>
-          <span class="res-type tag-flash">Flashcard</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <div class="res-group-label">Appunti & Glossario</div>
-
-        <a class="resource-link" href="Appunti_Bilingui_Suono.html" data-type="appunti">
-          <span class="res-icon">📘</span>
-          <span class="res-label">Appunti Bilingui</span>
-          <span class="res-type tag-appunti">Appunti</span>
-          <span class="badge-nuovo">Nuovo</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <a class="resource-link" href="Glossario_Suono.html" data-type="glosario">
-          <span class="res-icon">📖</span>
-          <span class="res-label">Glossario Bilingue</span>
-          <span class="res-type tag-glosario">Glossario</span>
-          <span class="badge-nuovo">Nuovo</span>
-          <span class="res-arrow">→</span>
-        </a>
       </div>
-    </div>
 
+    </div><!-- /materia-body -->
   </section>
 
   <!-- ══════════════════════════════════════
@@ -323,112 +385,116 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
   ══════════════════════════════════════════ -->
   <section class="materia" id="materia-letteratura">
 
-    <div class="materia-header">
+    <button class="materia-toggle" onclick="toggleMateria('materia-letteratura')">
       <div class="materia-icon letteratura">📖</div>
       <span class="materia-name">Lingua e Letteratura Italiana</span>
       <span class="materia-count">2 argomenti</span>
-    </div>
+      <span class="materia-chevron">▼</span>
+    </button>
 
-    <!-- Topic: Grammatica -->
-    <div class="topic-card" id="topic-grammatica"
-         data-search="grammatica aggettivo preposizione concordanza comparativo superlativo possessivo dimostrativo indefinito numerale articolata partitivo">
-      <button class="topic-toggle" onclick="toggleTopic('topic-grammatica')">
-        <span class="topic-dot dot-letteratura"></span>
-        <div class="topic-meta">
-          <span class="topic-name">Grammatica: L'Aggettivo + La Preposizione</span>
-          <span class="topic-date">1ª e 2ª parte · Marzo 2026</span>
+    <div class="materia-body">
+
+      <!-- Topic: Grammatica -->
+      <div class="topic-card" id="topic-grammatica"
+           data-search="grammatica aggettivo preposizione concordanza comparativo superlativo possessivo dimostrativo indefinito numerale articolata partitivo">
+        <button class="topic-toggle" onclick="toggleTopic('topic-grammatica')">
+          <span class="topic-dot dot-letteratura"></span>
+          <div class="topic-meta">
+            <span class="topic-name">Grammatica: L'Aggettivo + La Preposizione</span>
+            <span class="topic-date">1ª e 2ª parte · Marzo 2026</span>
+          </div>
+          <span class="topic-badge badge-letteratura">4 risorse</span>
+          <span class="chevron">▼</span>
+        </button>
+
+        <div class="resource-list">
+          <div class="res-group-label">Mappe & Flashcards</div>
+
+          <a class="resource-link" href="Mappe_Concettuali_Grammatica.html" data-type="mappa">
+            <span class="res-icon">🗺️</span>
+            <span class="res-label">Mappe Concettuali</span>
+            <span class="res-type tag-mappa">Mappa</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Flashcards_Interattive_Grammatica.html" data-type="flash">
+            <span class="res-icon">🃏</span>
+            <span class="res-label">Flashcards Interattive</span>
+            <span class="res-type tag-flash">Flashcard</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <div class="res-group-label">Appunti & Glossario</div>
+
+          <a class="resource-link" href="Appunti_Bilingui_Grammatica.html" data-type="appunti">
+            <span class="res-icon">📘</span>
+            <span class="res-label">Appunti Bilingui</span>
+            <span class="res-type tag-appunti">Appunti</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Glossario_Grammatica.html" data-type="glosario">
+            <span class="res-icon">📖</span>
+            <span class="res-label">Glossario Bilingue</span>
+            <span class="res-type tag-glosario">Glossario</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
         </div>
-        <span class="topic-badge badge-letteratura" id="badge-grammatica">4 risorse</span>
-        <span class="chevron">▼</span>
-      </button>
-
-      <div class="resource-list">
-        <div class="res-group-label">Mappe & Flashcards</div>
-
-        <a class="resource-link" href="Mappe_Concettuali_Grammatica.html" data-type="mappa">
-          <span class="res-icon">🗺️</span>
-          <span class="res-label">Mappe Concettuali</span>
-          <span class="res-type tag-mappa">Mappa</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <a class="resource-link" href="Flashcards_Interattive_Grammatica.html" data-type="flash">
-          <span class="res-icon">🃏</span>
-          <span class="res-label">Flashcards Interattive</span>
-          <span class="res-type tag-flash">Flashcard</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <div class="res-group-label">Appunti & Glossario</div>
-
-        <a class="resource-link" href="Appunti_Bilingui_Grammatica.html" data-type="appunti">
-          <span class="res-icon">📘</span>
-          <span class="res-label">Appunti Bilingui</span>
-          <span class="res-type tag-appunti">Appunti</span>
-          <span class="badge-nuovo">Nuovo</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <a class="resource-link" href="Glossario_Grammatica.html" data-type="glosario">
-          <span class="res-icon">📖</span>
-          <span class="res-label">Glossario Bilingue</span>
-          <span class="res-type tag-glosario">Glossario</span>
-          <span class="badge-nuovo">Nuovo</span>
-          <span class="res-arrow">→</span>
-        </a>
       </div>
-    </div>
 
-    <!-- Topic: Epica -->
-    <div class="topic-card" id="topic-epica"
-         data-search="epica odissea omero nostos metis menis xenia calipso circe nausicaa proemio personaggi polifemo ulisse">
-      <button class="topic-toggle" onclick="toggleTopic('topic-epica')">
-        <span class="topic-dot dot-letteratura"></span>
-        <div class="topic-meta">
-          <span class="topic-name">Epica: L'Odissea</span>
-          <span class="topic-date">Info di base · Proemio · Brani · Marzo 2026</span>
+      <!-- Topic: Epica -->
+      <div class="topic-card" id="topic-epica"
+           data-search="epica odissea omero nostos metis menis xenia calipso circe nausicaa proemio personaggi polifemo ulisse">
+        <button class="topic-toggle" onclick="toggleTopic('topic-epica')">
+          <span class="topic-dot dot-letteratura"></span>
+          <div class="topic-meta">
+            <span class="topic-name">Epica: L'Odissea</span>
+            <span class="topic-date">Info di base · Proemio · Brani · Marzo 2026</span>
+          </div>
+          <span class="topic-badge badge-letteratura">4 risorse</span>
+          <span class="chevron">▼</span>
+        </button>
+
+        <div class="resource-list">
+          <div class="res-group-label">Mappe & Flashcards</div>
+
+          <a class="resource-link" href="Mappe_Concettuali_Epica.html" data-type="mappa">
+            <span class="res-icon">🗺️</span>
+            <span class="res-label">Mappe Concettuali</span>
+            <span class="res-type tag-mappa">Mappa</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Flashcards_Interattive_Epica.html" data-type="flash">
+            <span class="res-icon">🃏</span>
+            <span class="res-label">Flashcards Interattive</span>
+            <span class="res-type tag-flash">Flashcard</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <div class="res-group-label">Appunti & Glossario</div>
+
+          <a class="resource-link" href="Appunti_Bilingui_Epica.html" data-type="appunti">
+            <span class="res-icon">📘</span>
+            <span class="res-label">Appunti Bilingui</span>
+            <span class="res-type tag-appunti">Appunti</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Glossario_Epica.html" data-type="glosario">
+            <span class="res-icon">📖</span>
+            <span class="res-label">Glossario Bilingue</span>
+            <span class="res-type tag-glosario">Glossario</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
         </div>
-        <span class="topic-badge badge-letteratura" id="badge-epica">4 risorse</span>
-        <span class="chevron">▼</span>
-      </button>
-
-      <div class="resource-list">
-        <div class="res-group-label">Mappe & Flashcards</div>
-
-        <a class="resource-link" href="Mappe_Concettuali_Epica.html" data-type="mappa">
-          <span class="res-icon">🗺️</span>
-          <span class="res-label">Mappe Concettuali</span>
-          <span class="res-type tag-mappa">Mappa</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <a class="resource-link" href="Flashcards_Interattive_Epica.html" data-type="flash">
-          <span class="res-icon">🃏</span>
-          <span class="res-label">Flashcards Interattive</span>
-          <span class="res-type tag-flash">Flashcard</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <div class="res-group-label">Appunti & Glossario</div>
-
-        <a class="resource-link" href="Appunti_Bilingui_Epica.html" data-type="appunti">
-          <span class="res-icon">📘</span>
-          <span class="res-label">Appunti Bilingui</span>
-          <span class="res-type tag-appunti">Appunti</span>
-          <span class="badge-nuovo">Nuovo</span>
-          <span class="res-arrow">→</span>
-        </a>
-
-        <a class="resource-link" href="Glossario_Epica.html" data-type="glosario">
-          <span class="res-icon">📖</span>
-          <span class="res-label">Glossario Bilingue</span>
-          <span class="res-type tag-glosario">Glossario</span>
-          <span class="badge-nuovo">Nuovo</span>
-          <span class="res-arrow">→</span>
-        </a>
       </div>
-    </div>
 
+    </div><!-- /materia-body -->
   </section>
 
   <footer>Aggiornato · Marzo 2026</footer>
@@ -436,15 +502,24 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
 </div>
 
 <script>
-  // ── State ──────────────────────────────────────
-  let activeFilters = new Set(); // empty = show all
+  let activeFilters = new Set();
 
-  // ── Toggle open/close ──────────────────────────
+  // ── Toggle materia section ──────────────────
+  function toggleMateria(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // ── Toggle materia section ──────────────────
+  function toggleMateria(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  // ── Toggle topic card ───────────────────────
   function toggleTopic(id) {
     document.getElementById(id).classList.toggle('open');
   }
 
-  // ── Toggle a filter on/off ─────────────────────
+  // ── Filter toggle ───────────────────────────
   function toggleFilter(filter, btn) {
     if (activeFilters.has(filter)) {
       activeFilters.delete(filter);
@@ -457,7 +532,6 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
     applyFilters();
   }
 
-  // ── Clear all filters ──────────────────────────
   function clearFilters() {
     activeFilters.clear();
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -465,12 +539,11 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
     applyFilters();
   }
 
-  // ── Show/hide clear button ─────────────────────
   function updateClearBtn() {
     document.getElementById('clearBtn').classList.toggle('visible', activeFilters.size > 0);
   }
 
-  // ── Main logic ─────────────────────────────────
+  // ── Main filter + search ────────────────────
   function applyFilters() {
     const q = document.getElementById('globalSearch').value.toLowerCase().trim();
     const noTypeFilter = activeFilters.size === 0;
@@ -480,7 +553,6 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
       const searchText = (card.dataset.search || '') + ' ' + card.innerText.toLowerCase();
       const matchesSearch = q === '' || searchText.includes(q);
 
-      // Show/hide individual resource links
       const links = card.querySelectorAll('.resource-link');
       let visibleCount = 0;
       links.forEach(link => {
@@ -489,16 +561,15 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
         if (typeMatch) visibleCount++;
       });
 
-      // Update resource count badge dynamically
+      // Dynamic badge count
       const badge = card.querySelector('.topic-badge');
       if (badge) {
-        const total = links.length;
         badge.textContent = noTypeFilter
-          ? `${total} risorse`
-          : `${visibleCount} / ${total} risorse`;
+          ? `${links.length} risorse`
+          : `${visibleCount} / ${links.length} risorse`;
       }
 
-      // Hide group labels when all their siblings are hidden
+      // Hide group labels with no visible children
       card.querySelectorAll('.res-group-label').forEach(label => {
         let next = label.nextElementSibling;
         let hasVisible = false;
@@ -513,24 +584,26 @@ footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; paddin
       card.classList.toggle('filter-hidden', !cardVisible);
       if (cardVisible) anyVisible = true;
 
-      // Auto-open when searching
+      // Auto-open topics when searching
       if (q !== '' && cardVisible) card.classList.add('open');
-      if (q === '' && !card.classList.contains('manually-open')) card.classList.remove('open');
+      if (q === '' && !card.dataset.manualOpen) card.classList.remove('open');
     });
 
-    // Hide materia sections when all cards are hidden
+    // Show/hide materia sections — also auto-open when searching
     document.querySelectorAll('.materia').forEach(m => {
-      m.style.display = m.querySelectorAll('.topic-card:not(.filter-hidden)').length > 0 ? '' : 'none';
+      const hasVisible = m.querySelectorAll('.topic-card:not(.filter-hidden)').length > 0;
+      m.classList.toggle('filter-hidden', !hasVisible);
+      if (q !== '' && hasVisible) m.classList.add('open');
     });
 
     document.getElementById('searchEmpty').classList.toggle('visible', !anyVisible);
   }
 
-  // track manual opens so search doesn't collapse them
+  // Track manual topic opens
   document.querySelectorAll('.topic-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
       const card = btn.closest('.topic-card');
-      card.classList.toggle('manually-open', card.classList.contains('open'));
+      card.dataset.manualOpen = card.classList.contains('open') ? '' : null;
     });
   });
 </script>
