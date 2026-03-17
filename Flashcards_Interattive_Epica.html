@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flashcards — L'Odissea</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.app{max-width:660px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;align-items:center}
+header{text-align:center;padding:40px 0 16px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent4) 50%,var(--accent3) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+header p{color:var(--text-dim);font-size:.9rem}
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 0 14px;width:100%}
+.filters button{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:5px 12px;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+.filters button:hover{color:var(--text);border-color:var(--accent3)}
+.filters button.active{background:var(--accent3);color:#fff;border-color:var(--accent3)}
+.controls{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;padding:0 0 14px;width:100%}
+.controls button{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:24px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:6px}
+.controls button:hover{border-color:var(--accent3);transform:translateY(-1px);box-shadow:0 4px 15px rgba(255,107,107,.15)}
+.controls button.active{background:linear-gradient(135deg,var(--accent3),var(--accent4));border-color:transparent}
+.counter{color:var(--text-dim);font-size:.85rem;font-weight:500;min-width:80px;text-align:center}
+.counter span{color:var(--accent4);font-weight:700;font-size:1.1rem}
+.progress-wrap{width:100%;height:4px;background:var(--surface2);border-radius:2px;margin-bottom:18px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent4));border-radius:2px;transition:width .4s}
+.card-container{width:100%;height:370px;position:relative;margin-bottom:18px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.card-face{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:18px;transition:opacity .25s ease,transform .3s ease;will-change:opacity,transform}
+.card-face.hidden{opacity:0;transform:scale(.96);pointer-events:none}
+.card-face.visible{opacity:1;transform:scale(1);pointer-events:auto}
+.card-front{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px}
+.card-front::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent3),var(--accent4));border-radius:18px 18px 0 0}
+.card-front .category-badge{position:absolute;top:16px;right:16px;background:var(--surface2);color:var(--accent4);font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+.card-front .term-it{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;color:#fff;text-align:center;line-height:1.3;margin-bottom:10px}
+.card-front .term-es{color:var(--text-es);font-style:italic;font-size:clamp(.95rem,2vw,1.15rem);text-align:center;line-height:1.3}
+.card-front .flip-hint{position:absolute;bottom:14px;color:var(--text-dim);font-size:.7rem;display:flex;align-items:center;gap:5px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+.card-back{background:linear-gradient(145deg,var(--surface) 0%,var(--surface2) 100%);border:1px solid var(--border);overflow:hidden}
+.card-back::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent4),var(--accent5));border-radius:18px 18px 0 0;z-index:2}
+.back-scroll{position:absolute;top:5px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 28px 20px}
+.card-back .back-label{color:var(--accent4);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.card-back .def-it{color:var(--text);font-size:.95rem;line-height:1.6;margin-bottom:14px}
+.card-back .separator{width:60px;height:2px;background:linear-gradient(90deg,var(--accent3),var(--accent4));border-radius:1px;margin-bottom:14px}
+.card-back .def-es{color:var(--text-es);font-style:italic;font-size:.85rem;line-height:1.5;opacity:.85;padding-bottom:10px}
+.card-back .flip-hint-back{margin-top:10px;text-align:right;color:var(--text-dim);font-size:.65rem;opacity:.5}
+.nav-arrows{display:flex;justify-content:center;align-items:center;gap:30px;padding:0 0 24px}
+.nav-arrow{width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.nav-arrow:hover{background:var(--surface2);border-color:var(--accent3);transform:scale(1.08);box-shadow:0 6px 20px rgba(255,107,107,.15)}
+.nav-arrow:active{transform:scale(.95)}
+.nav-arrow.disabled{opacity:.25;pointer-events:none}
+.keyboard-hint{color:var(--text-dim);font-size:.7rem;text-align:center;padding-bottom:30px;opacity:.5}
+.keyboard-hint kbd{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:'DM Sans',sans-serif;font-size:.65rem}
+.card-container.slide-left .card-face.visible{animation:slideIn .3s ease}
+.card-container.slide-right .card-face.visible{animation:slideInR .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:500px){.card-container{height:380px}.back-scroll{padding:16px 22px 16px}.card-back .def-it{font-size:.88rem}.card-back .def-es{font-size:.8rem}.nav-arrow{width:46px;height:46px}.keyboard-hint{display:none}}
+
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  z-index: 999;
+}
+.back-btn:hover {
+  color: var(--text);
+  border-color: var(--accent1);
+  box-shadow: 0 0 12px var(--glow);
+}
+</style>
+</head>
+<body>
+<a class="back-btn" href="index.html">← Indice</a>
+<div class="grain"></div>
+<div class="app">
+<header><h1>Flashcards Interattive</h1><p>L'Odissea — 20 tarjetas de estudio</p></header>
+<div class="filters" id="filters"></div>
+<div class="controls">
+  <button onclick="shuffleCards()" id="shuffleBtn">🔀 Mescolare</button>
+  <button onclick="resetCards()">↺ Reset</button>
+  <div class="counter"><span id="currentNum">1</span> / <span id="totalNum">20</span></div>
+  <button onclick="toggleAutoplay()" id="autoBtn">▶ Auto</button>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:5%"></div></div>
+<div class="card-container" id="cardContainer" onclick="flipCard()">
+  <div class="card-face card-front visible" id="cardFront">
+    <div class="category-badge" id="categoryBadge"></div>
+    <div class="term-it" id="termIt"></div>
+    <div class="term-es" id="termEs"></div>
+    <div class="flip-hint">↻ Click per girare</div>
+  </div>
+  <div class="card-face card-back hidden" id="cardBack">
+    <div class="back-scroll" id="backScroll">
+      <div class="back-label" id="backLabel"></div>
+      <div class="def-it" id="defIt"></div>
+      <div class="separator"></div>
+      <div class="def-es" id="defEs"></div>
+      <div class="flip-hint-back">↻ click</div>
+    </div>
+  </div>
+</div>
+<div class="nav-arrows">
+  <button class="nav-arrow" id="prevBtn" onclick="prevCard()">←</button>
+  <button class="nav-arrow" id="nextBtn" onclick="nextCard()">→</button>
+</div>
+<div class="keyboard-hint"><kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>Spazio</kbd> girare · <kbd>R</kbd> mescolare</div>
+</div>
+<script>
+const allCards=[
+{termIt:"Nostos",termEs:"Nostos",defIt:"Viaggio di ritorno. Tema centrale dell'Odissea.\n\nA differenza della MENIS (ira) che è il tema dell'Iliade.",defEs:"Viaje de regreso. Tema central de la Odisea.\n\nA diferencia de la MENIS (ira) que es el tema de la Ilíada.",cat:"CONCETTO GRECO"},
+{termIt:"Menis vs Metis",termEs:"Menis vs Metis",defIt:"⭐ DIFFERENZA CHIAVE:\n\nMENIS = ira (tema Iliade, muove Achille)\n\nMETIS = intelligenza intraprendente, astuzia, lungimiranza (personalità di Odisseo)\n\n⚠ NON confondere!",defEs:"⭐ DIFERENCIA CLAVE:\n\nMENIS = ira (tema Ilíada, mueve a Aquiles)\n\nMETIS = inteligencia emprendedora, astucia, previsión (personalidad de Odiseo)\n\n⚠ ¡NO confundir!",cat:"CONCETTO CHIAVE ⭐"},
+{termIt:"Xenia",termEs:"Xenia",defIt:"Ospitalità sacra dello straniero nella cultura greca.\n\nRifiutare uno straniero = sacrilegio a Zeus.\n\nEsempi: Calipso (doni al distacco), Nausicaa/Feaci (accolgono Odisseo), Alcinoo (ospita generosamente).",defEs:"Hospitalidad sagrada del extranjero en la cultura griega.\n\nRechazar un extranjero = sacrilegio a Zeus.\n\nEjemplos: Calipso (regalos), Nausícaa/Feacios, Alcínoo.",cat:"CONCETTO GRECO"},
+{termIt:"Metis",termEs:"Metis",defIt:"L'intelligenza intraprendente di Odisseo. Comprende:\n\na) Problem solving — sa risolvere i problemi\nb) Prudenza — aspetta il momento giusto\nc) Curiosità insaziabile — esplora l'ignoto\n\n→ Lo rende particolarmente caro ad Atena (dea della sapienza).",defEs:"La inteligencia emprendedora de Odiseo. Comprende:\n\na) Problem solving\nb) Prudencia — espera el momento justo\nc) Curiosidad insaciable — explora lo desconocido\n\n→ Lo hace querido por Atenea (diosa de la sabiduría).",cat:"CONCETTO GRECO"},
+{termIt:"Proemio e Protasi",termEs:"Proemio y Prótasis",defIt:"Proemio = introduzione del poema.\nProtasi = parte del proemio che espone l'argomento centrale.\n\nNel proemio dell'Odissea:\n• Invocazione a Callìope (Musa della poesia epica)\n• Versi esametri\n• \"Ritorno\" compare 2 volte\n• Emerge la metis di Odisseo",defEs:"Proemio = introducción del poema.\nPrótasis = parte que expone el argumento central.\n\nEn el proemio de la Odisea:\n• Invocación a Calíope (Musa)\n• Versos hexámetros\n• \"Regreso\" aparece 2 veces\n• Surge la metis de Odiseo",cat:"TERMINE LETTERARIO"},
+{termIt:"Flash-back\ne Flash-forward",termEs:"Flash-back\ny Flash-forward",defIt:"Flash-back = ritorno al passato nella narrazione.\nEs: Odisseo racconta le avventure ad Alcinoo.\n\nFlash-forward = anticipazione di un fatto futuro.\nEs: Calipso profetizza le difficoltà del viaggio di ritorno.",defEs:"Flash-back = regreso al pasado en la narración.\nEj: Odiseo cuenta aventuras a Alcínoo.\n\nFlash-forward = anticipación de un hecho futuro.\nEj: Calipso profetiza las dificultades del viaje.",cat:"TERMINE LETTERARIO"},
+{termIt:"Epiteto\ne Patronimico",termEs:"Epíteto\ny Patronímico",defIt:"Epiteto = aggettivo/espressione fissa associata a un personaggio.\nEs: \"astuto Odisseo\" — Omero lo usa spesso.\n\nPatronimico = nome derivato dal padre.\nLaertìade = figlio di Laerte (= Odisseo).",defEs:"Epíteto = adjetivo/expresión fija asociada a un personaje.\nEj: \"astuto Odiseo\" — Homero lo usa frecuentemente.\n\nPatronímico = nombre derivado del padre.\nLaertíade = hijo de Laertes (= Odiseo).",cat:"TERMINE LETTERARIO"},
+{termIt:"Struttura:\n3 nuclei dell'Odissea",termEs:"Estructura:\n3 núcleos de la Odisea",defIt:"I-IV: TELEMACHIA\n→ Telemaco cerca il padre. Ostacolato dai Proci. Atena lo aiuta.\n\nV-XII: RACCONTO DEL VIAGGIO\n→ Calipso (~8 anni), Feaci, flash-back (Polifemo, Circe...)\n\nXIII-XXIV: RITORNO E VENDETTA\n→ Stermina i Proci, rivela identità a Penelope, pace.",defEs:"I-IV: TELEMAQUIA\n→ Telémaco busca al padre. Obstaculizado por Pretendientes.\n\nV-XII: RELATO DEL VIAJE\n→ Calipso (~8 años), Feacios, flash-back\n\nXIII-XXIV: REGRESO Y VENGANZA\n→ Elimina Pretendientes, revela identidad, paz.",cat:"STRUTTURA ⭐"},
+{termIt:"L'Odissea:\ndati base",termEs:"La Odisea:\ndatos básicos",defIt:"Autore: Omero — VIII secolo a.C.\n24 libri (canti) in versi esametri.\n\nOdisseo (greco) = Ulisse (latino)\nRe di Itaca. Patronimico: Laertìade.\n\n10 anni guerra di Troia + 10 anni viaggio = 20 anni lontano da casa.",defEs:"Autor: Homero — siglo VIII a.C.\n24 libros (cantos) en versos hexámetros.\n\nOdiseo (griego) = Ulises (latino)\nRey de Ítaca. Patronímico: Laertíade.\n\n10 años guerra + 10 años viaje = 20 años lejos.",cat:"DATI BASE"},
+{termIt:"Alcinoo vs Antinoo",termEs:"Alcínoo vs Antínoo",defIt:"⚠ NON CONFONDERE!\n\nALCINOO = re dei Feaci.\nOspita Odisseo generosamente.\n→ Personaggio POSITIVO\n\nANTINOO = capo dei Proci.\nNemico di Odisseo, occupa la reggia.\n→ Personaggio NEGATIVO",defEs:"⚠ ¡NO CONFUNDIR!\n\nALCÍNOO = rey de los Feacios.\nHospeda a Odiseo generosamente.\n→ Personaje POSITIVO\n\nANTÍNOO = líder de los Pretendientes.\nEnemigo de Odiseo, ocupa el palacio.\n→ Personaje NEGATIVO",cat:"PERSONAGGI ⭐"},
+{termIt:"Atena",termEs:"Atenea",defIt:"Dea dell'intelligenza e della sapienza.\n\nFAVOREVOLE a Odisseo:\n• Ammira il suo ingegno (metis)\n• Lo protegge in ogni circostanza\n• Lo trasforma in mendicante a Itaca\n• Aiuta anche Telemaco a trovare il padre",defEs:"Diosa de la inteligencia y la sabiduría.\n\nFAVORABLE a Odiseo:\n• Admira su ingenio (metis)\n• Lo protege en toda circunstancia\n• Lo transforma en mendigo en Ítaca\n• Ayuda también a Telémaco",cat:"DIVINITÀ"},
+{termIt:"Poseidone",termEs:"Poseidón",defIt:"Dio dei mari.\n\nOSTILE a Odisseo dopo l'accecamento di suo figlio Polifemo.\n\nPolifemo = ciclope (gigante con un solo occhio al centro della fronte).\nOdisseo lo trafigge con un tizzone infuocato.",defEs:"Dios de los mares.\n\nHOSTIL a Odiseo después del enceguecimiento de su hijo Polifemo.\n\nPolifemo = cíclope (gigante con un solo ojo).\nOdiseo lo traspasa con un tizón encendido.",cat:"DIVINITÀ"},
+{termIt:"Penelope\ne Telemaco",termEs:"Penélope\ny Telémaco",defIt:"PENELOPE = moglie fedele di Odisseo.\nLo attende a Itaca per 20 anni.\nI Proci vogliono sposarla.\n\nTELEMACO = figlio di Odisseo (~20 anni).\nCerca il padre con l'aiuto di Atena.\n(Telemachia = libri I-IV dell'Odissea)",defEs:"PENÉLOPE = esposa fiel de Odiseo.\nLo espera en Ítaca 20 años.\nLos Pretendientes quieren casarse con ella.\n\nTELÉMACO = hijo de Odiseo (~20 años).\nBusca al padre con ayuda de Atenea.\n(Telemaquia = libros I-IV)",cat:"PERSONAGGI"},
+{termIt:"I Proci",termEs:"Los Pretendientes",defIt:"Principi di Itaca che occupano la reggia (= palazzo reale) di Odisseo.\n\nVogliono sposare Penelope.\nCapo: ANTINOO (⚠ non confondere con Alcinoo!).\n\nOdisseo li stermina al suo ritorno a Itaca.\nAtena convince i parenti dei Proci a riconciliarsi → pace.",defEs:"Príncipes de Ítaca que ocupan el palacio real de Odiseo.\n\nQuieren casarse con Penélope.\nLíder: ANTÍNOO (⚠ no confundir con Alcínoo).\n\nOdiseo los elimina a su regreso.\nAtenea convence a reconciliarse → paz.",cat:"PERSONAGGI"},
+{termIt:"Eolo e Hermes",termEs:"Eolo y Hermes",defIt:"EOLO = dio dei venti.\nConsegna a Odisseo una sacca con tutti i venti.\nI compagni la aprono per curiosità → disastro.\nEolo poi rifiuta di aiutarlo una seconda volta.\n\nHERMES = messaggero degli dei.\n• Ordina a Calipso di liberare Odisseo\n• Dà il moly (antidoto) contro l'incantesimo di Circe",defEs:"EOLO = dios de los vientos.\nEntrega bolsa con vientos. Compañeros la abren → desastre.\nEolo se niega a ayudarlo de nuevo.\n\nHERMES = mensajero de los dioses.\n• Ordena a Calipso liberar a Odiseo\n• Da el moly (antídoto) contra Circe",cat:"DIVINITÀ"},
+{termIt:"Odisseo e Calipso",termEs:"Odiseo y Calipso",defIt:"Isola di Ogigia. Trattenuto ~8 anni dalla ninfa Calipso.\nCalipso offre l'IMMORTALITÀ.\nGli dei ordinano (via Hermes) di liberarlo.\n\n• Epiteto: \"astuto Odisseo\"\n• Flash-forward: Calipso profetizza disavventure\n• Mentalità MISOGINA della Grecia arcaica\n• XENIA: Calipso generosa al distacco (doni per il viaggio)",defEs:"Isla Ogigia. Retenido ~8 años por la ninfa Calipso.\nCalipso ofrece INMORTALIDAD.\nDioses ordenan (vía Hermes) liberarlo.\n\n• Epíteto: \"astuto Odiseo\"\n• Flash-forward: Calipso profetiza desventuras\n• Mentalidad MISÓGINA de Grecia arcaica\n• XENIA: Calipso generosa al despedirse",cat:"BRANO"},
+{termIt:"Odisseo e Nausicaa",termEs:"Odiseo y Nausícaa",defIt:"Naufragio (Poseidone) → isola Scheria dei Feaci (re Alcinoo).\nNausicaa gioca a palla con le ancelle.\nAtena le infonde coraggio.\n\nOdisseo parla da lontano con parole gentili e accorte.\nNausicaa: dolcezza + intraprendenza.\nAtena lo rende più bello → Nausicaa si augura di sposarlo.\n\nXENIA sacra: rifiuto straniero = sacrilegio a Zeus.\nAedo Demodoco narra Troia → Odisseo si commuove.\n(Omero: riferimento autobiografico alla propria arte)",defEs:"Naufragio (Poseidón) → isla Esqueria, Feacios (rey Alcínoo).\nNausícaa juega con sirvientas. Atenea le da coraje.\n\nOdiseo habla desde lejos con palabras amables.\nNausícaa: dulzura + iniciativa.\nAtenea lo embellece → Nausícaa desea casarse con él.\n\nXENIA sagrada: rechazo = sacrilegio a Zeus.\nAedo Demódoco narra Troya → Odiseo se conmueve.\n(Homero: referencia autobiográfica)",cat:"BRANO"},
+{termIt:"Odisseo e Circe",termEs:"Odiseo y Circe",defIt:"Compagni aprono l'otre di Eolo → cambio rotta → isola Eea.\nLa maga Circe, apparentemente ospitale, TRASFORMA I COMPAGNI IN MAIALI.\n\nUn compagno si sottrae e avvisa Odisseo.\nHermes gli dà il MOLY (antidoto, pianta non identificata).\nOdisseo vince l'incantesimo.\nSi fa promettere che i compagni ritorneranno umani.\nResta sull'isola circa 1 ANNO.\n\nConcetto: INSAZIABILE CURIOSITÀ dell'eroe — spingersi oltre i limiti umani.",defEs:"Compañeros abren odre de Eolo → cambio rumbo → isla Eea.\nCirce, aparentemente hospitalaria, TRANSFORMA COMPAÑEROS EN CERDOS.\n\nUn compañero escapa y avisa a Odiseo.\nHermes le da el MOLY (antídoto, planta no identificada).\nOdiseo vence el encantamiento.\nCompañeros recuperan forma humana.\nSe queda ~1 AÑO.\n\nConcepto: INSACIABLE CURIOSIDAD — ir más allá de los límites.",cat:"BRANO"},
+{termIt:"Sacrilegio\ndei compagni",termEs:"Sacrilegio\nde los compañeros",defIt:"I compagni di Odisseo divorano i buoi del Sole.\nQuesto è un SACRILEGIO (= offesa a un dio).\n\nPunizione: la MORTE di tutti i compagni.\nOdisseo rientra DA SOLO a Itaca.\n\nMenzionato nel proemio dell'Odissea.",defEs:"Los compañeros de Odiseo devoran los bueyes del Sol.\nEsto es un SACRILEGIO (= ofensa a un dios).\n\nCastigo: la MUERTE de todos los compañeros.\nOdiseo regresa SOLO a Ítaca.\n\nMencionado en el proemio de la Odisea.",cat:"CONCETTO CHIAVE ⭐"},
+{termIt:"Odisseo in Dante",termEs:"Odiseo en Dante",defIt:"Divina Commedia, Inferno, canto XXVI.\n\n\"Fatti non foste a viver come bruti,\nma per seguir virtute e conoscenza\"\n\nDante sottolinea la determinazione di Odisseo nel superare i limiti della conoscenza umana.\n\n(Un poeta ed un'opera in cui è citato Odisseo, escluso Omero: Dante, Divina Commedia)",defEs:"Divina Comedia, Infierno, canto XXVI.\n\n\"No fueron hechos para vivir como brutos,\nsino para seguir virtud y conocimiento\"\n\nDante subraya la determinación de Odiseo en superar los límites del conocimiento humano.",cat:"CONCETTO CHIAVE"}
+];
+
+let cards=[...allCards],currentIndex=0,isFlipped=false,autoplayInterval=null,activeFilter='TUTTE';
+const frontEl=document.getElementById('cardFront'),backEl=document.getElementById('cardBack'),container=document.getElementById('cardContainer');
+
+const categories=['TUTTE',...new Set(allCards.map(c=>c.cat))];
+const filtersEl=document.getElementById('filters');
+categories.forEach(cat=>{const btn=document.createElement('button');btn.textContent=cat;btn.className=cat==='TUTTE'?'active':'';btn.onclick=()=>filterCards(cat,btn);filtersEl.appendChild(btn)});
+
+function nl2br(t){return t.replace(/\n/g,'<br>')}
+function showFront(){isFlipped=false;frontEl.classList.remove('hidden');frontEl.classList.add('visible');backEl.classList.remove('visible');backEl.classList.add('hidden')}
+function showBack(){isFlipped=true;backEl.classList.remove('hidden');backEl.classList.add('visible');frontEl.classList.remove('visible');frontEl.classList.add('hidden');document.getElementById('backScroll').scrollTop=0}
+
+function renderCard(dir){
+  const card=cards[currentIndex];
+  document.getElementById('termIt').innerHTML=nl2br(card.termIt);
+  document.getElementById('termEs').innerHTML=nl2br(card.termEs);
+  document.getElementById('defIt').innerHTML=nl2br(card.defIt);
+  document.getElementById('defEs').innerHTML=nl2br(card.defEs);
+  document.getElementById('categoryBadge').textContent=card.cat;
+  document.getElementById('backLabel').textContent=card.cat;
+  document.getElementById('currentNum').textContent=currentIndex+1;
+  document.getElementById('totalNum').textContent=cards.length;
+  document.getElementById('progressBar').style.width=((currentIndex+1)/cards.length*100)+'%';
+  document.getElementById('prevBtn').className='nav-arrow'+(currentIndex===0?' disabled':'');
+  document.getElementById('nextBtn').className='nav-arrow'+(currentIndex===cards.length-1?' disabled':'');
+  showFront();
+  if(dir){container.classList.remove('slide-left','slide-right');void container.offsetWidth;container.classList.add(dir)}
+}
+
+function flipCard(){if(isFlipped)showFront();else showBack()}
+function nextCard(){if(currentIndex<cards.length-1){currentIndex++;renderCard('slide-left')}}
+function prevCard(){if(currentIndex>0){currentIndex--;renderCard('slide-right')}}
+function shuffleCards(){for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]]}currentIndex=0;renderCard()}
+function resetCards(){filterCards(activeFilter,document.querySelector('.filters button.active'))}
+function filterCards(cat,btn){activeFilter=cat;document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');cards=cat==='TUTTE'?[...allCards]:allCards.filter(c=>c.cat===cat);currentIndex=0;renderCard()}
+function toggleAutoplay(){const btn=document.getElementById('autoBtn');if(autoplayInterval){clearInterval(autoplayInterval);autoplayInterval=null;btn.classList.remove('active');btn.innerHTML='▶ Auto'}else{btn.classList.add('active');btn.innerHTML='⏸ Stop';autoplayInterval=setInterval(()=>{if(isFlipped){if(currentIndex<cards.length-1)nextCard();else toggleAutoplay()}else showBack()},3000)}}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextCard();else if(e.key==='ArrowLeft')prevCard();else if(e.key===' '){e.preventDefault();flipCard()}else if(e.key==='r'||e.key==='R')shuffleCards()});
+let touchStartX=0;
+container.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].screenX},{passive:true});
+container.addEventListener('touchend',e=>{const diff=e.changedTouches[0].screenX-touchStartX;if(Math.abs(diff)>60){e.preventDefault();if(diff<0)nextCard();else prevCard()}});
+
+renderCard();
+</script>
+</body>
+</html>
