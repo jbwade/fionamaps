@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riassunto per l'Interrogazione — Fondamenti di Suono</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.back-btn{position:fixed;top:16px;left:16px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:20px;font-size:.8rem;cursor:pointer;z-index:999;text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif}
+.back-btn:hover{border-color:var(--accent1)}
+.scroll-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent1);color:#fff;border:none;font-size:1.2rem;cursor:pointer;z-index:999;display:none;align-items:center;justify-content:center}
+.scroll-top.show{display:flex}
+.app{max-width:750px;margin:0 auto;padding:60px 20px 40px}
+header{text-align:center;padding:20px 0 30px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;background:linear-gradient(135deg,#fff,var(--accent5),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+header p{color:var(--text-dim);font-size:.9rem}
+header .es-sub{color:var(--text-es);font-style:italic;font-size:.85rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.card.visible{opacity:1;transform:translateY(0)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0}
+.card:nth-child(odd)::before{background:linear-gradient(90deg,var(--accent1),var(--accent2))}
+.card:nth-child(even)::before{background:linear-gradient(90deg,var(--accent2),var(--accent5))}
+.card h2{font-family:'Playfair Display',serif;font-size:1.15rem;color:#fff;margin-bottom:10px}
+.card h2 .num{color:var(--accent1);margin-right:6px}
+.it{font-size:.92rem;color:var(--text);line-height:1.65;margin-bottom:6px}
+.es{font-size:.85rem;color:var(--text-es);font-style:italic;line-height:1.55;padding-left:14px;border-left:2px solid rgba(109,212,176,.2);margin-bottom:4px}
+.tag{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.tag.key{background:rgba(108,99,255,.15);color:var(--accent1)}
+.tag.tool{background:rgba(0,212,170,.15);color:var(--accent2)}
+.tag.hist{background:rgba(255,217,61,.15);color:var(--accent4)}
+.tag.prob{background:rgba(255,107,107,.15);color:var(--accent3)}
+@media(max-width:600px){.app{padding:50px 14px 30px}.card{padding:18px 20px}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<a href="index.html" class="back-btn">← Indice</a>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="app">
+<header>
+<h1>Riassunto per l'Interrogazione</h1>
+<p>Fondamenti di Suono — Ripasso rapido</p>
+<div class="es-sub">(Resumen para la interrogación — Repaso rápido)</div>
+</header>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">1.</span> Le 4 componenti del sonoro</h2>
+<p class="it"><strong>Voci e dialoghi</strong> (prevalente), <strong>Rumori e ambienti sonori</strong> (percezione spazio), <strong>Effetti sonori</strong> (realismo), <strong>Musica</strong> (emozioni — originale o di repertorio).</p>
+<p class="es">Voces y diálogos (predominante), Ruidos y ambientes sonoros (percepción espacio), Efectos sonoros (realismo), Música (emociones — original o de repertorio).</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">2.</span> La catena del suono</h2>
+<p class="it">Presa diretta → Montaggio del suono → Doppiaggio → Rumoristi/Foley → Montaggio effetti → Musica originale → Musica di repertorio → <strong>MIX FINALE</strong>.</p>
+<p class="es">Toma directa → Montaje del sonido → Doblaje → Rumoristas/Foley → Montaje efectos → Música original → Música de repertorio → MEZCLA FINAL.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">3.</span> Presa diretta</h2>
+<p class="it">Registrazione del suono sul set durante le riprese. Si contrappone al <strong>doppiaggio</strong>. Vantaggi: maggiore realismo, coerenza suono-immagine, performance naturale, suono ambientale reale.</p>
+<p class="es">Grabación del sonido en el set durante las tomas. Se contrapone al doblaje. Ventajas: mayor realismo, coherencia sonido-imagen, actuación natural, sonido ambiental real.</p></div>
+
+<div class="card"><span class="tag hist">Storia</span><h2><span class="num">4.</span> Dal doppiaggio al New Cinema</h2>
+<p class="it">Cinema classico italiano: quasi tutto doppiato. Eccezione: <strong>Totò</strong> (improvvisava). Fine anni '60: <strong>New Cinema</strong> → autenticità, suono naturale. La presa diretta diventa necessaria.</p>
+<p class="es">Cine clásico italiano: casi todo doblado. Excepción: Totò (improvisaba). Finales años 60: New Cinema → autenticidad, sonido natural. La toma directa se vuelve necesaria.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">5.</span> Coerenza suono-inquadratura</h2>
+<p class="it">Il suono <strong>DEVE</strong> essere coerente: riflettere lo spazio, rispettare la distanza, includere solo ciò che è coerente con la m.d.p. <strong>Campo lungo</strong> = suono lontano. <strong>Primo piano</strong> = voce dettagliata.</p>
+<p class="es">El sonido DEBE ser coherente: reflejar el espacio, respetar la distancia, incluir solo lo coherente con la cámara. Plano general = sonido lejano. Primer plano = voz detallada.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">6.</span> Il fonico di presa diretta</h2>
+<p class="it">Punto di partenza: <strong>la sceneggiatura</strong>. Compiti: determinare priorità, scegliere attrezzature, coordinare il microfonista, segnalare criticità. Ha: registratore, mixer, schermo.</p>
+<p class="es">Punto de partida: el guión. Tareas: determinar prioridades, elegir equipamiento, coordinar al microfonista, señalar problemas. Tiene: grabador, mixer, pantalla.</p></div>
+
+<div class="card"><span class="tag tool">Attrezzature</span><h2><span class="num">7.</span> Boom vs Radio vs Plant</h2>
+<p class="it"><strong>BOOM:</strong> miglior qualità, naturale, non visibile, limitato dall'inquadratura. <strong>RADIO:</strong> flessibile, buono per movimenti e campi lunghi, sfregamento e suono meno naturale. <strong>PLANT:</strong> nascosto, backup, posizionamento fisso.</p>
+<p class="es">BOOM: mejor calidad, natural, no visible, limitado por el encuadre. RADIO: flexible, bueno para movimientos y planos generales, rozamiento y sonido menos natural. PLANT: oculto, backup, posicionamiento fijo.</p></div>
+
+<div class="card"><span class="tag tool">Microfoni</span><h2><span class="num">8.</span> Diagrammi polari</h2>
+<p class="it"><strong>Cardioide</strong> (cuore, il PIÙ USATO). <strong>Ipercardioide</strong> (più direzionale, ambienti rumorosi). <strong>Omnidirezionale</strong> (tutte le direzioni, documentari). <strong>Unidirezionale</strong> (una direzione). Il suono deve essere in asse con l'inquadratura.</p>
+<p class="es">Cardioide (corazón, el MÁS USADO). Hipercardioide (más direccional, ambientes ruidosos). Omnidireccional (todas las direcciones, documentales). Unidireccional (una dirección). El sonido debe estar en eje con el encuadre.</p></div>
+
+<div class="card"><span class="tag tool">Attrezzature</span><h2><span class="num">9.</span> Radiomicrofono: 3 componenti</h2>
+<p class="it"><strong>Trasmettitore</strong> (indossato dall'attore) + <strong>Ricevitore</strong> (collegato al mixer) + <strong>Capsula microfonica</strong>. DEVONO essere sulla stessa frequenza.</p>
+<p class="es">Transmisor (llevado por el actor) + Receptor (conectado al mixer) + Cápsula microfónica. DEBEN estar en la misma frecuencia.</p></div>
+
+<div class="card"><span class="tag prob">Criticità</span><h2><span class="num">10.</span> Criticità e soluzioni</h2>
+<p class="it">Problemi: rumori esterni (aerei), suoni variabili (cicale), interferenze costumi (sciarpe). <strong>Soluzione:</strong> registrazioni "a vuoto" per riempire buchi in post-produzione.</p>
+<p class="es">Problemas: ruidos externos (aviones), sonidos variables (cigarras), interferencias vestuario (bufandas). Solución: grabaciones "en vacío" para llenar vacíos en post-producción.</p></div>
+
+<div class="card"><span class="tag key">Concetto chiave</span><h2><span class="num">11.</span> Prove di scena e ascolto sul set</h2>
+<p class="it">Il fonico presidia le prove per capire posizione, dialoghi, movimenti macchina, abiti per wireless. Prepara <strong>pre-mix dialoghi</strong> in tempo reale per regista e segretaria di edizione.</p>
+<p class="es">El técnico supervisa los ensayos para entender posición, diálogos, movimientos de cámara, trajes para inalámbricos. Prepara pre-mix de diálogos en tiempo real para director y secretaria de edición.</p></div>
+
+</div>
+
+<script>
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300)});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});
+document.querySelectorAll('.card').forEach(c=>obs.observe(c));
+</script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifica di Pratica — Fondamenti di Suono</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1118;--surface:#1a1d2e;--surface2:#242840;--accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffd93d;--accent5:#4ecdc4;--accent6:#a78bfa;--text:#e8e6f0;--text-dim:#8b8aa0;--text-es:#6dd4b0;--border:rgba(108,99,255,0.2);--glow:rgba(108,99,255,0.15);--correct:#00d4aa;--wrong:#ff6b6b}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-y:scroll;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.grain{position:fixed;top:0;left:0;right:0;bottom:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000}
+.back-btn{position:fixed;top:16px;left:16px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:20px;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;z-index:999;text-decoration:none;transition:all .2s}
+.back-btn:hover{border-color:var(--accent1)}
+.scroll-top{position:fixed;bottom:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--accent1);color:#fff;border:none;font-size:1.2rem;cursor:pointer;z-index:999;display:none;align-items:center;justify-content:center}
+.scroll-top.show{display:flex}
+.app{max-width:800px;margin:0 auto;padding:60px 20px 40px}
+header{text-align:center;padding:20px 0 30px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;background:linear-gradient(135deg,#fff,var(--accent3),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+header p{color:var(--text-dim);font-size:.9rem}
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:24px}
+.filters button{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);padding:8px 16px;border-radius:20px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+.filters button:hover{color:var(--text);border-color:var(--accent1)}
+.filters button.active{background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;border-color:transparent}
+.section{margin-bottom:40px;display:none}
+.section.active{display:block}
+.section h2{font-family:'Playfair Display',serif;font-size:1.3rem;color:#fff;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--accent1)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;transition:all .2s}
+.q-card.correct{border-color:var(--correct);box-shadow:0 0 15px rgba(0,212,170,.15)}
+.q-card.wrong{border-color:var(--wrong);box-shadow:0 0 15px rgba(255,107,107,.15)}
+.q-num{color:var(--accent1);font-size:.75rem;font-weight:700;margin-bottom:8px}
+.q-text{font-size:.95rem;line-height:1.6;margin-bottom:12px}
+.hint-btn{background:none;border:1px solid var(--text-es);color:var(--text-es);padding:3px 10px;border-radius:12px;font-size:.7rem;cursor:pointer;margin-bottom:10px;font-family:'DM Sans',sans-serif;transition:all .2s}
+.hint-btn:hover{background:rgba(109,212,176,.1)}
+.hint-text{color:var(--text-es);font-style:italic;font-size:.85rem;margin-bottom:10px;display:none}
+.hint-text.show{display:block}
+.vf-btns{display:flex;gap:10px}
+.vf-btns button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .2s}
+.vf-btns button:hover{border-color:var(--accent1)}
+.vf-btns button.selected-correct{background:rgba(0,212,170,.15);border-color:var(--correct);color:var(--correct)}
+.vf-btns button.selected-wrong{background:rgba(255,107,107,.15);border-color:var(--wrong);color:var(--wrong)}
+.mc-options{display:flex;flex-direction:column;gap:8px}
+.mc-opt{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:.9rem;cursor:pointer;transition:all .2s;text-align:left}
+.mc-opt:hover{border-color:var(--accent1)}
+.mc-opt.selected-correct{background:rgba(0,212,170,.15);border-color:var(--correct);color:var(--correct)}
+.mc-opt.selected-wrong{background:rgba(255,107,107,.15);border-color:var(--wrong);color:var(--wrong)}
+.fill-input{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+.fill-input:focus{border-color:var(--accent1)}
+.fill-input.correct{border-color:var(--correct)}
+.fill-input.wrong{border-color:var(--wrong)}
+.fill-input.almost{border-color:var(--accent4);box-shadow:0 0 10px rgba(255,217,61,.2)}
+.q-card.almost{border-color:var(--accent4);box-shadow:0 0 15px rgba(255,217,61,.15)}
+.feedback.almost-fb{background:rgba(255,217,61,.1);color:var(--accent4);border:1px solid rgba(255,217,61,.2);display:block}
+.open-textarea{width:100%;min-height:80px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;resize:vertical}
+.open-textarea:focus{border-color:var(--accent1)}
+.feedback{font-size:.85rem;margin-top:10px;padding:8px 12px;border-radius:8px;display:none}
+.feedback.show{display:block}
+.feedback.correct-fb{background:rgba(0,212,170,.1);color:var(--correct);border:1px solid rgba(0,212,170,.2)}
+.feedback.wrong-fb{background:rgba(255,107,107,.1);color:var(--wrong);border:1px solid rgba(255,107,107,.2)}
+.check-btn{display:block;margin:8px 0 0 auto;background:var(--accent1);color:#fff;border:none;padding:8px 18px;border-radius:20px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s}
+.check-btn:hover{transform:scale(1.03)}
+.global-check{display:block;margin:30px auto;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;border:none;padding:14px 36px;border-radius:30px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s}
+.global-check:hover{transform:scale(1.03);box-shadow:0 6px 25px var(--glow)}
+.score-box{text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px;margin-top:20px;display:none}
+.score-box.show{display:block}
+.score-box .score-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:800;background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.score-box .score-label{color:var(--text-dim);font-size:.9rem;margin-top:6px}
+@media(max-width:600px){.app{padding:50px 14px 30px}.q-card{padding:16px}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<a href="index.html" class="back-btn">← Indice</a>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="app">
+<header>
+<h1>Verifica di Pratica</h1>
+<p>Fondamenti di Suono — Simulatore di interrogazione</p>
+</header>
+
+<div class="filters">
+<button class="active" onclick="showSection('vf',this)">Vero o Falso</button>
+<button onclick="showSection('comp',this)">Completare</button>
+<button onclick="showSection('open',this)">Risposta aperta</button>
+<button onclick="showSection('mc',this)">Scelta multipla</button>
+</div>
+
+<div class="section active" id="sec-vf">
+<h2>Vero o Falso</h2>
+<div id="vf-list"></div>
+<button class="global-check" onclick="checkAll('vf')">Controlla tutte le risposte</button>
+<div class="score-box" id="score-vf"><div class="score-num" id="scoreNum-vf"></div><div class="score-label">risposte corrette</div></div>
+</div>
+
+<div class="section" id="sec-comp">
+<h2>Completare la frase</h2>
+<div id="comp-list"></div>
+<button class="global-check" onclick="checkAll('comp')">Controlla tutte le risposte</button>
+<div class="score-box" id="score-comp"><div class="score-num" id="scoreNum-comp"></div><div class="score-label">risposte corrette</div></div>
+</div>
+
+<div class="section" id="sec-open">
+<h2>Risposta aperta breve</h2>
+<div id="open-list"></div>
+<button class="global-check" onclick="showOpenAnswers()">Mostra risposte</button>
+</div>
+
+<div class="section" id="sec-mc">
+<h2>Scelta multipla</h2>
+<div id="mc-list"></div>
+<button class="global-check" onclick="checkAll('mc')">Controlla tutte le risposte</button>
+<div class="score-box" id="score-mc"><div class="score-num" id="scoreNum-mc"></div><div class="score-label">risposte corrette</div></div>
+</div>
+</div>
+
+<script>
+const vfData=[
+{q:"La presa diretta è la registrazione del suono in studio dopo le riprese.",a:false,hint:"La toma directa es la grabación del sonido en estudio después de las tomas.",exp:"Falso. La presa diretta avviene sul set durante le riprese. Il doppiaggio avviene in studio dopo."},
+{q:"Il doppiaggio avviene in studio dopo le riprese.",a:true,hint:"El doblaje ocurre en estudio después de las tomas.",exp:"Vero. Il doppiaggio è la registrazione delle voci in studio dopo le riprese."},
+{q:"Il microfono cardioide è il più utilizzato nella presa diretta cinematografica.",a:true,hint:"El micrófono cardioide es el más utilizado en la toma directa cinematográfica.",exp:"Vero. Il cardioide capta soprattutto dalla parte frontale riducendo i rumori posteriori."},
+{q:"Il microfono omnidirezionale capta il suono da una sola direzione.",a:false,hint:"El micrófono omnidireccional capta el sonido desde una sola dirección.",exp:"Falso. L'omnidirezionale capta in tutte le direzioni. Quello che capta da una sola direzione è l'unidirezionale."},
+{q:"Il boom garantisce una qualità sonora inferiore rispetto al radiomicrofono.",a:false,hint:"El boom garantiza una calidad sonora inferior al radiomicrófono.",exp:"Falso. Il boom garantisce la miglior qualità di ripresa sonora possibile."},
+{q:"Trasmettitore e ricevitore del radiomicrofono devono essere sulla stessa frequenza.",a:true,hint:"Transmisor y receptor del radiomicrófono deben estar en la misma frecuencia.",exp:"Vero. Se la frequenza non coincide, il segnale non viene ricevuto."},
+{q:"Il suono di una scena non deve necessariamente essere coerente con l'inquadratura.",a:false,hint:"El sonido de una escena no necesita ser coherente con el encuadre.",exp:"Falso. Il suono deve essere SEMPRE coerente con l'inquadratura."},
+{q:"In un campo lungo, la voce dell'attore può sembrare registrata molto da vicino.",a:false,hint:"En un plano general, la voz del actor puede parecer grabada muy de cerca.",exp:"Falso. In un campo lungo il suono non può sembrare registrato a 5 cm dalla bocca dell'attore."},
+{q:"La sceneggiatura è il punto di partenza del fonico di presa diretta.",a:true,hint:"El guión es el punto de partida del técnico de sonido de toma directa.",exp:"Vero. Conoscendo la sceneggiatura, il fonico sa chi parla e quando."},
+{q:"Nel cinema italiano classico, la presa diretta era la norma.",a:false,hint:"En el cine italiano clásico, la toma directa era la norma.",exp:"Falso. Nel cinema italiano classico quasi tutto veniva doppiato."},
+];
+
+const compData=[
+{q:"La ________ è la registrazione del suono contemporaneamente alle riprese video, direttamente sul set.",a:["presa diretta","toma directa"],hint:"La ________ es la grabación del sonido simultánea a las tomas de video, directamente en el set."},
+{q:"Il ________ è la rappresentazione grafica della capacità di un microfono di captare il suono nello spazio.",a:["diagramma polare","diagrama polar"],hint:"El ________ es la representación gráfica de la capacidad de un micrófono de captar el sonido."},
+{q:"Il radiomicrofono è composto da tre elementi: trasmettitore, ________ e capsula microfonica.",a:["ricevitore","receptor"],hint:"El radiomicrófono está compuesto por tres elementos: transmisor, ________ y cápsula microfónica."},
+{q:"I microfoni ________ (plant) sono microfoni nascosti sul set.",a:["piazzati","plant","fijos"],hint:"Los micrófonos ________ (plant) son micrófonos ocultos en el set."},
+{q:"Il ________ è il fonico che nella fase finale miscela tutti gli elementi del suono per ogni scena.",a:["fonico di mixaggio","fonico di mix","tecnico di mezcla"],hint:"El ________ es el técnico que en la fase final mezcla todos los elementos del sonido para cada escena."},
+{q:"Le registrazioni '________' servono per riempire buchi sonori in post-produzione.",a:["a vuoto","en vacio","en vacío"],hint:"Las grabaciones '________' sirven para llenar vacíos sonoros en post-producción."},
+{q:"Il microfono ________ ha un diagramma polare a forma di cuore.",a:["cardioide"],hint:"El micrófono ________ tiene un diagrama polar en forma de corazón."},
+{q:"L'________ microfonica permette di posizionare il microfono sopra gli attori, fuori dall'inquadratura.",a:["asta","boom","cana","caña"],hint:"La ________ microfónica permite posicionar el micrófono sobre los actores, fuera del encuadre."},
+];
+
+const openData=[
+{q:"Quali sono le 4 componenti fondamentali del sonoro in un film?",hint:"¿Cuáles son los 4 componentes fundamentales del sonido en una película?",a:"1. Voci e dialoghi (componente prevalente). 2. Rumori e ambienti sonori (allargano la percezione dello spazio). 3. Effetti sonori (aggiungono info e realismo). 4. Musica (racconta le emozioni, può essere originale o di repertorio)."},
+{q:"Cosa deve fare il fonico di presa diretta dopo aver letto la sceneggiatura?",hint:"¿Qué debe hacer el técnico de sonido de toma directa después de leer el guión?",a:"Deve: determinare le priorità della ripresa sonora, scegliere il tipo di attrezzatura (boom, radiomicrofoni, plant), coordinarsi con il microfonista, segnalare criticità ad altri reparti."},
+{q:"Quali sono i vantaggi e gli svantaggi del radiomicrofono rispetto al boom?",hint:"¿Cuáles son las ventajas y desventajas del radiomicrófono respecto al boom?",a:"Vantaggi: ottimo per movimenti complessi, utile in campi lunghi, continuità sonora. Svantaggi: può sfregare sui vestiti, suono meno naturale, possibili disturbi radiofrequenze, qualità capsule miniaturizzate inferiore."},
+{q:"Cosa significa che il suono deve essere 'coerente con l'inquadratura'? Fai un esempio.",hint:"¿Qué significa que el sonido debe ser 'coherente con el encuadre'? Da un ejemplo.",a:"Il suono deve riflettere lo spazio mostrato, rispettare la distanza visiva dei personaggi, e includere solo ciò che è coerente con il punto di vista della m.d.p. Esempio: in un campo lungo il suono non può sembrare registrato a 5 cm dalla bocca dell'attore; in un primo piano la voce può essere più presente e dettagliata."},
+{q:"Descrivi la 'catena del suono' elencando tutte le fasi.",hint:"Describe la 'cadena del sonido' enumerando todas las fases.",a:"1. Presa diretta (voci, ambienti, suoni/rumori). 2. Montaggio del suono (editing). 3. Doppiaggio (voci integrative/sostitutive). 4. Rumoristi/Foley (effetti e rumori di scena). 5. Montaggio effetti (ambienti sonori aggiuntivi). 6. Musica originale. 7. Musica di repertorio. → Mix finale."},
+{q:"Perché è importante che il fonico di presa diretta sia presente durante le prove di scena?",hint:"¿Por qué es importante que el técnico de sonido esté presente durante los ensayos de escena?",a:"Per comprendere dove collocarsi fisicamente, capire dove saranno i dialoghi e le azioni, capire il taglio di inquadratura e i movimenti di macchina, e verificare gli abiti di scena in vista dell'utilizzo di microfoni wireless."},
+];
+
+const mcData=[
+{q:"Quale microfono ha il diagramma polare a forma di cuore?",opts:["Omnidirezionale","Cardioide","Ipercardioide","Unidirezionale"],correct:1,hint:"¿Qué micrófono tiene el diagrama polar en forma de corazón?"},
+{q:"Cosa si contrappone alla presa diretta?",opts:["Il montaggio effetti","La musica originale","Il doppiaggio","Il mix finale"],correct:2,hint:"¿Qué se contrapone a la toma directa?"},
+{q:"Da quanti elementi è composto un sistema radiomicrofono?",opts:["2: microfono e registratore","3: trasmettitore, ricevitore, capsula","4: boom, asta, mixer, schermo","1: solo il lavalier"],correct:1,hint:"¿De cuántos elementos está compuesto un sistema de radiomicrófono?"},
+{q:"Quale è il punto di partenza del lavoro del fonico di presa diretta?",opts:["Il mixer audio","La sceneggiatura","L'illuminazione","Il costume degli attori"],correct:1,hint:"¿Cuál es el punto de partida del trabajo del técnico de sonido?"},
+{q:"Quale tipo di microfono è più adatto per ambienti rumorosi all'aperto?",opts:["Omnidirezionale","Cardioide","Ipercardioide","Tutti uguali"],correct:2,hint:"¿Qué tipo de micrófono es más adecuado para ambientes ruidosos al aire libre?"},
+{q:"Le registrazioni 'a vuoto' servono per:",opts:["Testare i microfoni","Registrare ambienti sonori senza azione scenica, per la post-produzione","Registrare i dialoghi senza rumore","Provare il mix finale"],correct:1,hint:"Las grabaciones 'en vacío' sirven para:"},
+{q:"Tra la fine degli anni '60 e inizio '70, la presa diretta diventa più necessaria perché:",opts:["I microfoni migliorano","Nasce un cinema più realistico (New Cinema)","Il doppiaggio diventa troppo costoso","Le sale cinematografiche cambiano"],correct:1,hint:"Entre finales de los años 60 e inicio de los 70, la toma directa se vuelve más necesaria porque:"},
+{q:"In un primo piano, il suono della voce deve essere:",opts:["Distante e con eco","Presente e dettagliato","Uguale a un campo lungo","Solo ambientale"],correct:1,hint:"En un primer plano, el sonido de la voz debe ser:"},
+];
+
+// --- Smart validation helpers ---
+function normalize(s){
+  return s.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove accents
+    .replace(/[''`]/g,"'")
+    .replace(/\s+/g,' '); // collapse spaces
+}
+
+function similarity(a,b){
+  // Levenshtein distance ratio
+  const la=a.length, lb=b.length;
+  if(!la||!lb) return 0;
+  const mx=Math.max(la,lb);
+  const dp=Array.from({length:la+1},()=>Array(lb+1).fill(0));
+  for(let i=0;i<=la;i++) dp[i][0]=i;
+  for(let j=0;j<=lb;j++) dp[0][j]=j;
+  for(let i=1;i<=la;i++) for(let j=1;j<=lb;j++){
+    const cost=a[i-1]===b[j-1]?0:1;
+    dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+  }
+  return 1 - dp[la][lb]/mx;
+}
+
+function checkAnswer(val, acceptedAnswers){
+  const nVal = normalize(val);
+  if(!nVal) return {status:'empty'};
+  // Exact match (normalized)
+  for(const a of acceptedAnswers){
+    if(nVal === normalize(a)) return {status:'correct', match:a};
+  }
+  // Similar match (>= 0.75 similarity)
+  let bestSim=0, bestMatch='';
+  for(const a of acceptedAnswers){
+    const sim = similarity(nVal, normalize(a));
+    if(sim > bestSim){ bestSim=sim; bestMatch=a; }
+  }
+  if(bestSim >= 0.75) return {status:'almost', match:bestMatch, sim:bestSim};
+  // Contains check: if the answer is fully contained in user input or vice versa
+  for(const a of acceptedAnswers){
+    const na = normalize(a);
+    if(nVal.includes(na) || na.includes(nVal)) return {status:'almost', match:a, sim:0.8};
+  }
+  return {status:'wrong', closest:bestMatch};
+}
+
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Render VF
+document.getElementById('vf-list').innerHTML=vfData.map((d,i)=>`
+<div class="q-card" id="vf-${i}">
+  <div class="q-num">Domanda ${i+1}/${vfData.length}</div>
+  <div class="q-text">${d.q}</div>
+  <button class="hint-btn" onclick="event.stopPropagation();this.nextElementSibling.classList.toggle('show')">💡 Suggerimento ES</button>
+  <div class="hint-text">${d.hint}</div>
+  <div class="vf-btns">
+    <button onclick="selectVF(${i},true,this)">VERO</button>
+    <button onclick="selectVF(${i},false,this)">FALSO</button>
+  </div>
+  <div class="feedback" id="fb-vf-${i}">${d.exp}</div>
+</div>`).join('');
+
+const vfAnswers={};
+function selectVF(i,val,btn){
+  vfAnswers[i]=val;
+  const btns=btn.parentElement.querySelectorAll('button');
+  btns.forEach(b=>{b.classList.remove('selected-correct','selected-wrong');b.style.opacity='.5'});
+  btn.style.opacity='1';
+}
+
+// Render Completare
+document.getElementById('comp-list').innerHTML=compData.map((d,i)=>`
+<div class="q-card" id="comp-${i}">
+  <div class="q-num">Domanda ${i+1}/${compData.length}</div>
+  <div class="q-text">${d.q}</div>
+  <button class="hint-btn" onclick="event.stopPropagation();this.nextElementSibling.classList.toggle('show')">💡 Suggerimento ES</button>
+  <div class="hint-text">${d.hint}</div>
+  <input class="fill-input" id="fill-${i}" placeholder="Scrivi la risposta...">
+  <div class="feedback" id="fb-comp-${i}"></div>
+</div>`).join('');
+
+// Render Open
+document.getElementById('open-list').innerHTML=openData.map((d,i)=>`
+<div class="q-card" id="open-${i}">
+  <div class="q-num">Domanda ${i+1}/${openData.length}</div>
+  <div class="q-text">${d.q}</div>
+  <button class="hint-btn" onclick="event.stopPropagation();this.nextElementSibling.classList.toggle('show')">💡 Suggerimento ES</button>
+  <div class="hint-text">${d.hint}</div>
+  <textarea class="open-textarea" placeholder="Scrivi la tua risposta..."></textarea>
+  <div class="feedback" id="fb-open-${i}"><strong>Risposta di riferimento:</strong><br>${d.a}</div>
+</div>`).join('');
+
+// Render MC
+document.getElementById('mc-list').innerHTML=mcData.map((d,i)=>`
+<div class="q-card" id="mc-${i}">
+  <div class="q-num">Domanda ${i+1}/${mcData.length}</div>
+  <div class="q-text">${d.q}</div>
+  <button class="hint-btn" onclick="event.stopPropagation();this.nextElementSibling.classList.toggle('show')">💡 Suggerimento ES</button>
+  <div class="hint-text">${d.hint}</div>
+  <div class="mc-options">
+    ${d.opts.map((o,j)=>`<button class="mc-opt" onclick="selectMC(${i},${j},this)">${String.fromCharCode(65+j)}) ${o}</button>`).join('')}
+  </div>
+  <div class="feedback" id="fb-mc-${i}"></div>
+</div>`).join('');
+
+const mcAnswers={};
+function selectMC(i,j,btn){
+  mcAnswers[i]=j;
+  btn.parentElement.querySelectorAll('.mc-opt').forEach(b=>{b.classList.remove('selected-correct','selected-wrong');b.style.opacity='.5'});
+  btn.style.opacity='1';
+}
+
+function checkAll(type){
+  let correct=0,total=0;
+  if(type==='vf'){
+    total=vfData.length;
+    vfData.forEach((d,i)=>{
+      const card=document.getElementById('vf-'+i);
+      const fb=document.getElementById('fb-vf-'+i);
+      const isCorrect=vfAnswers[i]===d.a;
+      if(vfAnswers[i]!==undefined){
+        card.classList.add(isCorrect?'correct':'wrong');
+        const btns=card.querySelectorAll('.vf-btns button');
+        btns.forEach(b=>{b.style.opacity='1';b.classList.remove('selected-correct','selected-wrong')});
+        if(isCorrect){btns[d.a?0:1].classList.add('selected-correct');correct++}
+        else{btns[d.a?1:0].classList.add('selected-wrong');btns[d.a?0:1].classList.add('selected-correct')}
+      }else{card.classList.add('wrong')}
+      fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+    });
+    document.getElementById('scoreNum-vf').textContent=correct+' / '+total;
+    document.getElementById('score-vf').classList.add('show');
+  }else if(type==='comp'){
+    total=compData.length;
+    let almost=0;
+    compData.forEach((d,i)=>{
+      const input=document.getElementById('fill-'+i);
+      const fb=document.getElementById('fb-comp-'+i);
+      const card=document.getElementById('comp-'+i);
+      const result=checkAnswer(input.value, d.a);
+      input.classList.remove('correct','wrong','almost');
+      card.classList.remove('correct','wrong','almost');
+      fb.classList.remove('correct-fb','wrong-fb','almost-fb');
+      if(result.status==='correct'){
+        input.classList.add('correct'); card.classList.add('correct');
+        fb.innerHTML='✅ Corretto!';
+        fb.classList.add('show','correct-fb');
+        correct++;
+      } else if(result.status==='almost'){
+        input.classList.add('almost'); card.classList.add('almost');
+        fb.innerHTML='🟡 Quasi corretto! La risposta esatta è: <strong>'+d.a[0]+'</strong>';
+        fb.classList.add('show','almost-fb');
+        almost++;
+      } else {
+        input.classList.add('wrong'); card.classList.add('wrong');
+        fb.innerHTML=result.status==='empty'?'⚠️ Non hai risposto. Risposta corretta: <strong>'+d.a[0]+'</strong>':'❌ Risposta corretta: <strong>'+d.a[0]+'</strong>';
+        fb.classList.add('show','wrong-fb');
+      }
+    });
+    const label=almost>0?' (+ '+almost+' quasi corrette)':'';
+    document.getElementById('scoreNum-comp').textContent=correct+' / '+total+label;
+    document.getElementById('score-comp').classList.add('show');
+  }else if(type==='mc'){
+    total=mcData.length;
+    mcData.forEach((d,i)=>{
+      const card=document.getElementById('mc-'+i);
+      const fb=document.getElementById('fb-mc-'+i);
+      const opts=card.querySelectorAll('.mc-opt');
+      const isCorrect=mcAnswers[i]===d.correct;
+      opts.forEach((o,j)=>{o.style.opacity='1';o.classList.remove('selected-correct','selected-wrong');if(j===d.correct)o.classList.add('selected-correct');else if(j===mcAnswers[i])o.classList.add('selected-wrong')});
+      card.classList.add(isCorrect?'correct':'wrong');
+      fb.innerHTML=isCorrect?'✅ Corretto!':'❌ La risposta corretta era: <strong>'+String.fromCharCode(65+d.correct)+') '+d.opts[d.correct]+'</strong>';
+      fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+      if(isCorrect)correct++;
+    });
+    document.getElementById('scoreNum-mc').textContent=correct+' / '+total;
+    document.getElementById('score-mc').classList.add('show');
+  }
+}
+
+function showOpenAnswers(){
+  openData.forEach((d,i)=>{
+    const fb=document.getElementById('fb-open-'+i);
+    fb.classList.add('show','correct-fb');
+  });
+}
+
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300)});
+</script>
+</body>
+</html>
