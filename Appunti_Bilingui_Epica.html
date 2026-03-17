@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appunti Bilingui — Epica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118;
+  --surface: #1a1d2e;
+  --surface2: #242840;
+  --accent1: #6c63ff;
+  --accent2: #00d4aa;
+  --accent3: #ff6b6b;
+  --accent4: #ffd93d;
+  --accent5: #4ecdc4;
+  --accent6: #a78bfa;
+  --text: #e8e6f0;
+  --text-dim: #8b8aa0;
+  --text-es: #6dd4b0;
+  --border: rgba(108,99,255,0.2);
+  --glow: rgba(108,99,255,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+.grain { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; }
+
+/* ─── Back button ─── */
+.back-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; text-decoration: none; transition: all 0.25s; position: absolute; top: 24px; left: 24px; z-index: 10; }
+.back-btn:hover { color: var(--text); border-color: var(--accent1); box-shadow: 0 4px 15px var(--glow); transform: translateX(-2px); }
+
+/* ─── Header ─── */
+header { text-align: center; padding: 50px 20px 35px; position: relative; }
+header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 140px; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 2px; }
+h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 800; background: linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.header-sub { color: var(--text-dim); font-size: 0.9rem; }
+
+/* ─── Nav ─── */
+nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 28px 20px; max-width: 980px; margin: 0 auto; }
+nav button { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 18px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+nav button::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 0.3s ease; border-radius: 30px; }
+nav button.n1::before { background: linear-gradient(135deg, var(--accent1), var(--accent6)); }
+nav button.n2::before { background: linear-gradient(135deg, var(--accent2), var(--accent5)); }
+nav button.n3::before { background: linear-gradient(135deg, var(--accent3), var(--accent4)); }
+nav button.n4::before { background: linear-gradient(135deg, var(--accent4), var(--accent2)); }
+nav button:hover::before, nav button.active::before { opacity: 1; }
+nav button:hover, nav button.active { border-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 25px var(--glow); }
+nav button span { position: relative; z-index: 1; }
+
+/* ─── Layout ─── */
+.container { max-width: 980px; margin: 0 auto; padding: 10px 20px 60px; }
+.section-panel { display: none; animation: fadeIn 0.45s ease; }
+.section-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── Part header ─── */
+.part-header { text-align: center; margin-bottom: 36px; }
+.part-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: #fff; margin-bottom: 6px; }
+.part-subtitle { color: var(--text-es); font-style: italic; font-size: 1rem; }
+
+/* ─── Section blocks ─── */
+.section-block { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px 30px; margin-bottom: 22px; position: relative; overflow: hidden; }
+.section-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 16px 16px 0 0; }
+.section-block.c1::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+.section-block.c2::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+.section-block.c3::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+.section-block.c4::before { background: linear-gradient(90deg, var(--accent4), var(--accent2)); }
+.section-block.c5::before { background: linear-gradient(90deg, var(--accent5), var(--accent1)); }
+.section-block.c6::before { background: linear-gradient(90deg, var(--accent6), var(--accent3)); }
+
+.section-number { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 6px; }
+.section-heading { font-weight: 700; font-size: 1.1rem; color: #fff; margin-bottom: 3px; }
+.section-heading-es { color: var(--text-es); font-style: italic; font-size: 0.9rem; margin-bottom: 16px; }
+.section-divider { width: 50px; height: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 1px; margin-bottom: 16px; }
+
+/* ─── Bilingual row ─── */
+.bi-row { margin-bottom: 12px; }
+.bi-it { color: var(--text); font-size: 0.93rem; line-height: 1.65; }
+.bi-es { color: var(--text-es); font-style: italic; font-size: 0.86rem; line-height: 1.5; margin-top: 3px; opacity: 0.88; }
+
+/* ─── Examples ─── */
+.example { background: var(--surface2); border-radius: 10px; padding: 10px 16px; margin: 10px 0; border-left: 3px solid var(--accent2); }
+.example .ex-it { font-size: 0.88rem; line-height: 1.5; }
+.example .ex-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-top: 4px; opacity: 0.85; }
+
+/* ─── Alert ─── */
+.alert { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.25); border-radius: 10px; padding: 12px 16px; margin: 14px 0; }
+.alert .alert-it { font-size: 0.88rem; line-height: 1.6; }
+.alert .alert-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-top: 6px; opacity: 0.85; line-height: 1.5; }
+
+/* ─── Star note ─── */
+.star-note { background: rgba(255,217,61,0.07); border: 1px solid rgba(255,217,61,0.3); border-radius: 10px; padding: 12px 16px; margin: 14px 0; }
+.star-note .note-text { font-size: 0.88rem; line-height: 1.5; color: var(--accent4); font-weight: 600; }
+
+/* ─── Sub-section ─── */
+.sub-heading { font-weight: 700; font-size: 0.95rem; color: var(--accent1); margin: 18px 0 6px; }
+.sub-heading-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-bottom: 10px; }
+
+/* ─── Key rule box ─── */
+.key-rule { background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,212,170,0.1)); border: 1px solid rgba(108,99,255,0.35); border-radius: 12px; padding: 16px 20px; margin: 14px 0; }
+.key-rule .kr-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 8px; }
+.key-rule .kr-it { font-size: 0.92rem; font-weight: 600; line-height: 1.6; margin-bottom: 6px; }
+.key-rule .kr-es { color: var(--text-es); font-style: italic; font-size: 0.84rem; line-height: 1.5; opacity: 0.9; }
+
+/* ─── Tag list ─── */
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.tag { background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3); color: var(--text); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+.tag.teal { background: rgba(0,212,170,0.12); border-color: rgba(0,212,170,0.3); color: var(--accent2); }
+
+/* ─── Tables ─── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); }
+thead th { background: rgba(108,99,255,0.2); padding: 12px 16px; text-align: left; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--accent1); }
+tbody td { padding: 12px 16px; font-size: 0.85rem; line-height: 1.55; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(108,99,255,0.06); }
+.td-es { color: var(--text-es); font-style: italic; }
+.td-bold { font-weight: 700; color: #fff; }
+
+/* ─── Personaggi grid ─── */
+.pcard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 16px; }
+.pcard { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; position: relative; overflow: hidden; transition: transform 0.2s; }
+.pcard:hover { transform: translateY(-3px); }
+.pcard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.pcard.pos::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+.pcard.neg::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+.pcard.neu::before { background: linear-gradient(90deg, var(--accent6), var(--accent1)); }
+.pcard .p-name { font-weight: 700; font-size: 1rem; color: #fff; margin-bottom: 2px; }
+.pcard .p-name-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-bottom: 8px; }
+.pcard .p-role { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+.pcard .p-role-es { font-size: 0.78rem; color: var(--text-es); font-style: italic; margin-top: 4px; opacity: 0.8; line-height: 1.4; }
+.pcard .p-badge { position: absolute; top: 12px; right: 12px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 10px; }
+.pcard.pos .p-badge { background: rgba(0,212,170,0.15); color: var(--accent2); }
+.pcard.neg .p-badge { background: rgba(255,107,107,0.15); color: var(--accent3); }
+.pcard.neu .p-badge { background: rgba(167,139,250,0.15); color: var(--accent6); }
+
+/* ─── Vocab grid (Part 4) ─── */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.vcard { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 0; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.vcard:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+.vcard-top { padding: 16px 18px 12px; position: relative; }
+.vcard-top::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+.vcard .v-it { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.vcard .v-es { color: var(--text-es); font-style: italic; font-size: 0.85rem; }
+.vcard-body { padding: 0 18px 16px; }
+.vcard-sep { width: 32px; height: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 1px; margin-bottom: 8px; }
+.vcard .v-def-it { font-size: 0.83rem; color: var(--text); line-height: 1.55; margin-bottom: 5px; }
+.vcard .v-def-es { font-size: 0.78rem; color: var(--text-es); font-style: italic; line-height: 1.5; opacity: 0.85; }
+
+/* ─── Divisione libri ─── */
+.libri-block { display: grid; gap: 14px; margin-top: 16px; }
+.libro-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
+.libro-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 800; color: var(--accent4); white-space: nowrap; padding-top: 2px; }
+.libro-title { font-weight: 700; font-size: 0.95rem; color: #fff; margin-bottom: 4px; }
+.libro-title-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-bottom: 8px; }
+.libro-desc { font-size: 0.83rem; color: var(--text-dim); line-height: 1.55; }
+.libro-desc-es { font-size: 0.79rem; color: var(--text-es); font-style: italic; margin-top: 5px; opacity: 0.85; line-height: 1.45; }
+
+/* ─── Scroll to top ─── */
+.scroll-top { position: fixed; bottom: 28px; right: 28px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: none; color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(108,99,255,0.4); opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity 0.3s, transform 0.3s; z-index: 999; }
+.scroll-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(108,99,255,0.55); }
+
+/* ─── Responsive ─── */
+@media(max-width:600px) {
+  .back-btn { position: static; margin: 16px 0 0 20px; display: inline-flex; }
+  header { padding-top: 20px; }
+  .section-block { padding: 20px 16px; }
+  .pcard-grid { grid-template-columns: 1fr; }
+  .libro-card { grid-template-columns: 1fr; }
+  .libro-num { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<a class="back-btn" href="index.html">← Indice</a>
+
+<header>
+  <h1>Appunti Bilingui</h1>
+  <p class="header-sub">Épica — L'Odissea: Info, Proemio, Brani, Vocabolario</p>
+</header>
+
+<nav>
+  <button class="n1 active" onclick="showSection('p1', this)"><span>🌊 Parte 1 — Info di base</span></button>
+  <button class="n2" onclick="showSection('p2', this)"><span>📜 Parte 2 — Il Proemio</span></button>
+  <button class="n3" onclick="showSection('p3', this)"><span>📖 Parte 3 — Commento brani</span></button>
+  <button class="n4" onclick="showSection('p4', this)"><span>📚 Parte 4 — Vocabolario</span></button>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════
+     PARTE 1 — INFO DI BASE
+═══════════════════════════════════════════ -->
+<div class="section-panel active" id="p1">
+  <div class="part-header">
+    <div class="part-title">L'Odissea — Informazioni di base</div>
+    <div class="part-subtitle">La Odisea — Información básica</div>
+  </div>
+
+  <!-- 1.1 Che cos'è -->
+  <div class="section-block c1">
+    <div class="section-number">1.1</div>
+    <div class="section-heading">Che cos'è l'Odissea?</div>
+    <div class="section-heading-es">¿Qué es la Odisea?</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Poema</strong>: lunga opera in versi. L'Odissea è scritta in versi <strong>esametri</strong>, come l'Iliade.</div>
+      <div class="bi-es">Poema: larga obra en versos. La Odisea está escrita en versos <strong>hexámetros</strong>, como la Ilíada.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Autore: Omero.</strong> Composta nel <strong>VIII secolo a.C.</strong> È composta da <strong>24 libri</strong> (o canti).</div>
+      <div class="bi-es">Autor: Homero. Compuesta en el siglo VIII a.C. Está compuesta por 24 libros (o cantos).</div>
+    </div>
+  </div>
+
+  <!-- 1.2 Odisseo -->
+  <div class="section-block c2">
+    <div class="section-number">1.2</div>
+    <div class="section-heading">Odisseo</div>
+    <div class="section-heading-es">Odiseo / Ulises</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Odisseo</strong> = nome greco che indica l'eroe <strong>Ulisse</strong>, re di Itaca (isoletta greca).</div>
+      <div class="bi-es">Odiseo = nombre griego que indica al héroe Ulises, rey de Ítaca (islita griega).</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Odisseo è il nome di origine greca, <strong>Ulisse</strong> quello di origine romana.</div>
+      <div class="bi-es">Odiseo es el nombre de origen griego, Ulises el de origen romano.</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Attenzione!</strong> Odisseo si può indicare anche con il <strong>patronimico Laertìade</strong> (= figlio di Laerte).</div>
+      <div class="alert-es">⚠ Odiseo también se puede indicar con el patronímico <strong>Laertíade</strong> (= hijo de Laertes).</div>
+    </div>
+  </div>
+
+  <!-- 1.3 Argomento -->
+  <div class="section-block c3">
+    <div class="section-number">1.3</div>
+    <div class="section-heading">Argomento dell'Odissea</div>
+    <div class="section-heading-es">Argumento de la Odisea</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Il tema fondamentale è il <strong>viaggio di ritorno</strong>, <strong>nòstos</strong> in greco (a differenza del tema della guerra e dell'ira, la <em>menis</em>, presenti nell'Iliade).</div>
+      <div class="bi-es">El tema fundamental es el viaje de regreso, <strong>nòstos</strong> en griego (a diferencia del tema de la guerra y la ira, la <em>menis</em>, presentes en la Ilíada).</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Omero narra il viaggio di ritorno di Odisseo a Itaca, complicato da:</div>
+      <div class="bi-es">Homero narra el viaje de regreso de Odiseo a Ítaca, complicado por:</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>a)</strong> Imprevisti e ostacoli: l'ostilità di Poseidone, le imprudenze dei compagni, l'attrazione per personaggi femminili (Circe, Calipso).</div>
+      <div class="bi-es">a) Imprevistos y obstáculos: la hostilidad de Poseidón, las imprudencias de los compañeros, la atracción por personajes femeninos (Circe, Calipso).</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>b)</strong> La "sete" di conoscenza di Odisseo che vuole esplorare culture diverse e luoghi sconosciuti.</div>
+      <div class="bi-es">b) La "sed" de conocimiento de Odiseo que quiere explorar culturas diversas y lugares desconocidos.</div>
+    </div>
+  </div>
+
+  <!-- 1.4 Caratteristiche -->
+  <div class="section-block c4">
+    <div class="section-number">1.4</div>
+    <div class="section-heading">Caratteristiche del protagonista</div>
+    <div class="section-heading-es">Características del protagonista</div>
+    <div class="section-divider"></div>
+    <div class="star-note">
+      <div class="note-text">⭐ CONCETTI CHIAVE PER LA VERIFICA — la profesora chiede spesso la differenza tra menis e metis.</div>
+    </div>
+    <div class="sub-heading">STRAORDINARIA INTELLIGENZA — METIS (μῆτις)</div>
+    <div class="bi-row">
+      <div class="bi-it">La parola greca <strong>metis</strong> è la capacità di superare ogni ostacolo attraverso l'intraprendenza, l'astuzia e la lungimiranza. Comprende:</div>
+      <div class="bi-es">La palabra griega <strong>metis</strong> es la capacidad de superar todo obstáculo a través de la iniciativa, la astucia y la previsión. Comprende:</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">a) Sa risolvere i problemi (problem solving)<br>b) Sa essere prudente e aspettare il momento giusto per agire<br>c) È sempre "assetato" di conoscenza, desideroso di esplorare</div>
+      <div class="bi-es">a) Sabe resolver problemas<br>b) Sabe ser prudente y esperar el momento justo<br>c) Siempre tiene "sed" de conocimiento</div>
+    </div>
+    <div class="sub-heading">INSAZIABILE CURIOSITÀ</div>
+    <div class="bi-row">
+      <div class="bi-it">La voglia di confrontarsi con esperienze e costumi nuovi.</div>
+      <div class="bi-es">Las ganas de enfrentarse con experiencias y costumbres nuevos.</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Differenza MENIS vs METIS:</strong><br>
+        <strong>MENIS</strong> = l'ira, al centro dell'Iliade, che muove Achille.<br>
+        <strong>METIS</strong> = l'intelligenza intraprendente, alla base della personalità di Odisseo.
+      </div>
+      <div class="alert-es">
+        <strong>MENIS</strong> = la ira, al centro de la Ilíada, que mueve a Aquiles.<br>
+        <strong>METIS</strong> = la inteligencia emprendedora, base de la personalidad de Odiseo.
+      </div>
+    </div>
+    <div class="key-rule">
+      <div class="kr-label">Dante — Inferno, Canto XXVI</div>
+      <div class="kr-it">"Fatti non foste a viver come bruti, ma per seguir virtute e conoscenza"</div>
+      <div class="kr-es">"No fueron hechos para vivir como brutos, sino para seguir virtud y conocimiento"</div>
+    </div>
+  </div>
+
+  <!-- 1.5 Tempo -->
+  <div class="section-block c5">
+    <div class="section-number">1.5</div>
+    <div class="section-heading">Tempo della vicenda</div>
+    <div class="section-heading-es">Tiempo de los hechos</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Il viaggio di ritorno dura circa <strong>10 anni</strong>, che si sommano ai 10 dell'assedio di Troia = <strong>20 anni</strong> lontano da Itaca.</div>
+      <div class="bi-es">El viaje de regreso dura unos 10 años, que se suman a los 10 del asedio de Troya = <strong>20 años</strong> lejos de Ítaca.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Il poema racconta direttamente l'<strong>ultimo mese</strong> di viaggio. Gli anni precedenti sono riassunti da un lungo <strong>flash-back</strong>.</div>
+      <div class="bi-es">El poema narra directamente el <strong>último mes</strong> de viaje. Los años anteriores se resumen en un largo flash-back.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Flash-back</strong>: ritorno al passato. Es: Odisseo racconta ad Alcinoo l'avventura contro Polifemo.</div>
+      <div class="ex-es">Flash-back: regreso al pasado. Ej: Odiseo cuenta a Alcínoo la aventura contra Polifemo.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Flash-forward</strong>: anticipazione di un fatto futuro. Es: Calipso preannuncia le difficoltà del viaggio.</div>
+      <div class="ex-es">Flash-forward: anticipación de un hecho futuro. Ej: Calipso anticipa las dificultades del viaje.</div>
+    </div>
+  </div>
+
+  <!-- 1.6 Suddivisione -->
+  <div class="section-block c6">
+    <div class="section-number">1.6</div>
+    <div class="section-heading">Suddivisione dell'Odissea</div>
+    <div class="section-heading-es">División de la Odisea</div>
+    <div class="section-divider"></div>
+    <div class="libri-block">
+      <div class="libro-card">
+        <div class="libro-num">I–IV</div>
+        <div>
+          <div class="libro-title">TELEMACHIA</div>
+          <div class="libro-title-es">Telemaquia</div>
+          <div class="libro-desc">Telemaco cerca suo padre. Atena gli rivela che Odisseo è ancora vivo.</div>
+          <div class="libro-desc-es">Telémaco busca a su padre. Atenea le revela que Odiseo está vivo.</div>
+        </div>
+      </div>
+      <div class="libro-card">
+        <div class="libro-num">V–XII</div>
+        <div>
+          <div class="libro-title">IL RACCONTO DEL VIAGGIO</div>
+          <div class="libro-title-es">El relato del viaje</div>
+          <div class="libro-desc">Odisseo prigioniero da Calipso (~8 anni). Liberato, naufraga presso i Feaci. Racconta le avventure ad Alcinoo (flash-back): Polifemo, Circe, ecc.</div>
+          <div class="libro-desc-es">Odiseo prisionero de Calipso (~8 años). Liberado, naufraga en tierra de los Feacios. Cuenta las aventuras a Alcínoo (flash-back): Polifemo, Circe, etc.</div>
+        </div>
+      </div>
+      <div class="libro-card">
+        <div class="libro-num">XIII–XXIV</div>
+        <div>
+          <div class="libro-title">IL RITORNO E LA VENDETTA</div>
+          <div class="libro-title-es">El regreso y la venganza</div>
+          <div class="libro-desc">Odisseo giunge a Itaca, si traveste da mendicante (con l'aiuto di Atena), pianifica e attua la vendetta contro i Proci. Pace finale.</div>
+          <div class="libro-desc-es">Odiseo llega a Ítaca, se disfraza de mendigo (con ayuda de Atenea), planifica y ejecuta la venganza contra los Pretendientes. Paz final.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1.7 Personaggi -->
+  <div class="section-block c1">
+    <div class="section-number">1.7</div>
+    <div class="section-heading">Personaggi e divinità</div>
+    <div class="section-heading-es">Personajes y divinidades</div>
+    <div class="section-divider"></div>
+
+    <div class="sub-heading" style="color:var(--accent2)">✓ Divinità favorevoli a Odisseo</div>
+    <div class="sub-heading-es">Divinidades favorables</div>
+    <div class="pcard-grid">
+      <div class="pcard pos">
+        <span class="p-badge">Favorevole</span>
+        <div class="p-name">Atena</div>
+        <div class="p-name-es">Atenea</div>
+        <div class="p-role">Dea dell'intelligenza. Ammira Odisseo per il suo ingegno. Lo protegge sempre (lo trasforma in mendicante a Itaca).</div>
+        <div class="p-role-es">Diosa de la inteligencia. Admira a Odiseo por su ingenio. Lo protege siempre.</div>
+      </div>
+      <div class="pcard pos">
+        <span class="p-badge">Favorevole</span>
+        <div class="p-name">Eolo</div>
+        <div class="p-name-es">Eolo</div>
+        <div class="p-role">Dio dei venti. Consegna una sacca con tutti i venti, ma i compagni la aprono. Poi si rifiuta di aiutarlo di nuovo.</div>
+        <div class="p-role-es">Dios de los vientos. Entrega una bolsa con todos los vientos, pero los compañeros la abren.</div>
+      </div>
+    </div>
+
+    <div class="sub-heading" style="color:var(--accent3); margin-top:20px;">✗ Divinità contrarie a Odisseo</div>
+    <div class="sub-heading-es">Divinidades contrarias</div>
+    <div class="pcard-grid">
+      <div class="pcard neg">
+        <span class="p-badge">Contrario</span>
+        <div class="p-name">Poseidone</div>
+        <div class="p-name-es">Poseidón</div>
+        <div class="p-role">Dio dei mari. Ostile dopo l'accecamento di suo figlio Polifemo (ciclope con un solo occhio).</div>
+        <div class="p-role-es">Dios de los mares. Hostil después del enceguecimiento de su hijo Polifemo.</div>
+      </div>
+    </div>
+
+    <div class="sub-heading" style="color:var(--accent6); margin-top:20px;">Personaggi principali</div>
+    <div class="sub-heading-es">Personajes principales</div>
+    <div class="pcard-grid">
+      <div class="pcard pos">
+        <span class="p-badge">Alleato</span>
+        <div class="p-name">Penelope</div>
+        <div class="p-name-es">Penélope</div>
+        <div class="p-role">Moglie fedele di Odisseo. Lo attende a Itaca.</div>
+        <div class="p-role-es">Esposa fiel de Odiseo. Lo espera en Ítaca.</div>
+      </div>
+      <div class="pcard pos">
+        <span class="p-badge">Alleato</span>
+        <div class="p-name">Telemaco</div>
+        <div class="p-name-es">Telémaco</div>
+        <div class="p-role">Figlio ventenne di Odisseo. Cerca il padre.</div>
+        <div class="p-role-es">Hijo de 20 años de Odiseo. Busca a su padre.</div>
+      </div>
+      <div class="pcard neu">
+        <span class="p-badge">Neutro</span>
+        <div class="p-name">Calipso</div>
+        <div class="p-name-es">Calipso</div>
+        <div class="p-role">Ninfa che trattiene Odisseo ~8 anni sull'isola di Ogigia. Gli offre l'immortalità.</div>
+        <div class="p-role-es">Ninfa que retiene a Odiseo ~8 años en Ogigia. Le ofrece la inmortalidad.</div>
+      </div>
+      <div class="pcard pos">
+        <span class="p-badge">Alleato</span>
+        <div class="p-name">Nausicaa</div>
+        <div class="p-name-es">Nausícaa</div>
+        <div class="p-role">Figlia del re Alcinoo dei Feaci. Accoglie Odisseo naufrago.</div>
+        <div class="p-role-es">Hija del rey Alcínoo de los Feacios. Acoge a Odiseo náufrago.</div>
+      </div>
+      <div class="pcard pos">
+        <span class="p-badge">Alleato</span>
+        <div class="p-name">Alcinoo</div>
+        <div class="p-name-es">Alcínoo</div>
+        <div class="p-role">Re dei Feaci. Ospita Odisseo generosamente.</div>
+        <div class="p-role-es">Rey de los Feacios. Hospeda a Odiseo generosamente.</div>
+      </div>
+      <div class="pcard neu">
+        <span class="p-badge">Neutro</span>
+        <div class="p-name">Circe</div>
+        <div class="p-name-es">Circe</div>
+        <div class="p-role">Maga dell'isola di Eea. Trasforma i compagni in maiali.</div>
+        <div class="p-role-es">Maga de la isla de Eea. Transforma a los compañeros en cerdos.</div>
+      </div>
+      <div class="pcard neg">
+        <span class="p-badge">Nemici</span>
+        <div class="p-name">I Proci</div>
+        <div class="p-name-es">Los Pretendientes</div>
+        <div class="p-role">Principi di Itaca che occupano la reggia e vogliono sposare Penelope. Capo: Antinoo.</div>
+        <div class="p-role-es">Príncipes de Ítaca que ocupan el palacio y quieren casarse con Penélope. Líder: Antínoo.</div>
+      </div>
+      <div class="pcard neg">
+        <span class="p-badge">Nemico</span>
+        <div class="p-name">Polifemo</div>
+        <div class="p-name-es">Polifemo</div>
+        <div class="p-role">Ciclope, figlio di Poseidone. Odisseo lo acceca con un tizzone infuocato.</div>
+        <div class="p-role-es">Cíclope, hijo de Poseidón. Odiseo lo ciega con un tizón encendido.</div>
+      </div>
+      <div class="pcard neu">
+        <span class="p-badge">Neutro</span>
+        <div class="p-name">Demodoco</div>
+        <div class="p-name-es">Demódoco</div>
+        <div class="p-role">Aedo (poeta) alla corte di Alcinoo. Narra le imprese di Troia, facendo commuovere Odisseo.</div>
+        <div class="p-role-es">Aedo (poeta) en la corte de Alcínoo. Narra las hazañas de Troya, emocionando a Odiseo.</div>
+      </div>
+    </div>
+
+    <div class="alert" style="margin-top:20px;">
+      <div class="alert-it">⚠ <strong>Alcinoo vs Antinoo — attenzione alla confusione!</strong><br>
+        <strong>Alcinoo</strong> = re dei Feaci, ospita Odisseo → personaggio <strong>positivo</strong><br>
+        <strong>Antinoo</strong> = capo dei Proci, nemico di Odisseo → personaggio <strong>negativo</strong>
+      </div>
+      <div class="alert-es">
+        <strong>Alcínoo</strong> = rey de los Feacios, hospeda a Odiseo → positivo<br>
+        <strong>Antínoo</strong> = líder de los Pretendientes, enemigo → negativo
+      </div>
+    </div>
+  </div>
+
+  <!-- 1.8 Inizio e fine -->
+  <div class="section-block c2">
+    <div class="section-number">1.8</div>
+    <div class="section-heading">Inizio e fine dell'Odissea</div>
+    <div class="section-heading-es">Inicio y final</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Come comincia?</strong> Con i tentativi di Telemaco di ritrovare il padre, ostacolati dai Proci. Atena lo aiuta a salvarsi.</div>
+      <div class="bi-es">¿Cómo comienza? Con los intentos de Telémaco de encontrar a su padre, obstaculizados por los Pretendientes. Atenea lo ayuda.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Come si conclude?</strong> Con la vendetta di Odisseo che stermina i Proci, rivela la sua identità a Penelope. Atena convince i parenti dei Proci a riconciliarsi. Torna la pace a Itaca.</div>
+      <div class="bi-es">¿Cómo termina? Con la venganza de Odiseo que elimina a los Pretendientes, revela su identidad a Penélope. Atenea convence a los parientes a reconciliarse. Vuelve la paz a Ítaca.</div>
+    </div>
+  </div>
+</div><!-- /p1 -->
+
+
+<!-- ══════════════════════════════════════════
+     PARTE 2 — IL PROEMIO
+═══════════════════════════════════════════ -->
+<div class="section-panel" id="p2">
+  <div class="part-header">
+    <div class="part-title">Il Proemio dell'Odissea</div>
+    <div class="part-subtitle">El Proemio de la Odisea</div>
+  </div>
+
+  <div class="section-block c2">
+    <div class="section-number">2.1</div>
+    <div class="section-heading">Struttura del Proemio</div>
+    <div class="section-heading-es">Estructura del Proemio</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Il proemio rispecchia le caratteristiche tradizionali già riscontrate nell'Iliade:</div>
+      <div class="bi-es">El proemio refleja las características tradicionales ya encontradas en la Ilíada:</div>
+    </div>
+
+    <div class="sub-heading">1) Invocazione alla Musa</div>
+    <div class="bi-row">
+      <div class="bi-it">Nel primo verso Omero si rivolge alla Musa <strong>Callìope</strong> (la divinità che ispira i poeti).</div>
+      <div class="bi-es">En el primer verso Homero se dirige a la Musa <strong>Calíope</strong> (la divinidad que inspira a los poetas).</div>
+    </div>
+
+    <div class="sub-heading">2) Esposizione dell'argomento — PROTASI</div>
+    <div class="bi-row">
+      <div class="bi-it">Il viaggio di ritorno di Odisseo a Itaca dopo la distruzione di Troia (grazie allo stratagemma del cavallo). I versi sono <strong>esametri</strong>. La parte dedicata all'esposizione dell'argomento si chiama <strong>protasi</strong>.</div>
+      <div class="bi-es">El viaje de regreso de Odiseo a Ítaca después de la destrucción de Troya (gracias a la estratagema del caballo). Los versos son <strong>hexámetros</strong>. La parte dedicada a la exposición del argumento se llama <strong>protasis</strong>.</div>
+    </div>
+  </div>
+
+  <div class="section-block c3">
+    <div class="section-number">2.2</div>
+    <div class="section-heading">Iliade vs Odissea — Temi</div>
+    <div class="section-heading-es">Ilíada vs Odisea — Temas</div>
+    <div class="section-divider"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Opera</th><th>Tema principale</th><th>Tema principal (ES)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-bold">Iliade</td>
+            <td><strong>MENIS</strong> — l'ira di Achille</td>
+            <td class="td-es">MENIS — la ira de Aquiles</td>
+          </tr>
+          <tr>
+            <td class="td-bold">Odissea</td>
+            <td><strong>NOSTOS</strong> — il viaggio di ritorno. La parola "ritorno" compare <strong>due volte</strong> nel proemio.</td>
+            <td class="td-es">NOSTOS — el viaje de regreso. La palabra "regreso" aparece dos veces en el proemio.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-block c4">
+    <div class="section-number">2.3</div>
+    <div class="section-heading">Conclusione del Proemio</div>
+    <div class="section-heading-es">Conclusión del Proemio</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Il proemio si conclude con il riferimento ai compagni di Odisseo che hanno commesso <strong>sacrilegio</strong> (= offesa a un dio) al Sole, divorandone i buoi. Per questo sono stati puniti con la morte. Odisseo rientra <strong>da solo</strong> a Itaca.</div>
+      <div class="bi-es">El proemio concluye con la referencia a los compañeros de Odiseo que cometieron <strong>sacrilegio</strong> (= ofensa a un dios) al Sol, devorando sus bueyes. Por esto fueron castigados con la muerte. Odiseo regresa <strong>solo</strong> a Ítaca.</div>
+    </div>
+  </div>
+</div><!-- /p2 -->
+
+
+<!-- ══════════════════════════════════════════
+     PARTE 3 — COMMENTO BRANI
+═══════════════════════════════════════════ -->
+<div class="section-panel" id="p3">
+  <div class="part-header">
+    <div class="part-title">Commento Brani dell'Odissea</div>
+    <div class="part-subtitle">Comentario de Pasajes de la Odisea</div>
+  </div>
+
+  <!-- 3.1 Calipso -->
+  <div class="section-block c1">
+    <div class="section-number">3.1</div>
+    <div class="section-heading">Odisseo e Calipso</div>
+    <div class="section-heading-es">Odiseo y Calipso</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Odisseo è trattenuto da quasi <strong>otto anni</strong> sull'isola di Ogigia dalla ninfa Calipso, innamoratasi dell'eroe. Gli dei decidono che è ora che torni a Itaca e, tramite <strong>Hermes</strong>, impongono a Calipso di lasciarlo andare.</div>
+      <div class="bi-es">Odiseo es retenido casi ocho años en la isla de Ogigia por la ninfa Calipso, enamorada del héroe. Los dioses deciden que es hora de que regrese a Ítaca y, a través de Hermes, ordenan a Calipso dejarlo ir.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Calipso gli aveva promesso l'<strong>immortalità</strong>. Profetizza una serie di disavventure. Odisseo ribadisce l'intenzione di partire.</div>
+      <div class="bi-es">Calipso le había prometido la inmortalidad. Profetiza una serie de desventuras. Odiseo reafirma la intención de partir.</div>
+    </div>
+
+    <div class="sub-heading">Da notare / A tener en cuenta</div>
+    <div class="example">
+      <div class="ex-it"><strong>a)</strong> L'uso dell'<strong>epiteto</strong> "astuto Odisseo" — caratteristica che Omero associa spesso all'eroe.</div>
+      <div class="ex-es">El uso del <strong>epíteto</strong> "astuto Odiseo" — característica que Homero asocia frecuentemente al héroe.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>b)</strong> Il meccanismo del <strong>flash-forward</strong>: Calipso anticipa con la profezia fatti futuri.</div>
+      <div class="ex-es">El mecanismo del <strong>flash-forward</strong>: Calipso anticipa con la profecía hechos futuros.</div>
+    </div>
+
+    <div class="sub-heading">Concetti chiave del brano / Conceptos clave</div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Mentalità misogina</strong> della Grecia arcaica: Odisseo tradisce Penelope con Calipso, e ciò appare normale. Se fosse stata Penelope a tradire, sarebbe stato molto più scandaloso.</div>
+      <div class="bi-es"><strong>Mentalidad misógina</strong> de la Grecia arcaica: Odiseo traiciona a Penélope con Calipso, y esto parece normal. Si hubiera sido Penélope quien traicionara, habría sido mucho más escandaloso.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Xenia</strong> (ospitalità): Calipso, anche al momento del distacco, si mostra generosa, offrendogli doni per il viaggio. L'ospitalità dello straniero era considerata <strong>sacra</strong> nella Grecia antica.</div>
+      <div class="bi-es"><strong>Xenia</strong> (hospitalidad): Calipso, incluso al momento de la despedida, se muestra generosa. La hospitalidad del extranjero se consideraba <strong>sagrada</strong> en la Grecia antigua.</div>
+    </div>
+  </div>
+
+  <!-- 3.2 Nausicaa -->
+  <div class="section-block c2">
+    <div class="section-number">3.2</div>
+    <div class="section-heading">Odisseo e i Feaci — L'incontro con Nausicaa</div>
+    <div class="section-heading-es">Odiseo y los Feacios — El encuentro con Nausícaa</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Odisseo sbarca dopo un naufragio (a causa di Poseidone) sull'isola dei Feaci, <strong>Scheria</strong>, di cui è re <strong>Alcinoo</strong>. Sua figlia <strong>Nausicaa</strong> è la prima ad accorgersi dello straniero.</div>
+      <div class="bi-es">Odiseo desembarca después de un naufragio (a causa de Poseidón) en la isla de los Feacios, <strong>Esqueria</strong>, cuyo rey es Alcínoo. Su hija <strong>Nausícaa</strong> es la primera en notar al extranjero.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Nausicaa sta giocando a palla con le ancelle. Atena le infonde coraggio. Odisseo le si rivolge con parole gentili e accorte da lontano (teme che toccarle le ginocchia la offenda).</div>
+      <div class="bi-es">Nausícaa está jugando a la pelota con las sirvientas. Atenea le infunde coraje. Odiseo se dirige a ella con palabras amables y prudentes desde lejos.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Nausicaa lo accoglie, ordina alle ancelle di dargli cibo e vesti. Atena lo rende più bello. Nausicaa si augura di sposarlo.</div>
+      <div class="bi-es">Nausícaa lo acoge, ordena a las sirvientas darle comida y ropa. Atenea lo hace más hermoso. Nausícaa desea casarse con él.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Il valore della xenia</strong>: il rifiuto di accogliere uno straniero era considerato un <strong>sacrilegio</strong> agli dei, in particolare a Zeus. Nausicaa conduce Odisseo a palazzo e lo invita a presentarsi prima a sua madre.</div>
+      <div class="bi-es">El valor de la <strong>xenia</strong>: el rechazo de acoger a un extranjero se consideraba un sacrilegio a los dioses, en particular a Zeus.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>L'aedo Demodoco</strong>: durante il pranzo, il poeta narra le imprese di Troia. Odisseo, ascoltando la distruzione della città, si commuove. Omero fa un riferimento autobiografico alla propria arte di poeta epico.</div>
+      <div class="bi-es"><strong>El aedo Demódoco</strong>: durante el almuerzo, el poeta narra las hazañas de Troya. Odiseo se conmueve. Homero hace una referencia autobiográfica a su propio arte de poeta épico.</div>
+    </div>
+  </div>
+
+  <!-- 3.3 Circe -->
+  <div class="section-block c3">
+    <div class="section-number">3.3</div>
+    <div class="section-heading">Odisseo e Circe</div>
+    <div class="section-heading-es">Odiseo y Circe</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Dopo il cambio di rotta causato dai compagni (che avevano disperso i venti dall'otre di Eolo), Odisseo sbarca sull'isola di <strong>Eea</strong>. I compagni trovano il palazzo della maga <strong>Circe</strong>, apparentemente ospitale. Ma li <strong>trasforma in maiali</strong>.</div>
+      <div class="bi-es">Después del cambio de rumbo causado por los compañeros (que dispersaron los vientos del odre de Eolo), Odiseo desembarca en la isla de <strong>Eea</strong>. Los compañeros encuentran el palacio de la maga <strong>Circe</strong>, aparentemente hospitalaria. Pero los <strong>transforma en cerdos</strong>.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Uno dei compagni si sottrae all'incantesimo e avvisa Odisseo. Il dio <strong>Hermes</strong> gli consegna un antidoto, il <strong>moly</strong> (ancora oggi non identificato).</div>
+      <div class="bi-es">Uno de los compañeros escapa del encantamiento y avisa a Odiseo. El dios <strong>Hermes</strong> le entrega un antídoto, el <strong>moly</strong> (aún hoy no identificado).</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Circe è stupita: Odisseo vince il suo incantesimo. Lo invita nella sua camera. Odisseo si fa promettere che i compagni riacquisteranno forma umana. Resta sull'isola circa <strong>un anno</strong>.</div>
+      <div class="bi-es">Circe queda asombrada: Odiseo vence su encantamiento. Odiseo le hace prometer que los compañeros recuperarán forma humana. Se queda en la isla aproximadamente <strong>un año</strong>.</div>
+    </div>
+    <div class="key-rule">
+      <div class="kr-label">Concetto chiave / Concepto clave</div>
+      <div class="kr-it">Questo episodio mette in luce l'<strong>insaziabile curiosità</strong> dell'eroe, che vuole spingersi costantemente oltre i limiti umani, esplorare ciò che è ignoto.</div>
+      <div class="kr-es">Este episodio resalta la <strong>insaciable curiosidad</strong> del héroe, que quiere ir constantemente más allá de los límites humanos, explorar lo desconocido.</div>
+    </div>
+  </div>
+</div><!-- /p3 -->
+
+
+<!-- ══════════════════════════════════════════
+     PARTE 4 — VOCABOLARIO
+═══════════════════════════════════════════ -->
+<div class="section-panel" id="p4">
+  <div class="part-header">
+    <div class="part-title">Vocabolario chiave dell'Odissea</div>
+    <div class="part-subtitle">Vocabulario clave de la Odisea</div>
+  </div>
+
+  <div class="vocab-grid">
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Nostos</div>
+        <div class="v-es">Nostos</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Viaggio di ritorno. Tema centrale dell'Odissea.</div>
+        <div class="v-def-es">Viaje de regreso. Tema central de la Odisea.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Menis</div>
+        <div class="v-es">Menis</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Ira. Tema centrale dell'Iliade (ira di Achille).</div>
+        <div class="v-def-es">Ira. Tema central de la Ilíada (ira de Aquiles).</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Metis</div>
+        <div class="v-es">Metis</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Intelligenza intraprendente, astuzia e lungimiranza di Odisseo.</div>
+        <div class="v-def-es">Inteligencia emprendedora, astucia y previsión de Odiseo.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Xenia</div>
+        <div class="v-es">Xenia</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Ospitalità sacra dello straniero. Valore fondamentale nella cultura greca.</div>
+        <div class="v-def-es">Hospitalidad sagrada del extranjero. Valor fundamental en la cultura griega.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Protasi</div>
+        <div class="v-es">Prótasis</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Parte del proemio in cui si espone l'argomento centrale dell'opera.</div>
+        <div class="v-def-es">Parte del proemio donde se expone el argumento central de la obra.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Esametro</div>
+        <div class="v-es">Hexámetro</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Tipo di verso utilizzato nell'Odissea e nell'Iliade.</div>
+        <div class="v-def-es">Tipo de verso utilizado en la Odisea y en la Ilíada.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Epiteto</div>
+        <div class="v-es">Epíteto</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Aggettivo/espressione fissa associata a un personaggio. Es: "astuto Odisseo".</div>
+        <div class="v-def-es">Adjetivo/expresión fija asociada a un personaje. Ej: "astuto Odiseo".</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Patronimico</div>
+        <div class="v-es">Patronímico</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Nome derivato dal padre. Laertìade = figlio di Laerte (= Odisseo).</div>
+        <div class="v-def-es">Nombre derivado del padre. Laertíade = hijo de Laertes (= Odiseo).</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Sacrilegio</div>
+        <div class="v-es">Sacrilegio</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Offesa a un dio. I compagni di Odisseo commettono sacrilegio divorando i buoi del Sole.</div>
+        <div class="v-def-es">Ofensa a un dios. Los compañeros de Odiseo cometen sacrilegio devorando los bueyes del Sol.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Misogino</div>
+        <div class="v-es">Misógino</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Atteggiamento che disprezza o assegna un ruolo di inferiorità alle donne.</div>
+        <div class="v-def-es">Actitud que desprecia o asigna un rol de inferioridad a las mujeres.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Aedo</div>
+        <div class="v-es">Aedo</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Poeta/cantore epico nell'antica Grecia. Es: Demodoco alla corte di Alcinoo.</div>
+        <div class="v-def-es">Poeta/cantor épico en la antigua Grecia. Ej: Demódoco en la corte de Alcínoo.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Flash-back</div>
+        <div class="v-es">Flash-back</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Ritorno al passato nella narrazione. Odisseo racconta le sue avventure ad Alcinoo.</div>
+        <div class="v-def-es">Regreso al pasado en la narración. Odiseo cuenta sus aventuras a Alcínoo.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Flash-forward</div>
+        <div class="v-es">Flash-forward</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Anticipazione di un fatto futuro. Calipso preannuncia le difficoltà del viaggio.</div>
+        <div class="v-def-es">Anticipación de un hecho futuro. Calipso anticipa las dificultades del viaje.</div>
+      </div>
+    </div>
+
+    <div class="vcard">
+      <div class="vcard-top">
+        <div class="v-it">Moly</div>
+        <div class="v-es">Moly</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-sep"></div>
+        <div class="v-def-it">Antidoto consegnato da Hermes a Odisseo per resistere all'incantesimo di Circe. Ancora oggi non identificato.</div>
+        <div class="v-def-es">Antídoto entregado por Hermes a Odiseo para resistir el encantamiento de Circe. Aún hoy no identificado.</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /p4 -->
+
+</div><!-- /.container -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+</body>
+</html>
