@@ -10,7 +10,6 @@
   --bg: #0f1118;
   --surface: #1a1d2e;
   --surface2: #242840;
-  --surface3: #2e3255;
   --accent1: #6c63ff;
   --accent2: #00d4aa;
   --accent3: #ff6b6b;
@@ -33,296 +32,250 @@ body {
   overflow-x: hidden;
 }
 
-/* Subtle grain overlay */
 .grain {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1000;
+  pointer-events: none; z-index: 1000;
 }
 
-/* Background glow blobs */
-.bg-glow {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.07;
-  pointer-events: none;
-  z-index: 0;
-}
+.bg-glow { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.07; pointer-events: none; z-index: 0; }
 .bg-glow-1 { width: 500px; height: 500px; background: var(--accent1); top: -100px; left: -150px; }
 .bg-glow-2 { width: 400px; height: 400px; background: var(--accent2); bottom: 0; right: -100px; }
 
-/* ─── LAYOUT ─────────────────────────────────── */
-.container {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 0 24px 80px;
-  position: relative;
-  z-index: 1;
-}
+/* ─── LAYOUT ─── */
+.container { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; position: relative; z-index: 1; }
 
-/* ─── HEADER ─────────────────────────────────── */
-header {
-  padding: 70px 0 50px;
-  text-align: center;
-}
+/* ─── HEADER ─── */
+header { padding: 70px 0 36px; text-align: center; }
 
 .header-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent2);
-  margin-bottom: 18px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent2); margin-bottom: 18px;
 }
-
-.header-eyebrow::before,
-.header-eyebrow::after {
-  content: '';
-  display: block;
-  width: 28px;
-  height: 1px;
-  background: var(--accent2);
-  opacity: 0.5;
+.header-eyebrow::before, .header-eyebrow::after {
+  content: ''; display: block; width: 28px; height: 1px; background: var(--accent2); opacity: 0.5;
 }
 
 h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800;
   background: linear-gradient(135deg, var(--text) 20%, var(--accent2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.15;
-  margin-bottom: 12px;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1.15; margin-bottom: 12px;
 }
 
-header .subtitle {
-  color: var(--text-dim);
-  font-size: 1rem;
-  font-weight: 300;
+header .subtitle { color: var(--text-dim); font-size: 1rem; font-weight: 300; margin-bottom: 28px; }
+
+/* ─── SEARCH ─── */
+.search-wrap { position: relative; max-width: 420px; margin: 0 auto 14px; }
+.search-wrap input {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); padding: 11px 18px 11px 42px; border-radius: 30px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.search-wrap input:focus { border-color: var(--accent1); box-shadow: 0 0 0 3px var(--glow); }
+.search-wrap input::placeholder { color: var(--text-faint); }
+.search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 0.9rem; pointer-events: none; }
+
+/* ─── FILTER BAR ─── */
+.filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 44px; }
+
+.filter-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-dim); padding: 6px 14px; border-radius: 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease;
+}
+.filter-btn:hover { color: var(--text); border-color: var(--accent1); }
+.filter-btn.active {
+  background: var(--accent1); color: #fff; border-color: var(--accent1);
+  box-shadow: 0 3px 12px rgba(108,99,255,0.35);
 }
 
-/* ─── MATERIA BLOCK ──────────────────────────── */
-.materia {
-  margin-bottom: 40px;
+.filter-clear {
+  background: none; border: 1px solid rgba(255,107,107,0.3);
+  color: var(--accent3); padding: 6px 12px; border-radius: 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer;
+  transition: all 0.2s ease; display: none; align-items: center; gap: 5px;
 }
+.filter-clear:hover { background: rgba(255,107,107,0.1); border-color: var(--accent3); }
+.filter-clear.visible { display: inline-flex; }
 
-.materia-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+/* ─── EMPTY STATE ─── */
+.search-empty { display: none; text-align: center; padding: 48px 20px; color: var(--text-faint); }
+.search-empty.visible { display: block; }
+.search-empty .emoji { font-size: 2rem; margin-bottom: 10px; }
+.search-empty p { font-size: 0.9rem; }
+
+/* ═══════════════════════════════════════
+   MATERIA — collapsible section
+═══════════════════════════════════════ */
+.materia { margin-bottom: 16px; }
+.materia.filter-hidden { display: none; }
+
+.materia-toggle {
+  width: 100%;
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease, border-color 0.2s ease, border-radius 0.25s ease;
+  position: relative;
+  z-index: 1;
+}
+.materia-toggle:hover { background: var(--surface2); border-color: var(--border-hover); }
+
+.materia.open .materia-toggle {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
 }
 
 .materia-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  flex-shrink: 0;
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
 }
 
 .materia-name {
   font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 1.2rem; font-weight: 700; color: var(--text);
+  flex: 1;
 }
 
 .materia-count {
-  margin-left: auto;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--text-faint);
-  text-transform: uppercase;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+  color: var(--text-faint); text-transform: uppercase;
 }
 
-/* ─── TOPIC CARD ─────────────────────────────── */
+.materia-chevron {
+  font-size: 0.72rem; color: var(--text-faint);
+  transition: transform 0.28s ease; flex-shrink: 0; margin-left: 10px;
+}
+.materia.open .materia-chevron { transform: rotate(180deg); }
+
+.materia-body {
+  display: none;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  padding: 16px 0 8px;
+  background: var(--surface);
+  padding-left: 0;
+  padding-right: 0;
+}
+.materia.open .materia-body { display: block; }
+
+/* ─── TOPIC CARD ─── */
 .topic-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  margin-bottom: 12px;
+  border-radius: 12px;
+  margin: 0 14px 10px;
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+.topic-card:last-child { margin-bottom: 6px; }
+.topic-card:hover { border-color: var(--border-hover); box-shadow: 0 4px 24px var(--glow); }
+.topic-card.filter-hidden { display: none; }
 
-.topic-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: 0 4px 28px var(--glow);
-}
-
-/* Topic header — clickable toggle */
 .topic-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 22px;
-  background: none;
-  border: none;
-  color: var(--text);
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.2s ease;
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 15px 18px; background: none; border: none; color: var(--text);
+  cursor: pointer; text-align: left; transition: background 0.2s ease;
 }
+.topic-toggle:hover { background: rgba(108, 99, 255, 0.05); }
 
-.topic-toggle:hover {
-  background: rgba(108, 99, 255, 0.05);
-}
+.topic-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; align-self: flex-start; margin-top: 6px; }
 
-.topic-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.topic-name {
-  font-size: 1.05rem;
-  font-weight: 500;
-  flex: 1;
-}
+.topic-meta { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.topic-name { font-size: 1rem; font-weight: 500; line-height: 1.3; }
+.topic-date { font-size: 0.68rem; color: var(--text-faint); font-weight: 400; letter-spacing: 0.02em; }
 
 .topic-badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  padding: 3px 9px;
-  border-radius: 20px;
-  opacity: 0.75;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+  padding: 3px 9px; border-radius: 20px; opacity: 0.75; white-space: nowrap;
 }
 
-.chevron {
-  margin-left: 8px;
-  font-size: 0.75rem;
-  color: var(--text-faint);
-  transition: transform 0.25s ease;
-  flex-shrink: 0;
+.chevron { margin-left: 8px; font-size: 0.72rem; color: var(--text-faint); transition: transform 0.25s ease; flex-shrink: 0; }
+.topic-card.open .chevron { transform: rotate(180deg); }
+
+/* ─── RESOURCE LIST ─── */
+.resource-list { display: none; border-top: 1px solid var(--border); padding: 6px 0; }
+.topic-card.open .resource-list { display: block; }
+
+.res-group-label {
+  font-size: 0.63rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-faint); padding: 10px 20px 4px 44px;
+}
+.res-group-label:not(:first-child) {
+  border-top: 1px solid rgba(255,255,255,0.04); margin-top: 4px; padding-top: 14px;
 }
 
-.topic-card.open .chevron {
-  transform: rotate(180deg);
-}
-
-/* Resource links list */
-.resource-list {
-  display: none;
-  border-top: 1px solid var(--border);
-  padding: 6px 0;
-}
-
-.topic-card.open .resource-list {
-  display: block;
-}
+.resource-link.filter-hidden { display: none; }
 
 .resource-link {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 22px 14px 46px;
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 400;
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 20px 12px 44px; color: var(--text-dim); text-decoration: none;
+  font-size: 0.92rem; font-weight: 400;
   transition: background 0.15s ease, color 0.15s ease;
   border-bottom: 1px solid rgba(255,255,255,0.03);
 }
+.resource-link:last-child { border-bottom: none; }
+.resource-link:hover { background: rgba(108, 99, 255, 0.07); color: var(--text); }
+.resource-link:hover .res-arrow { transform: translateX(4px); }
 
-.resource-link:last-child {
-  border-bottom: none;
+.res-icon { font-size: 0.95rem; width: 20px; text-align: center; flex-shrink: 0; }
+.res-label { flex: 1; }
+.res-type { font-size: 0.68rem; letter-spacing: 0.06em; font-weight: 600; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; opacity: 0.75; }
+.res-arrow { font-size: 0.78rem; color: var(--accent1); transition: transform 0.2s ease; margin-left: 6px; }
+
+/* ─── BADGE NUOVO ─── */
+.badge-nuovo {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 2px 8px; border-radius: 20px; background: rgba(0,212,170,0.15);
+  color: var(--accent2); border: 1px solid rgba(0,212,170,0.3); flex-shrink: 0;
+  animation: pulse-new 2.5s ease-in-out infinite;
 }
+@keyframes pulse-new { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-.resource-link:hover {
-  background: rgba(108, 99, 255, 0.07);
-  color: var(--text);
+/* ─── TYPE COLORS ─── */
+.materia-icon.laboratorio { background: rgba(108,99,255,0.15); }
+.dot-laboratorio          { background: var(--accent1); }
+.badge-laboratorio        { background: rgba(108,99,255,0.15); color: var(--accent1); }
+
+.materia-icon.letteratura { background: rgba(255,107,107,0.15); }
+.dot-letteratura          { background: var(--accent3); }
+.badge-letteratura        { background: rgba(255,107,107,0.15); color: var(--accent3); }
+
+.tag-mappa    { background: rgba(0,212,170,0.12);  color: var(--accent2); }
+.tag-flash    { background: rgba(255,107,107,0.12); color: var(--accent3); }
+.tag-appunti  { background: rgba(108,99,255,0.12);  color: var(--accent1); }
+.tag-glosario { background: rgba(255,217,61,0.12);  color: var(--accent4); }
+
+/* ─── FOOTER ─── */
+footer { text-align: center; color: var(--text-faint); font-size: 0.8rem; padding-top: 20px; border-top: 1px solid var(--border); margin-top: 60px; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.materia { animation: fadeUp 0.4s ease both; }
+.materia:nth-child(1){animation-delay:0.05s}
+.materia:nth-child(2){animation-delay:0.12s}
+.materia:nth-child(3){animation-delay:0.19s}
+
+@media(max-width:500px){
+  .materia-name { font-size: 1.05rem; }
+  .topic-name   { font-size: 0.92rem; }
+  .filter-btn, .filter-clear { font-size: 0.7rem; padding: 5px 10px; }
 }
-
-.resource-link:hover .res-arrow {
-  transform: translateX(4px);
-}
-
-.res-icon {
-  font-size: 1rem;
-  width: 20px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.res-label {
-  flex: 1;
-}
-
-.res-type {
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 6px;
-  opacity: 0.6;
-}
-
-.res-arrow {
-  font-size: 0.8rem;
-  color: var(--accent1);
-  transition: transform 0.2s ease;
-  margin-left: 6px;
-}
-
-/* ─── TYPE BADGES & COLORS ───────────────────── */
-/* Laboratorio — violet */
-.materia-icon.laboratorio { background: rgba(108, 99, 255, 0.15); }
-.dot-laboratorio { background: var(--accent1); }
-.badge-laboratorio { background: rgba(108, 99, 255, 0.15); color: var(--accent1); }
-
-/* Lingua e Letteratura — teal/green */
-.materia-icon.letteratura { background: rgba(255, 107, 107, 0.15); }
-.dot-letteratura { background: var(--accent3); }
-.badge-letteratura { background: rgba(255, 107, 107, 0.15); color: var(--accent3); }
-
-/* Resource type tags */
-.tag-mappa   { background: rgba(0, 212, 170, 0.12); color: var(--accent2); }
-.tag-flash   { background: rgba(255, 107, 107, 0.12); color: var(--accent3); }
-.tag-esercizi { background: rgba(255, 217, 61, 0.12); color: var(--accent4); }
-.tag-note    { background: rgba(108, 99, 255, 0.12); color: var(--accent1); }
-
-/* ─── FOOTER ─────────────────────────────────── */
-footer {
-  text-align: center;
-  color: var(--text-faint);
-  font-size: 0.8rem;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  margin-top: 60px;
-}
-
-/* ─── ANIMATIONS ─────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.materia {
-  animation: fadeUp 0.4s ease both;
-}
-
-.materia:nth-child(1) { animation-delay: 0.05s; }
-.materia:nth-child(2) { animation-delay: 0.12s; }
-.materia:nth-child(3) { animation-delay: 0.19s; }
 </style>
 </head>
 <body>
@@ -337,135 +290,303 @@ footer {
     <div class="header-eyebrow">Materiali di Studio</div>
     <h1>Indice</h1>
     <p class="subtitle">Seleziona una materia e un argomento per accedere alle risorse</p>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="globalSearch" placeholder="Cerca argomento o risorsa…" oninput="applyFilters()">
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn" data-filter="mappa"    onclick="toggleFilter('mappa', this)">🗺️ Mappe</button>
+      <button class="filter-btn" data-filter="flash"    onclick="toggleFilter('flash', this)">🃏 Flashcards</button>
+      <button class="filter-btn" data-filter="appunti"  onclick="toggleFilter('appunti', this)">📘 Appunti</button>
+      <button class="filter-btn" data-filter="glosario" onclick="toggleFilter('glosario', this)">📖 Glossari</button>
+      <button class="filter-clear" id="clearBtn" onclick="clearFilters()">✕ Rimuovi filtri</button>
+    </div>
   </header>
+
+  <div class="search-empty" id="searchEmpty">
+    <div class="emoji">🔍</div>
+    <p>Nessun risultato trovato</p>
+  </div>
 
   <!-- ══════════════════════════════════════
        MATERIA: Laboratorio
   ══════════════════════════════════════════ -->
-  <section class="materia">
+  <section class="materia" id="materia-laboratorio">
 
-    <div class="materia-header">
+    <button class="materia-toggle" onclick="toggleMateria('materia-laboratorio')">
       <div class="materia-icon laboratorio">🎛️</div>
       <span class="materia-name">Laboratorio</span>
       <span class="materia-count">1 argomento</span>
-    </div>
+      <span class="materia-chevron">▼</span>
+    </button>
 
-    <!-- Topic: Fondamenti di Suono -->
-    <div class="topic-card" id="topic-fondamenti">
-      <button class="topic-toggle" onclick="toggleTopic('topic-fondamenti')">
-        <span class="topic-dot dot-laboratorio"></span>
-        <span class="topic-name">Fondamenti di Suono</span>
-        <span class="topic-badge badge-laboratorio">2 risorse</span>
-        <span class="chevron">▼</span>
-      </button>
+    <div class="materia-body">
 
-      <div class="resource-list">
+      <div class="topic-card" id="topic-fondamenti"
+           data-search="fondamenti suono laboratorio presa diretta microfoni boom wireless mix catena fonico">
+        <button class="topic-toggle" onclick="toggleTopic('topic-fondamenti')">
+          <span class="topic-dot dot-laboratorio"></span>
+          <div class="topic-meta">
+            <span class="topic-name">Fondamenti di Suono</span>
+            <span class="topic-date">Lezione 1 + Lezione 2 · Marzo 2026</span>
+          </div>
+          <span class="topic-badge badge-laboratorio">4 risorse</span>
+          <span class="chevron">▼</span>
+        </button>
 
-        <a class="resource-link" href="Mappe_Concettuali_Fondamenti_Suono.html">
-          <span class="res-icon">🗺️</span>
-          <span class="res-label">Mappe Concettuali</span>
-          <span class="res-type tag-mappa">Mappa</span>
-          <span class="res-arrow">→</span>
-        </a>
+        <div class="resource-list">
+          <div class="res-group-label">Mappe & Flashcards</div>
 
-        <a class="resource-link" href="Flashcards_Interattive_Fondamenti_Suono.html">
-          <span class="res-icon">🃏</span>
-          <span class="res-label">Flashcards Interattive</span>
-          <span class="res-type tag-flash">Flashcard</span>
-          <span class="res-arrow">→</span>
-        </a>
+          <a class="resource-link" href="Mappe_Concettuali_Fondamenti_Suono.html" data-type="mappa">
+            <span class="res-icon">🗺️</span>
+            <span class="res-label">Mappe Concettuali</span>
+            <span class="res-type tag-mappa">Mappa</span>
+            <span class="res-arrow">→</span>
+          </a>
 
+          <a class="resource-link" href="Flashcards_Interattive_Fondamenti_Suono.html" data-type="flash">
+            <span class="res-icon">🃏</span>
+            <span class="res-label">Flashcards Interattive</span>
+            <span class="res-type tag-flash">Flashcard</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <div class="res-group-label">Appunti & Glossario</div>
+
+          <a class="resource-link" href="Appunti_Bilingui_Suono.html" data-type="appunti">
+            <span class="res-icon">📘</span>
+            <span class="res-label">Appunti Bilingui</span>
+            <span class="res-type tag-appunti">Appunti</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Glossario_Suono.html" data-type="glosario">
+            <span class="res-icon">📖</span>
+            <span class="res-label">Glossario Bilingue</span>
+            <span class="res-type tag-glosario">Glossario</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+        </div>
       </div>
-    </div>
 
-    <!-- ── Para añadir más temas dentro de Laboratorio, copiar el bloque
-         topic-card de arriba y cambiar id, nombre y recursos ── -->
-
+    </div><!-- /materia-body -->
   </section>
 
   <!-- ══════════════════════════════════════
        MATERIA: Lingua e Letteratura Italiana
   ══════════════════════════════════════════ -->
-  <section class="materia">
+  <section class="materia" id="materia-letteratura">
 
-    <div class="materia-header">
+    <button class="materia-toggle" onclick="toggleMateria('materia-letteratura')">
       <div class="materia-icon letteratura">📖</div>
       <span class="materia-name">Lingua e Letteratura Italiana</span>
-      <span class="materia-count">1 argomento</span>
-    </div>
+      <span class="materia-count">2 argomenti</span>
+      <span class="materia-chevron">▼</span>
+    </button>
 
-    <!-- Topic: Grammatica -->
-    <div class="topic-card" id="topic-grammatica">
-      <button class="topic-toggle" onclick="toggleTopic('topic-grammatica')">
-        <span class="topic-dot dot-letteratura"></span>
-        <span class="topic-name">Grammatica</span>
-        <span class="topic-badge badge-letteratura">2 risorse</span>
-        <span class="chevron">▼</span>
-      </button>
+    <div class="materia-body">
 
-      <div class="resource-list">
+      <!-- Topic: Grammatica -->
+      <div class="topic-card" id="topic-grammatica"
+           data-search="grammatica aggettivo preposizione concordanza comparativo superlativo possessivo dimostrativo indefinito numerale articolata partitivo">
+        <button class="topic-toggle" onclick="toggleTopic('topic-grammatica')">
+          <span class="topic-dot dot-letteratura"></span>
+          <div class="topic-meta">
+            <span class="topic-name">Grammatica: L'Aggettivo + La Preposizione</span>
+            <span class="topic-date">1ª e 2ª parte · Marzo 2026</span>
+          </div>
+          <span class="topic-badge badge-letteratura">4 risorse</span>
+          <span class="chevron">▼</span>
+        </button>
 
-        <a class="resource-link" href="Mappe_Concettuali_Grammatica.html">
-          <span class="res-icon">🗺️</span>
-          <span class="res-label">Mappe Concettuali</span>
-          <span class="res-type tag-mappa">Mappa</span>
-          <span class="res-arrow">→</span>
-        </a>
+        <div class="resource-list">
+          <div class="res-group-label">Mappe & Flashcards</div>
 
-        <a class="resource-link" href="Flashcards_Interattive_Grammatica.html">
-          <span class="res-icon">🃏</span>
-          <span class="res-label">Flashcards Interattive</span>
-          <span class="res-type tag-flash">Flashcard</span>
-          <span class="res-arrow">→</span>
-        </a>
+          <a class="resource-link" href="Mappe_Concettuali_Grammatica.html" data-type="mappa">
+            <span class="res-icon">🗺️</span>
+            <span class="res-label">Mappe Concettuali</span>
+            <span class="res-type tag-mappa">Mappa</span>
+            <span class="res-arrow">→</span>
+          </a>
 
+          <a class="resource-link" href="Flashcards_Interattive_Grammatica.html" data-type="flash">
+            <span class="res-icon">🃏</span>
+            <span class="res-label">Flashcards Interattive</span>
+            <span class="res-type tag-flash">Flashcard</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <div class="res-group-label">Appunti & Glossario</div>
+
+          <a class="resource-link" href="Appunti_Bilingui_Grammatica.html" data-type="appunti">
+            <span class="res-icon">📘</span>
+            <span class="res-label">Appunti Bilingui</span>
+            <span class="res-type tag-appunti">Appunti</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Glossario_Grammatica.html" data-type="glosario">
+            <span class="res-icon">📖</span>
+            <span class="res-label">Glossario Bilingue</span>
+            <span class="res-type tag-glosario">Glossario</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+        </div>
       </div>
-    </div>
 
+      <!-- Topic: Epica -->
+      <div class="topic-card" id="topic-epica"
+           data-search="epica odissea omero nostos metis menis xenia calipso circe nausicaa proemio personaggi polifemo ulisse">
+        <button class="topic-toggle" onclick="toggleTopic('topic-epica')">
+          <span class="topic-dot dot-letteratura"></span>
+          <div class="topic-meta">
+            <span class="topic-name">Epica: L'Odissea</span>
+            <span class="topic-date">Info di base · Proemio · Brani · Marzo 2026</span>
+          </div>
+          <span class="topic-badge badge-letteratura">4 risorse</span>
+          <span class="chevron">▼</span>
+        </button>
+
+        <div class="resource-list">
+          <div class="res-group-label">Mappe & Flashcards</div>
+
+          <a class="resource-link" href="Mappe_Concettuali_Epica.html" data-type="mappa">
+            <span class="res-icon">🗺️</span>
+            <span class="res-label">Mappe Concettuali</span>
+            <span class="res-type tag-mappa">Mappa</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Flashcards_Interattive_Epica.html" data-type="flash">
+            <span class="res-icon">🃏</span>
+            <span class="res-label">Flashcards Interattive</span>
+            <span class="res-type tag-flash">Flashcard</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <div class="res-group-label">Appunti & Glossario</div>
+
+          <a class="resource-link" href="Appunti_Bilingui_Epica.html" data-type="appunti">
+            <span class="res-icon">📘</span>
+            <span class="res-label">Appunti Bilingui</span>
+            <span class="res-type tag-appunti">Appunti</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+
+          <a class="resource-link" href="Glossario_Epica.html" data-type="glosario">
+            <span class="res-icon">📖</span>
+            <span class="res-label">Glossario Bilingue</span>
+            <span class="res-type tag-glosario">Glossario</span>
+            <span class="badge-nuovo">Nuovo</span>
+            <span class="res-arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /materia-body -->
   </section>
 
-  <!-- ══════════════════════════════════════
-       MATERIA FUTURA — descomenta y edita
-  ══════════════════════════════════════════
-  <section class="materia">
-    <div class="materia-header">
-      <div class="materia-icon" style="background:rgba(255,107,107,0.15)">📐</div>
-      <span class="materia-name">Nome Materia</span>
-      <span class="materia-count">N argomenti</span>
-    </div>
-    <div class="topic-card" id="topic-xxx">
-      <button class="topic-toggle" onclick="toggleTopic('topic-xxx')">
-        <span class="topic-dot" style="background:#ff6b6b"></span>
-        <span class="topic-name">Nome Argomento</span>
-        <span class="topic-badge" style="background:rgba(255,107,107,0.15);color:#ff6b6b">N risorse</span>
-        <span class="chevron">▼</span>
-      </button>
-      <div class="resource-list">
-        <a class="resource-link" href="file.html">
-          <span class="res-icon">🗺️</span>
-          <span class="res-label">Nome Risorsa</span>
-          <span class="res-type tag-mappa">Mappa</span>
-          <span class="res-arrow">→</span>
-        </a>
-      </div>
-    </div>
-  </section>
-  ══════════════════════════════════════════ -->
-
-  <footer>Aggiornato · 2025</footer>
+  <footer>Aggiornato · Marzo 2026</footer>
 
 </div>
 
 <script>
-  function toggleTopic(id) {
-    const card = document.getElementById(id);
-    card.classList.toggle('open');
+  let activeFilters = new Set();
+
+  function toggleMateria(id) {
+    document.getElementById(id).classList.toggle('open');
   }
 
-  // Auto-open if only one topic exists
-  document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.topic-card');
-    if (cards.length === 1) cards[0].classList.add('open');
+  function toggleTopic(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function toggleFilter(filter, btn) {
+    if (activeFilters.has(filter)) {
+      activeFilters.delete(filter);
+      btn.classList.remove('active');
+    } else {
+      activeFilters.add(filter);
+      btn.classList.add('active');
+    }
+    updateClearBtn();
+    applyFilters();
+  }
+
+  function clearFilters() {
+    activeFilters.clear();
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    updateClearBtn();
+    applyFilters();
+  }
+
+  function updateClearBtn() {
+    document.getElementById('clearBtn').classList.toggle('visible', activeFilters.size > 0);
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('globalSearch').value.toLowerCase().trim();
+    const noTypeFilter = activeFilters.size === 0;
+    let anyVisible = false;
+
+    document.querySelectorAll('.topic-card').forEach(card => {
+      const searchText = (card.dataset.search || '') + ' ' + card.innerText.toLowerCase();
+      const matchesSearch = q === '' || searchText.includes(q);
+
+      const links = card.querySelectorAll('.resource-link');
+      let visibleCount = 0;
+      links.forEach(link => {
+        const typeMatch = noTypeFilter || activeFilters.has(link.dataset.type);
+        link.classList.toggle('filter-hidden', !typeMatch);
+        if (typeMatch) visibleCount++;
+      });
+
+      const badge = card.querySelector('.topic-badge');
+      if (badge) {
+        badge.textContent = noTypeFilter
+          ? `${links.length} risorse`
+          : `${visibleCount} / ${links.length} risorse`;
+      }
+
+      card.querySelectorAll('.res-group-label').forEach(label => {
+        let next = label.nextElementSibling;
+        let hasVisible = false;
+        while (next && !next.classList.contains('res-group-label')) {
+          if (next.classList.contains('resource-link') && !next.classList.contains('filter-hidden')) hasVisible = true;
+          next = next.nextElementSibling;
+        }
+        label.style.display = hasVisible ? '' : 'none';
+      });
+
+      const cardVisible = matchesSearch && visibleCount > 0;
+      card.classList.toggle('filter-hidden', !cardVisible);
+      if (cardVisible) anyVisible = true;
+
+      if (q !== '' && cardVisible) card.classList.add('open');
+      if (q === '' && !card.dataset.manualOpen) card.classList.remove('open');
+    });
+
+    document.querySelectorAll('.materia').forEach(m => {
+      const hasVisible = m.querySelectorAll('.topic-card:not(.filter-hidden)').length > 0;
+      m.classList.toggle('filter-hidden', !hasVisible);
+      if (q !== '' && hasVisible) m.classList.add('open');
+    });
+
+    document.getElementById('searchEmpty').classList.toggle('visible', !anyVisible);
+  }
+
+  document.querySelectorAll('.topic-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.topic-card');
+      card.dataset.manualOpen = card.classList.contains('open') ? '' : null;
+    });
   });
 </script>
 
@@ -475,7 +596,6 @@ footer {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
         .then(reg => {
-          // Si hay una nueva versión disponible, notifica
           reg.addEventListener('updatefound', () => {
             const newWorker = reg.installing;
             newWorker.addEventListener('statechange', () => {
@@ -497,11 +617,11 @@ footer {
         color:#e8e6f0; padding:12px 20px; border-radius:12px;
         font-family:'DM Sans',sans-serif; font-size:0.85rem;
         box-shadow:0 4px 20px rgba(0,0,0,0.4); z-index:9999;
-        display:flex; align-items:center; gap:12px;
+        display:flex; align-items:center; gap:12px; white-space:nowrap;
       ">
         🔄 Contenuti aggiornati disponibili
         <button onclick="location.reload()" style="
-          background:var(--accent1,#6c63ff); color:#fff; border:none;
+          background:#6c63ff; color:#fff; border:none;
           padding:5px 12px; border-radius:8px; cursor:pointer;
           font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:600;
         ">Aggiorna</button>
