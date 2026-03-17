@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appunti Bilingui — Grammatica</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1118;
+  --surface: #1a1d2e;
+  --surface2: #242840;
+  --accent1: #6c63ff;
+  --accent2: #00d4aa;
+  --accent3: #ff6b6b;
+  --accent4: #ffd93d;
+  --accent5: #4ecdc4;
+  --accent6: #a78bfa;
+  --text: #e8e6f0;
+  --text-dim: #8b8aa0;
+  --text-es: #6dd4b0;
+  --border: rgba(108,99,255,0.2);
+  --glow: rgba(108,99,255,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+.grain { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; }
+
+/* ─── Back button ─── */
+.back-btn { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; text-decoration: none; transition: all 0.25s; position: absolute; top: 24px; left: 24px; }
+.back-btn:hover { color: var(--text); border-color: var(--accent1); box-shadow: 0 4px 15px var(--glow); transform: translateX(-2px); }
+@media(max-width:600px){ .back-btn { position: static; margin: 16px auto 0; display: flex; width: fit-content; } }
+
+/* ─── Header ─── */
+header { text-align: center; padding: 50px 20px 35px; position: relative; }
+header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 140px; height: 3px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 2px; }
+h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 800; background: linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent1) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+.header-sub { color: var(--text-dim); font-size: 0.9rem; margin-top: 4px; }
+.header-meta { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.meta-badge { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
+.meta-badge span { color: var(--accent4); }
+
+/* ─── Nav ─── */
+nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 28px 20px; max-width: 960px; margin: 0 auto; }
+nav button { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 18px; border-radius: 30px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+nav button::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 0.3s ease; border-radius: 30px; }
+nav button.n1::before { background: linear-gradient(135deg, var(--accent1), var(--accent6)); }
+nav button.n2::before { background: linear-gradient(135deg, var(--accent2), var(--accent5)); }
+nav button.n3::before { background: linear-gradient(135deg, var(--accent3), var(--accent4)); }
+nav button:hover::before, nav button.active::before { opacity: 1; }
+nav button:hover, nav button.active { border-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 25px var(--glow); }
+nav button span { position: relative; z-index: 1; }
+
+/* ─── Layout ─── */
+.container { max-width: 960px; margin: 0 auto; padding: 10px 20px 60px; }
+.section-panel { display: none; animation: fadeIn 0.45s ease; }
+.section-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── Part title ─── */
+.part-header { text-align: center; margin-bottom: 36px; }
+.part-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: #fff; margin-bottom: 6px; }
+.part-subtitle { color: var(--text-es); font-style: italic; font-size: 1rem; }
+
+/* ─── Section blocks ─── */
+.section-block { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px 30px; margin-bottom: 22px; position: relative; overflow: hidden; }
+.section-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 16px 16px 0 0; }
+.section-block.c1::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+.section-block.c2::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+.section-block.c3::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+.section-block.c4::before { background: linear-gradient(90deg, var(--accent4), var(--accent2)); }
+.section-block.c5::before { background: linear-gradient(90deg, var(--accent5), var(--accent1)); }
+.section-block.c6::before { background: linear-gradient(90deg, var(--accent6), var(--accent3)); }
+
+.section-number { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 6px; }
+.section-heading { font-weight: 700; font-size: 1.1rem; color: #fff; margin-bottom: 3px; }
+.section-heading-es { color: var(--text-es); font-style: italic; font-size: 0.9rem; margin-bottom: 16px; }
+.section-divider { width: 50px; height: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); border-radius: 1px; margin-bottom: 16px; }
+
+/* ─── Bilingual row ─── */
+.bi-row { margin-bottom: 14px; }
+.bi-it { color: var(--text); font-size: 0.93rem; line-height: 1.6; }
+.bi-es { color: var(--text-es); font-style: italic; font-size: 0.86rem; line-height: 1.5; margin-top: 3px; opacity: 0.88; }
+
+/* ─── Examples ─── */
+.example { background: var(--surface2); border-radius: 10px; padding: 10px 16px; margin: 10px 0; border-left: 3px solid var(--accent2); }
+.example .ex-it { font-size: 0.88rem; line-height: 1.5; }
+.example .ex-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-top: 4px; opacity: 0.85; }
+
+/* ─── Alert/Warning ─── */
+.alert { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.25); border-radius: 10px; padding: 12px 16px; margin: 14px 0; }
+.alert .alert-it { font-size: 0.88rem; line-height: 1.5; }
+.alert .alert-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-top: 4px; opacity: 0.85; }
+
+/* ─── Star note ─── */
+.star-note { background: rgba(255,217,61,0.07); border: 1px solid rgba(255,217,61,0.3); border-radius: 10px; padding: 12px 16px; margin: 14px 0; }
+.star-note .note-text { font-size: 0.88rem; line-height: 1.5; color: var(--accent4); font-weight: 600; }
+
+/* ─── Sub-section ─── */
+.sub-heading { font-weight: 700; font-size: 0.95rem; color: var(--accent1); margin: 18px 0 6px; }
+.sub-heading-es { color: var(--text-es); font-style: italic; font-size: 0.82rem; margin-bottom: 10px; }
+
+/* ─── Tables ─── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); }
+thead th { background: rgba(108,99,255,0.2); padding: 12px 16px; text-align: left; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--accent1); }
+tbody td { padding: 11px 16px; font-size: 0.85rem; line-height: 1.5; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(108,99,255,0.06); }
+.td-es { color: var(--text-es); font-style: italic; }
+
+/* ─── Comparison row (articulate preps) ─── */
+.comp-block { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; background: var(--surface2); border-radius: 10px; padding: 10px 16px; margin: 6px 0; }
+.comp-left { font-size: 0.88rem; }
+.comp-arrow { color: var(--accent2); font-weight: 700; font-size: 1rem; }
+.comp-right { font-size: 0.88rem; font-weight: 700; color: var(--accent4); }
+
+/* ─── Tag list ─── */
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.tag { background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3); color: var(--text); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+.tag.teal { background: rgba(0,212,170,0.12); border-color: rgba(0,212,170,0.3); color: var(--accent2); }
+
+/* ─── Key rule box ─── */
+.key-rule { background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,212,170,0.1)); border: 1px solid rgba(108,99,255,0.35); border-radius: 12px; padding: 16px 20px; margin: 14px 0; }
+.key-rule .kr-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 6px; }
+.key-rule .kr-text { font-size: 0.9rem; font-weight: 600; line-height: 1.5; }
+
+/* ─── Responsive ─── */
+@media(max-width: 600px) {
+  .section-block { padding: 22px 18px; }
+  h1 { font-size: 1.8rem; }
+  .comp-block { grid-template-columns: 1fr; }
+  .comp-arrow { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header>
+  <a class="back-btn" href="index.html">← Home</a>
+  <h1>Appunti Bilingui</h1>
+  <p class="header-sub">Grammatica — L'Aggettivo + La Preposizione</p>
+</header>
+
+<nav>
+  <button class="n1 active" onclick="showSection('p1', this)"><span>📘 Parte 1 — L'Aggettivo (1ª)</span></button>
+  <button class="n2" onclick="showSection('p2', this)"><span>📗 Parte 2 — Tipologie</span></button>
+  <button class="n3" onclick="showSection('p3', this)"><span>📙 Parte 3 — La Preposizione</span></button>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════
+     PARTE 1 — L'AGGETTIVO 1ª PARTE
+═══════════════════════════════════════════ -->
+<div class="section-panel active" id="p1">
+  <div class="part-header">
+    <div class="part-title">L'Aggettivo — 1ª Parte</div>
+    <div class="part-subtitle">El Adjetivo — 1ª Parte (Repaso)</div>
+  </div>
+
+  <!-- 1.1 Definizione -->
+  <div class="section-block c1">
+    <div class="section-number">1.1</div>
+    <div class="section-heading">Definizione</div>
+    <div class="section-heading-es">Definición</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Aggettivo</strong> = parola che si aggiunge al nome, a cui dà una qualità o una caratteristica.</div>
+      <div class="bi-es"><strong>Adjetivo</strong> = palabra que se agrega al nombre, al cual le da una cualidad o una característica.</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Gli aggettivi più diffusi sono i <strong>qualificativi</strong>: precisano la qualità del nome.</div>
+      <div class="bi-es">Los adjetivos más comunes son los <strong>calificativos</strong>: precisan la cualidad del nombre.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> bello, intelligente, grande</div>
+      <div class="ex-es">bello/hermoso, inteligente, grande</div>
+    </div>
+  </div>
+
+  <!-- 1.2 Aggettivi sostantivati -->
+  <div class="section-block c2">
+    <div class="section-number">1.2</div>
+    <div class="section-heading">Aggettivi sostantivati</div>
+    <div class="section-heading-es">Adjetivos sustantivados</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Gli aggettivi qualificativi privi di nome e preceduti da articoli diventano <strong>sostantivati</strong>.</div>
+      <div class="bi-es">Los adjetivos calificativos sin nombre y precedidos por artículos se convierten en <strong>sustantivados</strong>.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> I ricchi devono essere tassati di più dallo Stato</div>
+      <div class="ex-es">Los ricos deben ser gravados más por el Estado</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Attenzione!</strong> Gli aggettivi sostantivati di nazionalità devono essere scritti con la <strong>maiuscola</strong>.</div>
+      <div class="alert-es">⚠ ¡Atención! Los adjetivos sustantivados de nacionalidad deben escribirse con <strong>mayúscula</strong>.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> I Romani hanno distrutto la città di Cartagine</div>
+      <div class="ex-es">Los Romanos destruyeron la ciudad de Cartago</div>
+    </div>
+  </div>
+
+  <!-- 1.3 Concordanza -->
+  <div class="section-block c3">
+    <div class="section-number">1.3</div>
+    <div class="section-heading">Concordanza</div>
+    <div class="section-heading-es">Concordancia</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Gli aggettivi devono <strong>concordare in genere</strong> (maschile/femminile) <strong>e in numero</strong> (singolare/plurale) col nome.</div>
+      <div class="bi-es">Los adjetivos deben <strong>concordar en género</strong> (masculino/femenino) <strong>y en número</strong> (singular/plural) con el nombre.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> I professori antipatici della 1AL diventano l'incubo degli studenti</div>
+      <div class="ex-es">Los profesores antipáticos de 1AL se convierten en la pesadilla de los estudiantes</div>
+    </div>
+
+    <div class="sub-heading">Eccezioni: aggettivi invariabili</div>
+    <div class="sub-heading-es">Excepciones: adjetivos invariables</div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Attenzione!</strong> Alcuni aggettivi NON concordano (sono invariabili):</div>
+      <div class="alert-es">⚠ Algunos adjetivos NO concuerdan (son invariables):</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>a)</strong> Aggettivi di origine straniera: <em>cool</em></div>
+      <div class="bi-es">a) Adjetivos de origen extranjero: cool</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>b)</strong> Aggettivi accentati sull'ultima sillaba: <em>blu</em></div>
+      <div class="bi-es">b) Adjetivos acentuados en la última sílaba: blu (azul)</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>c)</strong> Aggettivi che indicano colori derivanti da nomi: <em>marrone, viola, oro, rosa</em></div>
+      <div class="bi-es">c) Adjetivos que indican colores derivados de nombres: marrón, violeta, oro, rosa</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>d)</strong> Aggettivi: <em>pari, dispari, impari</em></div>
+      <div class="bi-es">d) Adjetivos: par, impar</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Attenzione!</strong> Se l'aggettivo si riferisce a più nomi (1 maschile + 1 femminile), concorda al <strong>maschile</strong>.</div>
+      <div class="alert-es">⚠ Si el adjetivo se refiere a varios nombres (1 masculino + 1 femenino), concuerda en <strong>masculino</strong>.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Ho visto Luna e Leonardo <u>stanchi</u> questa mattina</div>
+      <div class="ex-es">Vi a Luna y Leonardo cansados esta mañana</div>
+    </div>
+  </div>
+
+  <!-- 1.4 Alterazione -->
+  <div class="section-block c4">
+    <div class="section-number">1.4</div>
+    <div class="section-heading">Alterazione dell'aggettivo</div>
+    <div class="section-heading-es">Alteración del adjetivo</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">L'aggettivo può essere alterato con suffissi:</div>
+      <div class="bi-es">El adjetivo puede ser alterado con sufijos:</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tipo / Tipo</th><th>Esempio IT</th><th>Ejemplo ES</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Peggiorativo</strong> / Peyorativo</td><td>biancastro</td><td class="td-es">blanquecino</td></tr>
+          <tr><td><strong>Accrescitivo</strong> / Aumentativo</td><td>intelligentone</td><td class="td-es">muy inteligente</td></tr>
+          <tr><td><strong>Diminutivo</strong> / Diminutivo</td><td>bellino</td><td class="td-es">bonito/lindo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 1.5 Gradi -->
+  <div class="section-block c5">
+    <div class="section-number">1.5</div>
+    <div class="section-heading">Gradi dell'aggettivo</div>
+    <div class="section-heading-es">Grados del adjetivo</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">L'aggettivo al grado base si dice <strong>positivo</strong>.</div>
+      <div class="bi-es">El adjetivo en su grado base se llama <strong>positivo</strong>.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> prudente, astuto</div>
+      <div class="ex-es">prudente, astuto</div>
+    </div>
+
+    <div class="sub-heading">Comparativo / Comparativo</div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Di maggioranza:</strong> più + aggettivo + di</div>
+      <div class="bi-es">más + adjetivo + que</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Greta è più alta di Tharushi</div>
+      <div class="ex-es">Greta es más alta que Tharushi</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Di minoranza:</strong> meno + aggettivo + di</div>
+      <div class="bi-es">menos + adjetivo + que</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> La Rossi è meno scherzosa del Florà</div>
+      <div class="ex-es">La Rossi es menos bromista que Florà</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Di uguaglianza:</strong> aggettivo + come/quanto</div>
+      <div class="bi-es">tan + adjetivo + como</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> La 1AL è numerosa come la 1BL</div>
+      <div class="ex-es">La 1AL es tan numerosa como la 1BL</div>
+    </div>
+
+    <div class="sub-heading">Superlativo / Superlativo</div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Superlativo relativo:</strong> il/la più + aggettivo + tra/di</div>
+      <div class="bi-es">el/la más + adjetivo + entre/de</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Cecilia è la più alta tra le sue amiche</div>
+      <div class="ex-es">Cecilia es la más alta entre sus amigas</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Superlativo assoluto:</strong> -issimo / molto + agg. / ultra + agg.</div>
+      <div class="bi-es">-ísimo / muy + adj. / ultra + adj.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Samuel è intelligentissimo / molto intelligente / ultraintelligente</div>
+      <div class="ex-es">Samuel es inteligentísimo / muy inteligente / ultrainteligente</div>
+    </div>
+  </div>
+
+  <!-- 1.6 Forme particolari -->
+  <div class="section-block c6">
+    <div class="section-number">1.6</div>
+    <div class="section-heading">Forme particolari di comparativo e superlativo</div>
+    <div class="section-heading-es">Formas particulares de comparativo y superlativo</div>
+    <div class="section-divider"></div>
+    <div class="star-note">
+      <div class="note-text">⭐ TABLA CLAVE PARA LA VERIFICA — la profesora pregunta esto en el examen.</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Positivo</th><th>Comparativo</th><th>Superlativo</th><th>Traducción ES</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>buono</strong></td><td><strong>migliore</strong></td><td><strong>ottimo</strong></td><td class="td-es">bueno → mejor → óptimo</td></tr>
+          <tr><td><strong>cattivo</strong></td><td><strong>peggiore</strong></td><td><strong>pessimo</strong></td><td class="td-es">malo → peor → pésimo</td></tr>
+          <tr><td><strong>grande</strong></td><td><strong>maggiore</strong></td><td><strong>massimo</strong></td><td class="td-es">grande → mayor → máximo</td></tr>
+          <tr><td><strong>piccolo</strong></td><td><strong>minore</strong></td><td><strong>minimo</strong></td><td class="td-es">pequeño → menor → mínimo</td></tr>
+          <tr><td><strong>alto</strong></td><td><strong>superiore</strong></td><td><strong>supremo / sommo</strong></td><td class="td-es">alto → superior → supremo/sumo</td></tr>
+          <tr><td><strong>basso</strong></td><td><strong>inferiore</strong></td><td><strong>infimo</strong></td><td class="td-es">bajo → inferior → ínfimo</td></tr>
+          <tr><td><strong>interno</strong></td><td><strong>interiore</strong></td><td><strong>intimo</strong></td><td class="td-es">interno → interior → íntimo</td></tr>
+          <tr><td><strong>esterno</strong></td><td><strong>esteriore</strong></td><td><strong>estremo</strong></td><td class="td-es">externo → exterior → extremo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Attenzione!</strong> Migliore/peggiore/maggiore/minore ecc. <strong>NON possono essere accompagnati da "più"</strong>.</div>
+      <div class="alert-es">⚠ Migliore/peggiore/maggiore/minore etc. <strong>NO pueden ir acompañados de "più" (más)</strong>.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Il Napoli è migliore della Roma (NON: più migliore)</div>
+      <div class="ex-es">El Napoli es mejor que la Roma (NO: más mejor)</div>
+    </div>
+
+    <div class="sub-heading">Superlativi assoluti in -errimo</div>
+    <div class="sub-heading-es">Superlativos absolutos en -errimo (en lugar de -issimo)</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Positivo</th><th>Superlativo (-errimo)</th><th>Traducción ES</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>acre</td><td><strong>acerrimo</strong></td><td class="td-es">acérrimo</td></tr>
+          <tr><td>aspro</td><td><strong>asperrimo</strong></td><td class="td-es">aspérrimo</td></tr>
+          <tr><td>celebre</td><td><strong>celeberrimo</strong></td><td class="td-es">celebérrimo</td></tr>
+          <tr><td>integro</td><td><strong>integerrimo</strong></td><td class="td-es">integérrimo</td></tr>
+          <tr><td>misero</td><td><strong>miserrimo</strong></td><td class="td-es">misérrimo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Attenzione!</strong> Alcuni aggettivi NON hanno comparativo e superlativo: quelli che esprimono di per sé qualità al massimo grado (<em>enorme, infinito</em>).</div>
+      <div class="alert-es">⚠ Algunos adjetivos NO tienen comparativo ni superlativo: los que expresan por sí mismos cualidades en grado máximo (enorme, infinito).</div>
+    </div>
+  </div>
+</div><!-- /p1 -->
+
+
+<!-- ══════════════════════════════════════════
+     PARTE 2 — TIPOLOGIE DI AGGETTIVI
+═══════════════════════════════════════════ -->
+<div class="section-panel" id="p2">
+  <div class="part-header">
+    <div class="part-title">L'Aggettivo — 2ª Parte</div>
+    <div class="part-subtitle">El Adjetivo — 2ª Parte (Tipologías)</div>
+  </div>
+  <div class="bi-row" style="text-align:center; margin-bottom:24px;">
+    <div class="bi-it">Esistono varie tipologie di aggettivi. Per riconoscerli, pensate al loro nome!</div>
+    <div class="bi-es">Existen varias tipologías de adjetivos. Para reconocerlos, ¡piensen en su nombre!</div>
+  </div>
+
+  <!-- 2.1 Possessivi -->
+  <div class="section-block c1">
+    <div class="section-number">2.1</div>
+    <div class="section-heading">Aggettivi Possessivi</div>
+    <div class="section-heading-es">Adjetivos Posesivos</div>
+    <div class="section-divider"></div>
+    <div class="tag-list">
+      <span class="tag">mio, tuo, suo</span><span class="tag">nostro, vostro, loro</span>
+      <span class="tag teal">mío, tuyo, suyo, nuestro, vuestro, de ellos</span>
+    </div>
+    <div class="bi-row" style="margin-top:12px;">
+      <div class="bi-it">Esprimono il proprietario, il possessore della persona/oggetto di cui si sta parlando.</div>
+      <div class="bi-es">Expresan el propietario, el poseedor de la persona/objeto del que se está hablando.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> La tua maglietta, Daria, è molto colorata</div>
+      <div class="ex-es">Tu camiseta, Daria, es muy colorida</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Differenza tra SUO e LORO:</strong><br>
+        <strong>Suo</strong> = quando il possessore è 1 solo.<br>
+        <strong>Loro</strong> = quando i proprietari sono 2 o più.
+      </div>
+      <div class="alert-es">
+        <strong>Suo</strong> = cuando el poseedor es 1 solo.<br>
+        <strong>Loro</strong> = cuando los propietarios son 2 o más.
+      </div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Flavio e Samuel sono usciti con i loro amici; Sofia è uscita con sua zia</div>
+      <div class="ex-es">Flavio y Samuel salieron con sus amigos; Sofía salió con su tía</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ Anche <strong>PROPRIO</strong> e <strong>ALTRUI</strong> sono aggettivi possessivi.<br>
+        <strong>Altrui</strong> è invariabile. Significa "degli altri".<br>
+        <strong>Proprio</strong> può sostituire suo/a. Diventa obbligatorio quando il verbo è impersonale.
+      </div>
+      <div class="alert-es">
+        <strong>Altrui</strong> es invariable. Significa "de los otros".<br>
+        <strong>Proprio</strong> puede sustituir a suo/a. Se vuelve obligatorio cuando el verbo es impersonal.
+      </div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Non bisogna svolgere i compiti altrui / Si deve badare al proprio dovere</div>
+      <div class="ex-es">No hay que hacer las tareas de los otros / Se debe atender al propio deber</div>
+    </div>
+  </div>
+
+  <!-- 2.2 Dimostrativi -->
+  <div class="section-block c2">
+    <div class="section-number">2.2</div>
+    <div class="section-heading">Aggettivi Dimostrativi</div>
+    <div class="section-heading-es">Adjetivos Demostrativos</div>
+    <div class="section-divider"></div>
+    <div class="tag-list">
+      <span class="tag">questo, quello</span>
+      <span class="tag teal">este, ese/aquel</span>
+    </div>
+    <div class="bi-row" style="margin-top:12px;">
+      <div class="bi-it">Esprimono la vicinanza dell'oggetto o della persona rispetto a chi sta parlando. La vicinanza può essere nel <strong>tempo</strong> o nello <strong>spazio</strong>.</div>
+      <div class="bi-es">Expresan la cercanía del objeto o de la persona respecto a quien habla. La cercanía puede ser en el tiempo o en el espacio.</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Questo</strong> indica maggiore vicinanza; <strong>quello</strong> indica maggiore lontananza rispetto a chi parla.</div>
+      <div class="alert-es">⚠ <strong>Questo (este)</strong> indica mayor cercanía; <strong>quello (ese/aquel)</strong> indica mayor lejanía.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Questo quaderno è tutto spiegazzato; quel quaderno là in fondo è integro</div>
+      <div class="ex-es">Este cuaderno está todo arrugado; aquel cuaderno allá al fondo está intacto</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ Dentro l'aggettivo <strong>quello</strong> c'è l'articolo <strong>lo</strong>, quindi si applicano le regole note.</div>
+      <div class="alert-es">⚠ Dentro del adjetivo <strong>quello</strong> está el artículo <strong>lo</strong>, por lo tanto se aplican las reglas conocidas.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Quell'albero è cresciuto molto negli ultimi mesi</div>
+      <div class="ex-es">Aquel árbol ha crecido mucho en los últimos meses</div>
+    </div>
+  </div>
+
+  <!-- 2.3 Identificativi -->
+  <div class="section-block c3">
+    <div class="section-number">2.3</div>
+    <div class="section-heading">Aggettivi Identificativi</div>
+    <div class="section-heading-es">Adjetivos Identificativos</div>
+    <div class="section-divider"></div>
+    <div class="tag-list">
+      <span class="tag">stesso, medesimo</span>
+      <span class="tag teal">mismo, idéntico</span>
+    </div>
+    <div class="bi-row" style="margin-top:12px;">
+      <div class="bi-it">Esprimono uguaglianza tra persone o cose. Significano uguale/identico a…</div>
+      <div class="bi-es">Expresan igualdad entre personas o cosas. Significan igual/idéntico a…</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Ragazzi, nelle verifiche commettete sempre gli stessi errori</div>
+      <div class="ex-es">Chicos, en las pruebas cometen siempre los mismos errores</div>
+    </div>
+  </div>
+
+  <!-- 2.4 Indefiniti -->
+  <div class="section-block c4">
+    <div class="section-number">2.4</div>
+    <div class="section-heading">Aggettivi Indefiniti</div>
+    <div class="section-heading-es">Adjetivos Indefinidos</div>
+    <div class="section-divider"></div>
+    <div class="tag-list">
+      <span class="tag">alcuni, pochi, tanti, altri, più, troppi, nessuno</span>
+      <span class="tag teal">algunos, pocos, tantos, otros, más, demasiados, ninguno</span>
+    </div>
+    <div class="bi-row" style="margin-top:12px;">
+      <div class="bi-it">Esprimono informazioni generiche sui nomi che accompagnano.</div>
+      <div class="bi-es">Expresan información genérica sobre los nombres que acompañan.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Ci sono alcuni problemi al "Rossellini" (non quantificati in modo esatto)</div>
+      <div class="ex-es">Hay algunos problemas en el "Rossellini" (no están cuantificados de forma exacta)</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ Nell'aggettivo <strong>nessuno</strong> è presente l'articolo <strong>uno</strong>, valgono le regole note.</div>
+      <div class="alert-es">⚠ En el adjetivo <strong>nessuno</strong> está presente el artículo <strong>uno</strong>, se aplican las reglas conocidas.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Non ho visto nessun aereo in cielo (non apostrofo, perché aereo è maschile)</div>
+      <div class="ex-es">No vi ningún avión en el cielo (sin apóstrofo, porque aereo es masculino)</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Alcuno</strong> cambia significato in base al numero:<br>
+        <strong>Al singolare: alcun = nessuno</strong> (ninguno) → Non ho alcun bisogno del tuo aiuto<br>
+        <strong>Al plurale: alcuni = qualche</strong> (algunos) → Alcuni studenti studieranno storia d'estate
+      </div>
+      <div class="alert-es">
+        <strong>Singular: alcun = nessuno</strong> → No tengo ninguna necesidad de tu ayuda<br>
+        <strong>Plural: alcuni = qualche</strong> → Algunos estudiantes estudiarán historia en verano
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.5 Numerali -->
+  <div class="section-block c5">
+    <div class="section-number">2.5</div>
+    <div class="section-heading">Aggettivi Numerali</div>
+    <div class="section-heading-es">Adjetivos Numerales</div>
+    <div class="section-divider"></div>
+    <div class="tag-list">
+      <span class="tag">tre, terzo, uno, primo, doppio, triplo</span>
+      <span class="tag teal">tres, tercero, uno, primero, doble, triple</span>
+    </div>
+    <div class="bi-row" style="margin-top:12px;">
+      <div class="bi-it">Esprimono quantità numeriche. Si dividono in:</div>
+      <div class="bi-es">Expresan cantidades numéricas. Se dividen en:</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Cardinali:</strong> indicano una quantità precisa.</div>
+      <div class="bi-es">Cardinales: indican una cantidad precisa.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Ho quattro matite nel mio astuccio</div>
+      <div class="ex-es">Tengo cuatro lápices en mi estuche</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Ordinali:</strong> indicano la posizione.</div>
+      <div class="bi-es">Ordinales: indican la posición.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Il primo interrogato è Daniele</div>
+      <div class="ex-es">El primer interrogado es Daniele</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Moltiplicativi:</strong> esprimono la moltiplicazione di una quantità.</div>
+      <div class="bi-es">Multiplicativos: expresan la multiplicación de una cantidad.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Studiare d'estate è una doppia fatica!</div>
+      <div class="ex-es">¡Estudiar en verano es un doble esfuerzo!</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ L'aggettivo <strong>tre</strong> si scrive senza accento, ma nei composti va accentato.</div>
+      <div class="alert-es">⚠ El adjetivo <strong>tre</strong> se escribe sin acento, pero en los compuestos lleva acento.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Manuel si sposerà a ventitré anni</div>
+      <div class="ex-es">Manuel se casará a los veintitrés años</div>
+    </div>
+  </div>
+
+  <!-- 2.6 Interrogativi ed Esclamativi -->
+  <div class="section-block c6">
+    <div class="section-number">2.6</div>
+    <div class="section-heading">Aggettivi Interrogativi ed Esclamativi</div>
+    <div class="section-heading-es">Adjetivos Interrogativos y Exclamativos</div>
+    <div class="section-divider"></div>
+    <div class="tag-list">
+      <span class="tag">quanto, quale, che</span>
+      <span class="tag teal">cuánto, cuál, qué</span>
+    </div>
+    <div class="bi-row" style="margin-top:12px;">
+      <div class="bi-it">Esprimono, in accompagnamento ai nomi, delle domande o delle esclamazioni.</div>
+      <div class="bi-es">Expresan, acompañando a los nombres, preguntas o exclamaciones.</div>
+    </div>
+    <div class="sub-heading">Interrogativo</div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> In quale spiaggia tropicale si trova la tua mente?</div>
+      <div class="ex-es">¿En qué playa tropical se encuentra tu mente?</div>
+    </div>
+    <div class="sub-heading">Esclamativo</div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Quale onore averti al compito di epica!</div>
+      <div class="ex-es">¡Qué honor tenerte en la prueba de épica!</div>
+    </div>
+    <div class="alert">
+      <div class="alert-it">⚠ <strong>Che</strong> può sostituire <strong>quale</strong> nella lingua parlata ed è <strong>invariabile</strong>.</div>
+      <div class="alert-es">⚠ <strong>Che</strong> puede sustituir a <strong>quale</strong> en la lengua hablada y es invariable.</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Che sorpresa rivederti dopo tanto tempo!</div>
+      <div class="ex-es">¡Qué sorpresa volverte a ver después de tanto tiempo!</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Che serie Netflix stai guardando ultimamente?</div>
+      <div class="ex-es">¿Qué serie de Netflix estás viendo últimamente?</div>
+    </div>
+  </div>
+
+</div><!-- /p2 -->
+
+
+<!-- ══════════════════════════════════════════
+     PARTE 3 — LA PREPOSIZIONE
+═══════════════════════════════════════════ -->
+<div class="section-panel" id="p3">
+  <div class="part-header">
+    <div class="part-title">La Preposizione</div>
+    <div class="part-subtitle">La Preposición</div>
+  </div>
+
+  <!-- 3.1 Definizione -->
+  <div class="section-block c1">
+    <div class="section-number">3.1</div>
+    <div class="section-heading">Definizione</div>
+    <div class="section-heading-es">Definición</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it"><strong>Preposizione</strong> = elemento invariabile della frase (non cambia, è fisso).</div>
+      <div class="bi-es"><strong>Preposición</strong> = elemento invariable de la oración (no cambia, es fija).</div>
+    </div>
+    <div class="bi-row">
+      <div class="bi-it">Precede un nome, un pronome, un avverbio o un verbo all'infinito. Svolge una funzione di <strong>collegamento</strong> tra le parti della frase.</div>
+      <div class="bi-es">Precede a un nombre, un pronombre, un adverbio o un verbo en infinitivo. Cumple una función de <strong>conexión</strong> entre las partes de la oración.</div>
+    </div>
+
+    <div class="sub-heading">Esempi d'uso / Ejemplos de uso</div>
+    <div class="example">
+      <div class="ex-it"><strong>1) Prima di un nome:</strong> La porta della classe è sempre rotta</div>
+      <div class="ex-es">Antes de un nombre: La puerta de la clase está siempre rota</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>2) Prima di un pronome:</strong> Ho una sorpresa per voi</div>
+      <div class="ex-es">Antes de un pronombre: Tengo una sorpresa para ustedes</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>3) Prima di un avverbio:</strong> Vi dichiaro marito e moglie per sempre</div>
+      <div class="ex-es">Antes de un adverbio: Los declaro marido y mujer para siempre</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>4) Prima di un infinito:</strong> Spero di studiare con l'aiuto di un'amica</div>
+      <div class="ex-es">Antes de un infinitivo: Espero estudiar con la ayuda de una amiga</div>
+    </div>
+  </div>
+
+  <!-- 3.2 Tipi -->
+  <div class="section-block c2">
+    <div class="section-number">3.2</div>
+    <div class="section-heading">Tipi di preposizioni</div>
+    <div class="section-heading-es">Tipos de preposiciones</div>
+    <div class="section-divider"></div>
+
+    <div class="sub-heading">Preposizioni semplici / Preposiciones simples</div>
+    <div class="tag-list" style="margin-bottom:18px;">
+      <span class="tag">DI</span><span class="tag">A</span><span class="tag">DA</span>
+      <span class="tag">IN</span><span class="tag">CON</span><span class="tag">SU</span>
+      <span class="tag">PER</span><span class="tag">TRA</span><span class="tag">FRA</span>
+    </div>
+
+    <div class="sub-heading">Preposizioni articolate / Preposiciones articuladas</div>
+    <div class="bi-row">
+      <div class="bi-it">Preposizione semplice + articolo = preposizione articolata</div>
+      <div class="bi-es">Preposición simple + artículo = preposición articulada</div>
+    </div>
+    <div class="table-wrap" style="margin-top:12px;">
+      <table>
+        <thead>
+          <tr><th>Prep. semplice + Articolo</th><th>= Prep. articolata</th><th>Ejemplo ES</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SU + IL</td><td><strong>SUL</strong></td><td class="td-es">sobre el / en el</td></tr>
+          <tr><td>DI + LA</td><td><strong>DELLA</strong></td><td class="td-es">de la</td></tr>
+          <tr><td>IN + IL</td><td><strong>NEL</strong></td><td class="td-es">en el</td></tr>
+          <tr><td>A + I</td><td><strong>AI</strong></td><td class="td-es">a los</td></tr>
+          <tr><td>DA + I</td><td><strong>DAI</strong></td><td class="td-es">de los / desde los</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3.3 Articolate vs Partitivi -->
+  <div class="section-block c3">
+    <div class="section-number">3.3</div>
+    <div class="section-heading">Preposizioni articolate vs Articoli partitivi</div>
+    <div class="section-heading-es">Preposiciones articuladas vs Artículos partitivos</div>
+    <div class="section-divider"></div>
+    <div class="bi-row">
+      <div class="bi-it">Alcune preposizioni articolate possono essere confuse con gli <strong>articoli partitivi</strong>.</div>
+      <div class="bi-es">Algunas preposiciones articuladas pueden confundirse con los <strong>artículos partitivos</strong>.</div>
+    </div>
+    <div class="bi-row" style="margin-top:10px;">
+      <div class="bi-it"><strong>Come distinguerli?</strong> L'articolo partitivo si può sostituire al singolare con <em>"un po' di"</em> e al plurale con <em>"alcuni/alcune"</em>.</div>
+      <div class="bi-es"><strong>¿Cómo distinguirlos?</strong> El artículo partitivo se puede sustituir en singular por <em>"un poco de"</em> y en plural por <em>"algunos/algunas"</em>.</div>
+    </div>
+    <div class="key-rule">
+      <div class="kr-label">⭐ Regla clave</div>
+      <div class="kr-text">Si puedes sustituir → es <strong>artículo partitivo</strong>.<br>Si NO puedes sustituir → es <strong>preposición articulada</strong>.</div>
+    </div>
+    <div class="sub-heading" style="color: var(--accent2);">✓ Articolo partitivo</div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Ho del caffè da consumare (= un po' di caffè) → <strong>DEL</strong> è articolo partitivo</div>
+      <div class="ex-es">Tengo algo de café para consumir (= un poco de café) → DEL es artículo partitivo</div>
+    </div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Dei miei amici ti conoscono (= alcuni miei amici) → <strong>DEI</strong> è articolo partitivo</div>
+      <div class="ex-es">Algunos de mis amigos te conocen → DEI es artículo partitivo</div>
+    </div>
+    <div class="sub-heading" style="color: var(--accent3);">✗ Preposizione articolata</div>
+    <div class="example">
+      <div class="ex-it"><strong>Es.</strong> Riempi le pagine del quaderno (la sostituzione non si può fare) → <strong>DEL</strong> è preposizione</div>
+      <div class="ex-es">Llena las páginas del cuaderno (la sustitución no se puede hacer) → DEL es preposición</div>
+    </div>
+  </div>
+
+</div><!-- /p3 -->
+
+</div><!-- /.container -->
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
